@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ChurchOS Feature Console</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f7fb;
+        --ink: #172033;
+        --muted: #617087;
+        --line: #d9dee8;
+        --panel: #ffffff;
+        --primary: #2457d6;
+        --primary-ink: #ffffff;
+        --ok: #16845b;
+        --warn: #a35a00;
+        --bad: #b42318;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: Inter, Segoe UI, system-ui, -apple-system, sans-serif;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 72px;
+        padding: 14px 22px;
+        border-bottom: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(14px);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 22px;
+        line-height: 1.2;
+      }
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 17px;
+      }
+
+      button,
+      select,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        color: var(--ink);
+        min-height: 36px;
+        padding: 7px 11px;
+        cursor: pointer;
+      }
+
+      button.primary {
+        border-color: var(--primary);
+        background: var(--primary);
+        color: var(--primary-ink);
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.65;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+        min-height: calc(100vh - 72px);
+      }
+
+      aside {
+        border-right: 1px solid var(--line);
+        background: #fff;
+        padding: 16px;
+      }
+
+      .workspace {
+        padding: 18px;
+      }
+
+      .status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 999px;
+        background: var(--warn);
+      }
+
+      .dot.ok {
+        background: var(--ok);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 12px;
+      }
+
+      .card,
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--panel);
+      }
+
+      .card {
+        padding: 13px;
+      }
+
+      .card h3 {
+        margin: 0 0 5px;
+        font-size: 15px;
+      }
+
+      .card p {
+        min-height: 42px;
+        margin: 0 0 12px;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.35;
+      }
+
+      .panel {
+        margin-top: 16px;
+        padding: 14px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 10px;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      label {
+        display: grid;
+        gap: 5px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        background: #fff;
+        color: var(--ink);
+        padding: 8px 10px;
+      }
+
+      textarea {
+        min-height: 150px;
+        resize: vertical;
+        font-family: Consolas, ui-monospace, monospace;
+        font-size: 13px;
+      }
+
+      pre {
+        min-height: 230px;
+        max-height: 420px;
+        overflow: auto;
+        margin: 0;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: #0f172a;
+        color: #dbeafe;
+        padding: 12px;
+        font-family: Consolas, ui-monospace, monospace;
+        font-size: 12px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+      }
+
+      .route-list {
+        display: grid;
+        gap: 7px;
+        max-height: calc(100vh - 190px);
+        overflow: auto;
+      }
+
+      .route {
+        width: 100%;
+        justify-content: flex-start;
+        text-align: left;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 2px 8px;
+        background: #eef2ff;
+        color: #273d99;
+        font-size: 12px;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      @media (max-width: 880px) {
+        main,
+        .split {
+          grid-template-columns: 1fr;
+        }
+
+        aside {
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1>ChurchOS Feature Console</h1>
+        <div class="status"><span id="statusDot" class="dot"></span><span id="statusText">Preparing demo workspace</span></div>
+      </div>
+      <div class="row">
+        <button id="bootstrapBtn" class="primary">Initialize Demo</button>
+        <button id="smokeBtn">Smoke Test Modules</button>
+      </div>
+    </header>
+
+    <main>
+      <aside>
+        <h2>Modules</h2>
+        <div id="routeList" class="route-list"></div>
+      </aside>
+
+      <section class="workspace">
+        <div class="grid" id="cards"></div>
+
+        <div class="panel">
+          <h2>Request Builder</h2>
+          <div class="split">
+            <div class="stack">
+              <label>
+                Method
+                <select id="method">
+                  <option>GET</option>
+                  <option>POST</option>
+                  <option>PATCH</option>
+                  <option>PUT</option>
+                  <option>DELETE</option>
+                </select>
+              </label>
+              <label>
+                Path
+                <input id="path" value="/api/members" />
+              </label>
+              <label>
+                JSON body
+                <textarea id="body">{}</textarea>
+              </label>
+              <div class="row">
+                <button id="sendBtn" class="primary">Send Request</button>
+                <button id="clearBtn">Clear Output</button>
+              </div>
+            </div>
+            <div class="stack">
+              <label>
+                Response
+                <pre id="output">Ready.</pre>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const modules = [
+        { name: 'Auth', path: '/api/auth/login', sample: { method: 'POST', path: '/api/auth/login', body: { email: 'admin@demo.churchos.local', password: 'churchos-demo-password' } }, note: 'Demo login and registration flows.' },
+        { name: 'Members', path: '/api/members', sample: { method: 'POST', path: '/api/members', body: { firstName: 'Jordan', lastName: 'Rivera', email: 'jordan@example.test', membershipStatus: 'visitor' } }, note: 'Profiles, notes, tags, check-ins, and member search.' },
+        { name: 'Connected Services', path: '/api/services', sample: { method: 'GET', path: '/api/services', body: {} }, note: 'Provider credentials, integrations, and module overrides.' },
+        { name: 'CMS', path: '/api/cms/pages', sample: { method: 'POST', path: '/api/cms/pages', body: { title: 'Welcome', slug: 'welcome', content: '<h1>Welcome</h1>', isPublished: true } }, note: 'Website pages, themes, rendering, and content publishing.' },
+        { name: 'CRM', path: '/api/crm/pipelines', sample: { method: 'POST', path: '/api/crm/pipelines', body: { name: 'Guest Follow Up' } }, note: 'Pipelines, stages, contact movement, and follow-up tasks.' },
+        { name: 'Communication', path: '/api/communication/templates', sample: { method: 'POST', path: '/api/communication/templates', body: { name: 'Welcome SMS', channel: 'sms', subject: 'Welcome', body: 'Welcome to ChurchOS' } }, note: 'Templates, scheduled messages, logs, and automation workflows.' },
+        { name: 'Billing', path: '/api/billing/plans', sample: { method: 'GET', path: '/api/billing/plans', body: {} }, note: 'Plans, usage, invoices, subscriptions, and payment webhooks.' },
+        { name: 'Analytics', path: '/api/analytics/dashboard', sample: { method: 'GET', path: '/api/analytics/dashboard', body: {} }, note: 'Dashboards, reports, funnels, exports, and event tracking.' },
+        { name: 'Plugins', path: '/api/plugins', sample: { method: 'GET', path: '/api/plugins', body: {} }, note: 'Plugin definitions, installs, webhooks, and developer profile flows.' },
+        { name: 'Marketplace', path: '/api/marketplace/assets', sample: { method: 'GET', path: '/api/marketplace/assets', body: {} }, note: 'Marketplace assets, submissions, purchases, and feedback.' },
+        { name: 'Localization', path: '/api/localization/languages', sample: { method: 'GET', path: '/api/localization/languages', body: {} }, note: 'Languages, translation jobs, localized content, captions, and feeds.' },
+        { name: 'Media', path: '/api/media/assets', sample: { method: 'POST', path: '/api/media/assets', body: { title: 'Sunday Message', type: 'video', url: 'https://example.test/message.mp4' } }, note: 'Sermons, assets, series, playlists, and captions.' },
+        { name: 'Livestream', path: '/api/livestream/streams', sample: { method: 'POST', path: '/api/livestream/streams', body: { title: 'Sunday Live', scheduledStartAt: new Date().toISOString() } }, note: 'Live events, chat, viewers, embeds, and analytics.' },
+        { name: 'Church Services', path: '/api/church-services', sample: { method: 'GET', path: '/api/church-services', body: {} }, note: 'Service planning, scripture links, attachments, and service metadata.' },
+        { name: 'Blog', path: '/api/blog/posts', sample: { method: 'GET', path: '/api/blog/posts', body: {} }, note: 'Posts, categories, tags, comments, moderation, and publishing.' },
+        { name: 'Library', path: '/api/library/resources', sample: { method: 'GET', path: '/api/library/resources', body: {} }, note: 'Resource library categories, downloads, purchases, and listings.' },
+        { name: 'Podcast', path: '/api/podcast/shows', sample: { method: 'GET', path: '/api/podcast/shows', body: {} }, note: 'Podcast shows, episodes, feeds, and publishing.' },
+        { name: 'AI Media', path: '/api/ai/jobs', sample: { method: 'GET', path: '/api/ai/jobs', body: {} }, note: 'AI media jobs, clip generation, and background job inspection.' },
+        { name: 'AI Copilot', path: '/api/ai-copilot/jobs', sample: { method: 'GET', path: '/api/ai-copilot/jobs', body: {} }, note: 'Ministry copilot generation jobs and AI assistant workflows.' },
+        { name: 'Signage', path: '/api/signage/screens', sample: { method: 'GET', path: '/api/signage/screens', body: {} }, note: 'Screens, playlists, slides, render endpoints, and device pings.' },
+        { name: 'Worship', path: '/api/worship/songs', sample: { method: 'POST', path: '/api/worship/songs', body: { title: 'Amazing Grace', artist: 'Traditional', key: 'G' } }, note: 'Songs, playlists, sessions, and live worship navigation.' },
+        { name: 'Giving', path: '/api/giving/categories', sample: { method: 'POST', path: '/api/giving/categories', body: { name: 'Tithes', description: 'General tithe giving' } }, note: 'Giving categories, donations, recurring gifts, and webhooks.' },
+        { name: 'Partnerships', path: '/api/partnerships/categories', sample: { method: 'GET', path: '/api/partnerships/categories', body: {} }, note: 'Partnership categories, recurring partnerships, and tracking.' },
+        { name: 'Campaigns', path: '/api/campaigns', sample: { method: 'GET', path: '/api/campaigns', body: {} }, note: 'Campaigns, updates, progress, and engagement.' },
+        { name: 'Store', path: '/api/store/products', sample: { method: 'POST', path: '/api/store/products', body: { name: 'Conference Hoodie', slug: 'conference-hoodie', price: 45 } }, note: 'Products, variants, coupons, checkout, and order history.' },
+        { name: 'Finance', path: '/api/finance/accounts', sample: { method: 'POST', path: '/api/finance/accounts', body: { name: 'General Fund', type: 'asset', currency: 'USD' } }, note: 'Accounts, budgets, expenses, transactions, and reports.' },
+        { name: 'Funnels', path: '/api/funnels', sample: { method: 'GET', path: '/api/funnels', body: {} }, note: 'Ministry funnels, steps, submissions, views, and analytics.' },
+        { name: 'Community', path: '/api/community/channels', sample: { method: 'GET', path: '/api/community/channels', body: {} }, note: 'Community channels, posts, comments, reactions, and moderation.' },
+        { name: 'Live Chat', path: '/api/chat/conversations', sample: { method: 'GET', path: '/api/chat/conversations', body: {} }, note: 'Chat conversations, care requests, saved replies, presence, and tasks.' },
+        { name: 'Outreach', path: '/api/outreach/campaigns', sample: { method: 'GET', path: '/api/outreach/campaigns', body: {} }, note: 'Outreach campaigns, invite pages, shares, and conversions.' },
+        { name: 'Attendance', path: '/api/attendance/reports', sample: { method: 'GET', path: '/api/attendance/reports', body: {} }, note: 'Check-in, QR tokens, family check-in, absences, and exports.' },
+        { name: 'Volunteers', path: '/api/volunteer/reports', sample: { method: 'GET', path: '/api/volunteer/reports', body: {} }, note: 'Profiles, teams, shifts, assignments, availability, and reports.' },
+        { name: 'Forms', path: '/api/forms', sample: { method: 'POST', path: '/api/forms', body: { title: 'Connect Card', fieldsJson: '[{\"name\":\"email\",\"type\":\"email\"}]' } }, note: 'Custom forms, submissions, approvals, reports, and workflows.' },
+        { name: 'Prayer', path: '/api/prayer/requests', sample: { method: 'POST', path: '/api/prayer/requests', body: { requesterName: 'Avery', requestText: 'Pray for my family', visibility: 'private' } }, note: 'Prayer requests, sessions, points, media, and testimonies.' },
+        { name: 'Salvation', path: '/api/salvation/resources', sample: { method: 'GET', path: '/api/salvation/resources', body: {} }, note: 'Altar-call responses, new-believer profiles, reminders, and milestones.' },
+        { name: 'LMS', path: '/api/lms/dashboard', sample: { method: 'GET', path: '/api/lms/dashboard', body: {} }, note: 'Courses, lessons, quizzes, assignments, enrollments, and grading.' },
+        { name: 'Bible', path: '/api/bible/translations', sample: { method: 'POST', path: '/api/bible/translations', body: { code: 'WEB', name: 'World English Bible', language: 'en' } }, note: 'Translations, reading plans, bookmarks, notes, graphics, and audio.' },
+        { name: 'Cells / Groups', path: '/api/cells/groups', sample: { method: 'GET', path: '/api/cells/groups', body: {} }, note: 'Groups, meetings, attendance, invites, notice boards, and promotions.' },
+        { name: 'Children', path: '/api/children/classes', sample: { method: 'POST', path: '/api/children/classes', body: { name: 'Kids Church', ageMin: 5, ageMax: 10 } }, note: 'Child profiles, guardians, classes, pickup auth, and check-in.' },
+        { name: 'Events', path: '/api/events', sample: { method: 'POST', path: '/api/events', body: { title: 'Community Night', startsAt: new Date().toISOString(), location: 'Main Hall' } }, note: 'Events, tickets, RSVP, registration, reminders.' },
+        { name: 'Live Meetings', path: '/api/meetings', sample: { method: 'GET', path: '/api/meetings', body: {} }, note: 'Meetings, participants, chat, attendance logs, locks, and reminders.' },
+        { name: 'Bookings', path: '/api/bookings/types', sample: { method: 'GET', path: '/api/bookings/types', body: {} }, note: 'Appointment types, staff availability, appointments, reminders.' },
+        { name: 'Mobile', path: '/api/mobile/config/demo', sample: { method: 'GET', path: '/api/mobile/config/demo', body: {} }, note: 'Mobile app config, deep links, push tokens, and mobile auth helpers.' },
+        { name: 'White Label App', path: '/api/whitelabel/config', sample: { method: 'GET', path: '/api/whitelabel/config', body: {} }, note: 'White-label app config, build queue, processing, and store submission.' },
+        { name: 'Multi-Branch', path: '/api/branches', sample: { method: 'GET', path: '/api/branches', body: {} }, note: 'Branches, regions, leaders, campus metadata, and assignment.' },
+        { name: 'Settings', path: '/api/settings', sample: { method: 'GET', path: '/api/settings', body: {} }, note: 'Module-level settings schemas, values, updates, and resets.' },
+      ];
+
+      const state = {
+        tenantId: localStorage.getItem('churchos.tenantId') || '',
+        token: localStorage.getItem('churchos.token') || '',
+      };
+
+      const output = document.getElementById('output');
+
+      function pretty(value) {
+        return JSON.stringify(value, null, 2);
+      }
+
+      function setOutput(value) {
+        output.textContent = typeof value === 'string' ? value : pretty(value);
+      }
+
+      function setStatus(ok, text) {
+        document.getElementById('statusDot').className = ok ? 'dot ok' : 'dot';
+        document.getElementById('statusText').textContent = text;
+      }
+
+      function headers() {
+        const h = { 'Content-Type': 'application/json' };
+        if (state.tenantId) h['x-tenant-id'] = state.tenantId;
+        if (state.token) h.Authorization = `Bearer ${state.token}`;
+        return h;
+      }
+
+      async function api(method, path, body) {
+        const options = { method, headers: headers() };
+        if (!['GET', 'HEAD'].includes(method)) {
+          options.body = JSON.stringify(body || {});
+        }
+        const res = await fetch(path, options);
+        const text = await res.text();
+        let data = text;
+        try {
+          data = text ? JSON.parse(text) : null;
+        } catch (_err) {}
+        return { status: res.status, ok: res.ok, data };
+      }
+
+      async function bootstrap() {
+        document.getElementById('bootstrapBtn').disabled = true;
+        try {
+          const res = await fetch('/dev/bootstrap', { method: 'POST' });
+          const data = await res.json();
+          state.tenantId = data.tenantId;
+          state.token = data.token;
+          localStorage.setItem('churchos.tenantId', state.tenantId);
+          localStorage.setItem('churchos.token', state.token);
+          setStatus(true, `Demo ready as ${data.email}`);
+          setOutput(data);
+        } catch (err) {
+          setStatus(false, 'Demo setup failed');
+          setOutput(String(err));
+        } finally {
+          document.getElementById('bootstrapBtn').disabled = false;
+        }
+      }
+
+      function loadRequest(sample) {
+        document.getElementById('method').value = sample.method;
+        document.getElementById('path').value = sample.path;
+        document.getElementById('body').value = pretty(sample.body || {});
+      }
+
+      async function sendCurrent() {
+        const method = document.getElementById('method').value;
+        const path = document.getElementById('path').value.trim();
+        let body = {};
+        try {
+          body = JSON.parse(document.getElementById('body').value || '{}');
+        } catch (err) {
+          setOutput(`JSON body is invalid: ${err.message}`);
+          return;
+        }
+
+        document.getElementById('sendBtn').disabled = true;
+        try {
+          setOutput(await api(method, path, body));
+        } catch (err) {
+          setOutput(String(err));
+        } finally {
+          document.getElementById('sendBtn').disabled = false;
+        }
+      }
+
+      async function smokeTest() {
+        document.getElementById('smokeBtn').disabled = true;
+        const results = [];
+        for (const mod of modules) {
+          try {
+            results.push({ module: mod.name, endpoint: mod.path, ...(await api('GET', mod.path, {})) });
+          } catch (err) {
+            results.push({ module: mod.name, endpoint: mod.path, error: String(err) });
+          }
+        }
+        setOutput(results);
+        document.getElementById('smokeBtn').disabled = false;
+      }
+
+      function render() {
+        document.querySelector('h1').textContent = `ChurchOS Feature Console (${modules.length} modules)`;
+
+        document.getElementById('routeList').innerHTML = modules
+          .map((mod) => `<button class="route" data-route="${mod.path}">${mod.name}<br><span class="badge">${mod.path}</span></button>`)
+          .join('');
+
+        document.getElementById('cards').innerHTML = modules
+          .map(
+            (mod, index) => `
+              <article class="card">
+                <h3>${mod.name}</h3>
+                <p>${mod.note}</p>
+                <div class="row">
+                  <button data-load="${index}">Load Sample</button>
+                  <button data-get="${index}">GET</button>
+                </div>
+              </article>
+            `
+          )
+          .join('');
+
+        document.querySelectorAll('[data-load]').forEach((button) => {
+          button.addEventListener('click', () => loadRequest(modules[Number(button.dataset.load)].sample));
+        });
+
+        document.querySelectorAll('[data-get]').forEach((button) => {
+          button.addEventListener('click', () => {
+            const mod = modules[Number(button.dataset.get)];
+            loadRequest({ method: 'GET', path: mod.path, body: {} });
+            sendCurrent();
+          });
+        });
+
+        document.querySelectorAll('[data-route]').forEach((button) => {
+          button.addEventListener('click', () => {
+            loadRequest({ method: 'GET', path: button.dataset.route, body: {} });
+          });
+        });
+      }
+
+      document.getElementById('bootstrapBtn').addEventListener('click', bootstrap);
+      document.getElementById('sendBtn').addEventListener('click', sendCurrent);
+      document.getElementById('smokeBtn').addEventListener('click', smokeTest);
+      document.getElementById('clearBtn').addEventListener('click', () => setOutput(''));
+
+      render();
+      loadRequest({ method: 'GET', path: '/api/members', body: {} });
+      if (state.tenantId && state.token) {
+        setStatus(true, 'Demo credentials loaded');
+      } else {
+        bootstrap();
+      }
+    </script>
+  </body>
+</html>

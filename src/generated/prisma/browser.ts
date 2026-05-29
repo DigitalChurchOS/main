@@ -1082,3 +1082,8 @@ export type AltarCallResponse = Prisma.AltarCallResponseModel
  * 
  */
 export type ModuleSettings = Prisma.ModuleSettingsModel
+/**
+ * Model ObservabilityLog
+ * 
+ */
+export type ObservabilityLog = Prisma.ObservabilityLogModel

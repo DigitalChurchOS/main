@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
 import { tenantMiddleware } from './middleware/tenant';
 import { requireModule } from './middleware/entitlements';
 import authRoutes from './routes/auth';
@@ -49,6 +50,7 @@ import whiteLabelRoutes from './routes/whiteLabel';
 import multiBranchRoutes from './routes/multiBranch';
 import aiCopilotRoutes from './routes/aiCopilot';
 import settingsRoutes from './routes/settings';
+import superAdminRoutes from './routes/superadmin';
 
 // Load .env before anything else
 dotenv.config();
@@ -113,6 +115,15 @@ app.use('/api/mobile', mobileRoutes);
 app.use('/api/whitelabel', whiteLabelRoutes);
 app.use('/api/branches', multiBranchRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/super-admin', superAdminRoutes);
+
+// ── Static assets ──────────────────────────────────────────
+app.use(express.static(path.join(__dirname, '../public')));
+
+// ── SPA History API Fallback ───────────────────────────────
+app.get(/^(?!\/api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 // ── 404 fallback ──────────────────────────────────────────
 app.use((_req, res) => {

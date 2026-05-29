@@ -263,7 +263,8 @@ export const ModelName = {
   CommunityChannel: 'CommunityChannel',
   ChatKbArticle: 'ChatKbArticle',
   AltarCallResponse: 'AltarCallResponse',
-  ModuleSettings: 'ModuleSettings'
+  ModuleSettings: 'ModuleSettings',
+  ObservabilityLog: 'ObservabilityLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -3526,6 +3527,19 @@ export const ModuleSettingsScalarFieldEnum = {
 } as const
 
 export type ModuleSettingsScalarFieldEnum = (typeof ModuleSettingsScalarFieldEnum)[keyof typeof ModuleSettingsScalarFieldEnum]
+
+
+export const ObservabilityLogScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  logLevel: 'logLevel',
+  scope: 'scope',
+  message: 'message',
+  contextJson: 'contextJson',
+  createdAt: 'createdAt'
+} as const
+
+export type ObservabilityLogScalarFieldEnum = (typeof ObservabilityLogScalarFieldEnum)[keyof typeof ObservabilityLogScalarFieldEnum]
 
 
 export const SortOrder = {
