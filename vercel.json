@@ -2,47 +2,19 @@
   "version": 2,
   "builds": [
     {
-      "src": "index.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "churchos.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "*.png",
-      "use": "@vercel/static"
-    },
-    {
       "src": "src/server.ts",
       "use": "@vercel/node",
       "config": {
         "includeFiles": [
           "prisma/schema.prisma",
-          "src/generated/prisma/**"
+          "prisma/dev.db"
         ]
       }
     }
   ],
   "routes": [
     {
-      "src": "/",
-      "dest": "/index.html"
-    },
-    {
-      "src": "/churchos.html",
-      "dest": "/churchos.html"
-    },
-    {
-      "src": "/(.*\\.png)",
-      "dest": "/$1"
-    },
-    {
-      "src": "/health",
-      "dest": "src/server.ts"
-    },
-    {
-      "src": "/api/(.*)",
+      "src": "/(.*)",
       "dest": "src/server.ts"
     }
   ]

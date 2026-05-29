@@ -60,6 +60,9 @@ const app = express();
 // ── Global middleware ──────────────────────────────────────
 app.use(express.json());
 
+// ── Serve static files ──────────────────────────────────────
+app.use(express.static(path.join(__dirname, '..')));
+
 // ── Health check (no tenant required) ──────────────────────
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

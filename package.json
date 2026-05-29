@@ -4,7 +4,7 @@
   "description": "This repository contains the planning and architecture documentation for Digital Church OS before main project development begins.",
   "main": "index.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "npx prisma generate && npx tsc",
     "dev": "npx ts-node --files src/server.ts",
     "db:migrate": "npx prisma migrate dev",
     "db:seed": "npx ts-node src/seed.ts",
