@@ -6,6 +6,7 @@ const PORT = parseInt(process.env.PORT || '3000', 10);
 
 // Check if running inside Cloudflare Workers/Pages V8 isolate context
 const isCloudflare =
+  process.env.VERCEL !== '1' &&
   typeof (globalThis as any).WebSocket !== 'undefined' &&
   typeof (globalThis as any).caches !== 'undefined';
 
