@@ -249,8 +249,29 @@
     }
 
     .content {
-      padding: 28px;
+      padding: 60px 28px 28px;
       flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-bg-icon-container {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.05;
+      color: var(--text);
+      transition: opacity 0.3s ease, transform 0.1s ease-out;
+    }
+
+    .page-bg-icon-container i,
+    .page-bg-icon-container svg {
+      width: 280px !important;
+      height: 280px !important;
+      stroke-width: 1.2;
+      transform: rotate(-15deg);
     }
 
     .hero {
@@ -639,6 +660,9 @@
       </div>
 
       <div class="content">
+        <div class="page-bg-icon-container" id="pageBgIconContainer">
+          <i data-lucide="layout"></i>
+        </div>
         <!-- View Panels -->
         <!-- VIEW: Overview -->
         <section id="view-overview" class="view-panel active">
@@ -938,6 +962,32 @@
       lucide.createIcons();
     }
 
+    function updateBackgroundIcon(viewId) {
+      const container = document.getElementById("pageBgIconContainer");
+      if (!container) return;
+
+      const iconMap = {
+        overview: "layout",
+        publish: "upload-cloud",
+        packages: "package",
+        sandbox: "box",
+        payouts: "credit-card",
+        logs: "scroll-text"
+      };
+
+      const iconName = iconMap[viewId] || "layout";
+      container.innerHTML = `<i data-lucide="${iconName}"></i>`;
+      lucide.createIcons();
+    }
+
+    window.addEventListener("scroll", () => {
+      const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+      const container = document.getElementById("pageBgIconContainer");
+      if (container) {
+        container.style.transform = `translateY(${scrolled * 0.15}px)`;
+      }
+    });
+
     function switchView(viewId, btn) {
       document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => {
@@ -969,6 +1019,7 @@
       else if (viewId === 'logs') loadDeveloperLogs();
       else if (viewId === 'overview') loadDeveloperOverview();
       
+      updateBackgroundIcon(viewId);
       lucide.createIcons();
     }
 

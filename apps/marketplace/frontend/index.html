@@ -299,8 +299,29 @@
     }
 
     .content {
-      padding: 28px;
+      padding: 60px 28px 28px;
       flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-bg-icon-container {
+      position: absolute;
+      top: 20px;
+      right: 40px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.05;
+      color: var(--text);
+      transition: opacity 0.3s ease, transform 0.1s ease-out;
+    }
+
+    .page-bg-icon-container i,
+    .page-bg-icon-container svg {
+      width: 280px !important;
+      height: 280px !important;
+      stroke-width: 1.2;
+      transform: rotate(-15deg);
     }
 
     .hero {
@@ -1336,6 +1357,9 @@
       </header>
 
       <section class="content">
+        <div class="page-bg-icon-container" id="pageBgIconContainer">
+          <i data-lucide="shopping-bag"></i>
+        </div>
         <section class="hero">
           <div class="hero-inner">
             <div>
@@ -1674,6 +1698,38 @@
       lucide.createIcons();
     }
 
+    function updateBackgroundIcon() {
+      const container = document.getElementById("pageBgIconContainer");
+      if (!container) return;
+      
+      let iconName = "shopping-bag";
+      if (currentView === "developer") {
+        iconName = "code-2";
+      } else {
+        const activeTabBtn = document.querySelector("[data-tab].active");
+        const activeTab = activeTabBtn ? activeTabBtn.dataset.tab : "all";
+        if (activeTab === "installed") {
+          iconName = "package";
+        } else {
+          if (currentFilter === "theme") iconName = "palette";
+          else if (currentFilter === "plugin") iconName = "puzzle";
+          else if (currentFilter === "integration") iconName = "plug-zap";
+          else iconName = "shopping-bag";
+        }
+      }
+      
+      container.innerHTML = `<i data-lucide="${iconName}"></i>`;
+      lucide.createIcons();
+    }
+
+    window.addEventListener("scroll", () => {
+      const scrolled = window.pageYOffset || document.documentElement.scrollTop;
+      const container = document.getElementById("pageBgIconContainer");
+      if (container) {
+        container.style.transform = `translateY(${scrolled * 0.15}px)`;
+      }
+    });
+
     function switchView(view) {
       currentView = view;
 
@@ -1697,6 +1753,7 @@
       }
 
       renderStats();
+      updateBackgroundIcon();
       document.body.classList.remove("menu-open");
       lucide.createIcons();
     }
@@ -1710,6 +1767,7 @@
 
       loadAssets();
       switchView("tenant");
+      updateBackgroundIcon();
     }
 
     function renderStats() {
@@ -2411,6 +2469,7 @@
 
             await loadAssets();
           }
+          updateBackgroundIcon();
         });
       });
 
