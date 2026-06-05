@@ -1258,10 +1258,6 @@
           <i data-lucide="shopping-bag"></i>
           Tenant Marketplace
         </button>
-        <button class="nav-btn" data-view="admin">
-          <i data-lucide="shield-check"></i>
-          Super Admin Review
-        </button>
         <button class="nav-btn" data-view="developer">
           <i data-lucide="code-2"></i>
           Developer Portal
@@ -1352,10 +1348,6 @@
                   <i data-lucide="puzzle"></i>
                   Explore Plugins
                 </button>
-                <button class="btn ghost" onclick="switchView('admin')">
-                  <i data-lucide="shield-check"></i>
-                  Review Queue
-                </button>
               </div>
             </div>
 
@@ -1429,64 +1421,7 @@
           </div>
         </section>
 
-        <!-- Super Admin Governance View -->
-        <section id="adminView" style="display:none;">
-          <div class="panel-grid">
-            <div class="panel">
-              <h3>Submission Review Queue</h3>
-              <div id="submissionList"></div>
-            </div>
 
-            <div class="panel">
-              <h3>Security & Compatibility Checks</h3>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Asset</th>
-                    <th>Risk</th>
-                    <th>Compatibility</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody id="securityReviewRows">
-                  <tr>
-                    <td>Prayer Wall Pro</td>
-                    <td><span class="badge warning">Medium</span></td>
-                    <td>v1.0+</td>
-                    <td><span class="badge warning">Review</span></td>
-                  </tr>
-                  <tr>
-                    <td>Christo Blocks</td>
-                    <td><span class="badge success">Low</span></td>
-                    <td>v1.0+</td>
-                    <td><span class="badge success">Passed</span></td>
-                  </tr>
-                  <tr>
-                    <td>Advanced WhatsApp Connector</td>
-                    <td><span class="badge danger">High</span></td>
-                    <td>v1.2+</td>
-                    <td><span class="badge danger">Blocked</span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div class="panel" style="margin-top:16px;">
-            <h3>Developer Management</h3>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th>Developer</th>
-                  <th>Website</th>
-                  <th>Payout Email</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="developerRows"></tbody>
-            </table>
-          </div>
-        </section>
 
         <!-- Developer Portal View -->
         <section id="developerView" style="display:none;">
@@ -1656,12 +1591,6 @@
         ["Available Plugins", "4", "Verified secure", "puzzle"],
         ["Pending Consent", "0", "Requires approval", "shield-alert"]
       ],
-      admin: [
-        ["Pending Reviews", "0", "Awaiting verification", "shield-check"],
-        ["Scanned Records", "3", "Automated passes", "badge-check"],
-        ["Registered Devs", "0", "Verified profiles", "code-2"],
-        ["Global Installs", "0", "Across all tenants", "download"]
-      ],
       developer: [
         ["My Submissions", "0", "Total drafts & approved", "package"],
         ["Earnings Volume", "$0.00", "Gross revenue", "badge-dollar-sign"],
@@ -1738,7 +1667,6 @@
       });
 
       document.getElementById("tenantView").style.display = view === "tenant" ? "block" : "none";
-      document.getElementById("adminView").style.display = view === "admin" ? "block" : "none";
       document.getElementById("developerView").style.display = view === "developer" ? "block" : "none";
 
       const title = document.getElementById("heroTitle");
@@ -1747,10 +1675,6 @@
       if (view === "tenant") {
         title.textContent = "Install beautiful themes and safe plugins for every church tenant.";
         text.textContent = "Browse approved themes, plugins, blocks, and integrations. Preview themes in desktop, tablet, and mobile, approve plugin permissions, manage updates, and keep every tenant protected.";
-      } else if (view === "admin") {
-        title.textContent = "Review, approve, suspend, and monitor the entire marketplace ecosystem.";
-        text.textContent = "Super Admins can review submissions, inspect permissions, approve versions, monitor security risk, manage developers, and track installs and revenue.";
-        loadAdminData();
       } else if (view === "developer") {
         title.textContent = "Give approved developers a clean portal to build for Digital Church OS.";
         text.textContent = "Developers can submit themes, plugins, blocks, and integrations, test inside sandbox tenants, view review feedback, and track installs and revenue.";
@@ -1935,79 +1859,7 @@
       lucide.createIcons();
     }
 
-    async function loadAdminData() {
-      // 1. Load Submissions Review Queue
-      const submissions = await apiRequest('GET', '/api/super-admin/marketplace');
-      const subList = document.getElementById("submissionList");
-      
-      if (!submissions || submissions.length === 0) {
-        subList.innerHTML = `<p style="color:var(--muted); padding:10px;">Review queue is currently empty.</p>`;
-        stats.admin[0][1] = "0";
-      } else {
-        const pendingCount = submissions.filter(s => s.status === 'pending').length;
-        stats.admin[0][1] = pendingCount.toString();
-        
-        subList.innerHTML = submissions.map(item => {
-          const badgeClass = item.status === "approved" ? "success" : item.status === "pending" ? "warning" : "danger";
-          return `
-            <div class="submission-item">
-              <div class="mini-title">
-                <div class="mini-icon"><i data-lucide="${item.asset?.type === 'theme' ? 'palette' : 'puzzle'}"></i></div>
-                <div>
-                  <strong>${item.asset?.name || 'Unnamed Asset'}</strong>
-                  <span>${item.asset?.type} · by ${item.asset?.developer?.companyName || 'Developer'} · v${item.version}</span>
-                </div>
-              </div>
 
-              <div class="select-row">
-                <span class="badge ${badgeClass}">${item.status}</span>
-                <button class="btn" onclick="openReviewModal('${item.id}', '${item.asset?.name}')">Review</button>
-              </div>
-            </div>
-          `;
-        }).join("");
-      }
-
-      // 2. Load Security Reviews
-      const reviews = await apiRequest('GET', '/api/super-admin/marketplace/security-reviews') || [];
-      const reviewTbody = document.getElementById("securityReviewRows");
-      stats.admin[1][1] = reviews.length.toString();
-      if (reviews.length > 0) {
-        reviewTbody.innerHTML = reviews.map(r => `
-          <tr>
-            <td>${r.asset?.name || 'Asset ID: ' + r.assetId}</td>
-            <td><span class="badge ${r.status === 'passed' ? 'success' : 'danger'}">${r.status}</span></td>
-            <td>${r.versionId ? 'Versioned Scan' : 'Manifest Scan'}</td>
-            <td>${r.notes || 'No issues found'}</td>
-          </tr>
-        `).join("");
-      }
-
-      // 3. Load Registered Developers
-      const developers = await apiRequest('GET', '/api/super-admin/marketplace/developers') || [];
-      stats.admin[2][1] = developers.length.toString();
-      const devTbody = document.getElementById("developerRows");
-      if (developers.length === 0) {
-        devTbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--muted)">No registered developers yet.</td></tr>`;
-      } else {
-        devTbody.innerHTML = developers.map(d => `
-          <tr>
-            <td><strong>${d.companyName || 'Unnamed Dev'}</strong></td>
-            <td><a href="${d.website || '#'}" target="_blank" style="color:var(--accent)">${d.website || 'No website'}</a></td>
-            <td>${d.payoutEmail || 'No email'}</td>
-            <td><span class="badge success">${d.status}</span></td>
-          </tr>
-        `).join("");
-      }
-
-      // 4. Global Installs count estimation
-      const allAssetsGlobal = await apiRequest('GET', '/api/super-admin/marketplace/assets') || [];
-      const totalInstalls = allAssetsGlobal.reduce((acc, a) => acc + (a.installs || 0), 0);
-      stats.admin[3][1] = totalInstalls.toString();
-
-      renderStats();
-      lucide.createIcons();
-    }
 
     async function loadDeveloperData() {
       // Load Payouts & Submissions
@@ -2031,47 +1883,7 @@
       renderStats();
     }
 
-    function openReviewModal(submissionId, assetName) {
-      document.getElementById('drawerTitle').textContent = `Review: ${assetName}`;
-      document.getElementById('drawerMeta').textContent = `Super Admin Moderation Queue`;
-      document.getElementById('drawerIcon').innerHTML = `<i data-lucide="shield-check"></i>`;
 
-      document.getElementById('drawerContent').innerHTML = `
-        <div class="panel">
-          <h3>Accept or Reject Version Release</h3>
-          <p style="color:var(--muted); font-size:13.5px; margin-bottom:12px;">Run security checks and confirm the manifest is correctly structured before releasing to the public catalog.</p>
-          
-          <div style="display:grid; gap:12px;">
-            <select class="select" id="reviewDecision" style="width:100%;">
-              <option value="approved">Approve Submission</option>
-              <option value="rejected">Reject Submission</option>
-              <option value="changes_requested">Request Changes</option>
-            </select>
-            <textarea id="reviewNotes" class="select" style="height:100px; padding:10px;" placeholder="Review notes or feedback..."></textarea>
-          </div>
-        </div>
-      `;
-
-      document.getElementById('drawerFooterActions').innerHTML = `
-        <button class="btn secondary" onclick="closeDrawer()">Cancel</button>
-        <button class="btn primary" onclick="submitReview('${submissionId}')">Submit Review</button>
-      `;
-
-      document.getElementById('assetDrawer').classList.add('open');
-      lucide.createIcons();
-    }
-
-    async function submitReview(submissionId) {
-      const decision = document.getElementById("reviewDecision").value;
-      const notes = document.getElementById("reviewNotes").value;
-
-      const res = await apiRequest('POST', `/api/marketplace/submissions/${submissionId}/review`, { decision, notes });
-      if (res) {
-        showToast('Submission review submitted!', 'success');
-        closeDrawer();
-        loadAdminData();
-      }
-    }
 
     async function openAssetDrawer(id) {
       const asset = await apiRequest('GET', `/api/marketplace/assets/${id}`);
