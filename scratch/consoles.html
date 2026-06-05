@@ -1,0 +1,1300 @@
+
+          <!-- BIBLE CONSOLE CONTAINER -->
+          <div id="bibleConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Scripture Engagement</div>
+                  <button class="cms-nav-item active" data-bible-tab="explorer" onclick="switchBibleTab('explorer')">
+                    <i data-lucide="book-open"></i><span>Bible Explorer</span>
+                  </button>
+                  <button class="cms-nav-item" data-bible-tab="plans" onclick="switchBibleTab('plans')">
+                    <i data-lucide="calendar"></i><span>Reading Plans</span>
+                  </button>
+                  <button class="cms-nav-item" data-bible-tab="verse" onclick="switchBibleTab('verse')">
+                    <i data-lucide="quote"></i><span>Verse of the Day</span>
+                  </button>
+                  <button class="cms-nav-item" data-bible-tab="notes" onclick="switchBibleTab('notes')">
+                    <i data-lucide="edit-3"></i><span>Study Notes</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="bibleExplorerTab" class="bible-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Scripture Library</h2>
+                      <p>Browse books, chapters, and perform live scripture searches.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 16px;">
+                    <div class="panel" style="display: flex; flex-direction: column; gap: 14px;">
+                      <h3>Search & Select</h3>
+                      <div class="field">
+                        <label>Translation</label>
+                        <select id="bibleTranslationSelect" class="select" onchange="runBibleSearch()" style="width:100%;">
+                          <option value="KJV">King James Version (KJV)</option>
+                          <option value="NIV">New International Version (NIV)</option>
+                          <option value="AMP">Amplified Bible (AMP)</option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label>Scripture Reference</label>
+                        <input type="text" id="bibleSearchQuery" class="input" placeholder="e.g. Genesis 1:1 or Love" oninput="runBibleSearch()" style="width:100%;">
+                      </div>
+                    </div>
+                    <div class="panel" style="display: flex; flex-direction: column; gap: 10px;">
+                      <h3>Verses Output</h3>
+                      <div id="bibleVersesList" style="max-height: 350px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding: 5px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="biblePlansTab" class="bible-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Discipleship Reading Plans</h2>
+                      <p>Track your scripture absorption goals and progress.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="biblePlansGrid"></div>
+                </div>
+                <div id="bibleVerseTab" class="bible-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Verse of the Day</h2>
+                      <p>Daily spiritual fuel to share with your congregation.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="max-width: 600px; padding: 30px; text-align: center; display: flex; flex-direction: column; gap: 20px; align-items: center; background: rgba(0,0,0,0.15); border: 1px solid #1c1e21; border-radius: 8px;">
+                    <i data-lucide="quote" style="width: 40px; height: 40px; color: var(--success);"></i>
+                    <h2 id="bibleDailyVerseText" style="font-family: 'Georgia', serif; font-style: italic; font-weight: normal; line-height: 1.5; font-size: 20px;"></h2>
+                    <strong id="bibleDailyVerseRef" style="color: var(--success); font-size: 14px; letter-spacing: 1px;"></strong>
+                    <button class="btn btn-sm" onclick="copyDailyVerse()"><i data-lucide="copy" style="width:12px;"></i>Copy Verse Reference</button>
+                  </div>
+                </div>
+                <div id="bibleNotesTab" class="bible-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Study Journal</h2>
+                      <p>Log your spiritual thoughts, sermon outlines, and revelations.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 2fr; gap: 16px;">
+                    <div class="panel" style="display: flex; flex-direction: column; gap: 10px;">
+                      <h3>Recent Outlines</h3>
+                      <div id="bibleNotesList" style="display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+                    <div class="panel" style="display: flex; flex-direction: column; gap: 14px;">
+                      <h3 id="bibleNoteEditorTitle">New Outline</h3>
+                      <div class="field">
+                        <label>Outline Title</label>
+                        <input type="text" id="bibleNoteTitleInput" class="input" placeholder="e.g. The Grace of Giving" style="width:100%;">
+                      </div>
+                      <div class="field">
+                        <label>Notes Content</label>
+                        <textarea id="bibleNoteContentInput" class="textarea" rows="6" placeholder="Write your thoughts..." style="width:100%;"></textarea>
+                      </div>
+                      <button class="btn primary" onclick="saveBibleStudyNote()"><i data-lucide="save"></i>Save Outline</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SIGNAGE CONSOLE CONTAINER -->
+          <div id="signageConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Digital Signage</div>
+                  <button class="cms-nav-item active" data-signage-tab="displays" onclick="switchSignageTab('displays')">
+                    <i data-lucide="monitor"></i><span>Active TVs</span>
+                  </button>
+                  <button class="cms-nav-item" data-signage-tab="playlists" onclick="switchSignageTab('playlists')">
+                    <i data-lucide="play-square"></i><span>Slide Playlists</span>
+                  </button>
+                  <button class="cms-nav-item" data-signage-tab="logs" onclick="switchSignageTab('logs')">
+                    <i data-lucide="history"></i><span>Device Logs</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="signageDisplaysTab" class="signage-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Lobby TV Signage Monitors</h2>
+                      <p>Deploy slideshows, events, and live announcements to physical TV screens.</p>
+                    </div>
+                    <button class="btn primary" onclick="triggerSignageSync()"><i data-lucide="refresh-cw"></i>Sync All Screens</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                      <h3>Virtual TV Screen Emulator</h3>
+                      <div id="signageTvMockFrame" style="width:100%; height:200px; background:#070809; border:4px solid #1c1e21; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-align:center; padding:20px; position:relative; overflow:hidden;">
+                        <!-- Rendered by simulator -->
+                      </div>
+                      <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="muted" style="font-size:12px;">Emulator Status: <span class="badge success">Broadcasting</span></span>
+                        <button class="btn btn-sm" onclick="advanceSignageEmulator()"><i data-lucide="skip-forward" style="width:12px;"></i>Next Slide</button>
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Connected Devices Registry</h3>
+                      <div id="signageDevicesList" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="signagePlaylistsTab" class="signage-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Signage Slide Playlists</h2>
+                      <p>Organize loops and slides triggers.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="signagePlaylistsGrid"></div>
+                </div>
+                <div id="signageLogsTab" class="signage-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Device Transmission History</h2>
+                      <p>Real-time audit log of TV heartbeats and slide deployment handshakes.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Timestamp</th>
+                          <th>Device Name</th>
+                          <th>Transmission Event</th>
+                          <th>Status Code</th>
+                        </tr>
+                      </thead>
+                      <tbody id="signageLogsTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WORSHIP CONSOLE CONTAINER -->
+          <div id="worshipConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Worship Experience</div>
+                  <button class="cms-nav-item active" data-worship-tab="runsheet" onclick="switchWorshipTab('runsheet')">
+                    <i data-lucide="play-circle"></i><span>Service Run-Sheet</span>
+                  </button>
+                  <button class="cms-nav-item" data-worship-tab="catalog" onclick="switchWorshipTab('catalog')">
+                    <i data-lucide="music-4"></i><span>Song Catalog</span>
+                  </button>
+                  <button class="cms-nav-item" data-worship-tab="lyrics" onclick="switchWorshipTab('lyrics')">
+                    <i data-lucide="projector"></i><span>Lyrics Display</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="worshipRunsheetTab" class="worship-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Service Run-Sheet Sequence</h2>
+                      <p>Coordinate timelines, songs, lyrics cues, and team lead assignments.</p>
+                    </div>
+                    <button class="btn primary" onclick="worshipShiftRosterUp()"><i data-lucide="move-up"></i>Shift Item Up</button>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table" style="width:100%;">
+                      <thead>
+                        <tr>
+                          <th>Start Time</th>
+                          <th>Duration</th>
+                          <th>Timeline Item / Song</th>
+                          <th>Musical Key</th>
+                          <th>Vocal Leader</th>
+                          <th>Cue Tag</th>
+                        </tr>
+                      </thead>
+                      <tbody id="worshipRunsheetTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div id="worshipCatalogTab" class="worship-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Worship Song Catalog</h2>
+                      <p>Index song lyrics keys, tempo (BPM), and licensing records.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="worshipSongCatalogGrid"></div>
+                </div>
+                <div id="worshipLyricsTab" class="worship-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Live Lyric Signage Display</h2>
+                      <p>Visual overlay projection for congregations and live feeds.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                      <h3>Projector Projection Visualizer</h3>
+                      <div id="worshipLyricsPreviewBox" style="width:100%; height:200px; background:#070809; border:4px solid #1c1e21; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-align:center; padding:20px; position:relative; overflow:hidden; font-family:sans-serif; text-transform:uppercase; letter-spacing:1px;">
+                        <!-- Projected Lyrics -->
+                      </div>
+                      <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <button class="btn btn-sm" onclick="worshipLyricPrev()"><i data-lucide="arrow-left"></i>Prev Verse</button>
+                        <button class="btn btn-sm" onclick="worshipLyricNext()">Next Verse<i data-lucide="arrow-right"></i></button>
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Active Song Lyrics Cues</h3>
+                      <div id="worshipLyricLinesSelector" style="display:flex; flex-direction:column; gap:8px; max-height:260px; overflow-y:auto; padding:5px;"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FINANCE CONSOLE CONTAINER -->
+          <div id="financeConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Financial Ledger</div>
+                  <button class="cms-nav-item active" data-finance-tab="ledger" onclick="switchFinanceTab('ledger')">
+                    <i data-lucide="wallet"></i><span>Accounts Ledger</span>
+                  </button>
+                  <button class="cms-nav-item" data-finance-tab="invoices" onclick="switchFinanceTab('invoices')">
+                    <i data-lucide="file-check"></i><span>Billing Invoices</span>
+                  </button>
+                  <button class="cms-nav-item" data-finance-tab="expenses" onclick="switchFinanceTab('expenses')">
+                    <i data-lucide="receipt"></i><span>Expenses Registry</span>
+                  </button>
+                  <button class="cms-nav-item" data-finance-tab="reports" onclick="switchFinanceTab('reports')">
+                    <i data-lucide="bar-chart-3"></i><span>Financial Splits</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="financeLedgerTab" class="finance-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Accounts Ledger Summary</h2>
+                      <p>View total branch balances, income pipelines, and ledger balances.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px;" id="financeBalancesGrid"></div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <div style="padding:15px; border-bottom:1px solid #1c1e21; display:flex; justify-content:space-between; align-items:center;">
+                      <h3>Ledger Transactions</h3>
+                      <select id="financeLedgerFilter" class="select" onchange="loadFinanceLedgerTable()" style="width:180px;">
+                        <option value="all">All Transactions</option>
+                        <option value="income">Income Only</option>
+                        <option value="expense">Expenses Only</option>
+                      </select>
+                    </div>
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Category</th>
+                          <th>Reference / Payee</th>
+                          <th>Account Type</th>
+                          <th>Amount (USD)</th>
+                        </tr>
+                      </thead>
+                      <tbody id="financeLedgerTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div id="financeInvoicesTab" class="finance-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Member Billing & Invoices</h2>
+                      <p>Dispatch, track, and reconcile manual and digital invoices.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap:16px;">
+                    <div class="panel" style="padding:0; overflow:hidden;">
+                      <table class="mini-table">
+                        <thead>
+                          <tr>
+                            <th>Invoice ID</th>
+                            <th>Member / Payer</th>
+                            <th>Service details</th>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody id="financeInvoicesTableBody"></tbody>
+                      </table>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Issue Manual Invoice</h3>
+                      <div class="field">
+                        <label>Payer Name</label>
+                        <input type="text" id="financeInvPayer" class="input" placeholder="e.g. Brother John" style="width:100%;">
+                      </div>
+                      <div class="field">
+                        <label>Item Description</label>
+                        <input type="text" id="financeInvDesc" class="input" placeholder="e.g. Easter Camp Materials" style="width:100%;">
+                      </div>
+                      <div class="field">
+                        <label>Amount (USD)</label>
+                        <input type="number" id="financeInvAmount" class="input" placeholder="e.g. 150" style="width:100%;">
+                      </div>
+                      <button class="btn primary" onclick="submitFinanceInvoice()"><i data-lucide="send"></i>Issue Invoice</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="financeExpensesTab" class="finance-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Expenses Registry</h2>
+                      <p>Log ministry purchases, utility expenses, and guest honorariums.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:14px;">
+                      <h3>Submit Expense Claim</h3>
+                      <div class="field">
+                        <label>Payee / Vendor</label>
+                        <input type="text" id="financeExpPayee" class="input" placeholder="e.g. Power Holding Co." style="width:100%;">
+                      </div>
+                      <div class="grid" style="grid-template-columns:1fr 1fr; gap:10px;">
+                        <div class="field">
+                          <label>Category</label>
+                          <select id="financeExpCat" class="select" style="width:100%;">
+                            <option value="Utilities">Utilities & Rent</option>
+                            <option value="Outreach">Outreach Missions</option>
+                            <option value="Honorarium">Honorariums</option>
+                            <option value="Admin">Admin Office Supplies</option>
+                          </select>
+                        </div>
+                        <div class="field">
+                          <label>Amount (USD)</label>
+                          <input type="number" id="financeExpAmount" class="input" placeholder="e.g. 350" style="width:100%;">
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label>Expense Description</label>
+                        <input type="text" id="financeExpDescInput" class="input" placeholder="e.g. Lobby Central Air Maintenance" style="width:100%;">
+                      </div>
+                      <button class="btn primary" onclick="submitFinanceExpense()"><i data-lucide="receipt"></i>Log Expense</button>
+                    </div>
+                    <div class="panel" style="padding:0; overflow:hidden;">
+                      <table class="mini-table">
+                        <thead>
+                          <tr>
+                            <th>Payee</th>
+                            <th>Category</th>
+                            <th>Amount</th>
+                            <th>Reconciliation</th>
+                          </tr>
+                        </thead>
+                        <tbody id="financeExpensesTableBody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div id="financeReportsTab" class="finance-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Annual Tax & splits Reporting</h2>
+                      <p>Review multi-branch percentages splits and campus revenue scorecards.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                      <h3>Campus Financial Splits</h3>
+                      <div id="financeSplitsChart" style="display:flex; flex-direction:column; gap:12px; padding:15px; background:rgba(0,0,0,0.15); border-radius:6px;">
+                        <!-- Splits Dynamic -->
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:14px;">
+                      <h3>Statements Center</h3>
+                      <p class="muted" style="font-size:12px;">Download certified CSV and PDF spreadsheets formatted for campus audits and tax deductions filing.</p>
+                      <button class="btn btn-sm" onclick="showToast('Exporting Q2 Ledger report...')"><i data-lucide="download"></i>Download Q2 Ledger Spreadsheets</button>
+                      <button class="btn btn-sm" onclick="showToast('Exporting FY2026 splits audits...')"><i data-lucide="download"></i>Download FY2026 Splits Audits</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- FORMS CONSOLE CONTAINER -->
+          <div id="formsConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Forms & Workflows</div>
+                  <button class="cms-nav-item active" data-forms-tab="catalog" onclick="switchFormsTab('catalog')">
+                    <i data-lucide="form-input"></i><span>Forms Catalog</span>
+                  </button>
+                  <button class="cms-nav-item" data-forms-tab="canvas" onclick="switchFormsTab('canvas')">
+                    <i data-lucide="layers"></i><span>Form Builder</span>
+                  </button>
+                  <button class="cms-nav-item" data-forms-tab="inbox" onclick="switchFormsTab('inbox')">
+                    <i data-lucide="inbox"></i><span>Submissions</span>
+                  </button>
+                  <button class="cms-nav-item" data-forms-tab="workflows" onclick="switchFormsTab('workflows')">
+                    <i data-lucide="git-merge"></i><span>Automations</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="formsCatalogTab" class="forms-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Dynamic Forms Catalog</h2>
+                      <p>Create and deploy custom questionnaires, surveys, and registrations cards.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateFormModal()"><i data-lucide="plus"></i>New Form</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="formsCatalogGrid"></div>
+                </div>
+                <div id="formsCanvasTab" class="forms-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Visual Form Canvas Editor</h2>
+                      <p>Drag-and-drop or configure dynamic fields variables.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1.2fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Form Setup</h3>
+                      <div class="field">
+                        <label>Active Builder Context</label>
+                        <select id="formsCanvasSelect" class="select" onchange="loadFormCanvasFields()" style="width:100%;"></select>
+                      </div>
+                      <h3>Form Fields Roster</h3>
+                      <div id="formsCanvasFieldsList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:14px;">
+                      <h3>Append Field element</h3>
+                      <div class="field">
+                        <label>Field label</label>
+                        <input type="text" id="formsFieldLabel" class="input" placeholder="e.g. Dietary Restrictions" style="width:100%;">
+                      </div>
+                      <div class="grid" style="grid-template-columns: 1fr 1fr; gap:10px;">
+                        <div class="field">
+                          <label>Field Name Key</label>
+                          <input type="text" id="formsFieldKey" class="input" placeholder="e.g. diet" style="width:100%;">
+                        </div>
+                        <div class="field">
+                          <label>Element Type</label>
+                          <select id="formsFieldType" class="select" style="width:100%;">
+                            <option value="text">Single Line Text</option>
+                            <option value="email">Email input</option>
+                            <option value="select">Dropdown Select</option>
+                            <option value="checkbox">Toggle Checkbox</option>
+                          </select>
+                        </div>
+                      </div>
+                      <button class="btn primary" onclick="submitFormsField()"><i data-lucide="plus"></i>Append Form Field</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="formsInboxTab" class="forms-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Forms Inbox Submissions</h2>
+                      <p>Verify captured responses and download raw tabular reports.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Form Context</th>
+                          <th>Payer / Respondent</th>
+                          <th>Data payload</th>
+                          <th>Timestamp</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="formsInboxTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div id="formsWorkflowsTab" class="forms-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Workflow Automations Trigger</h2>
+                      <p>Route form payloads to specific systems (e.g. SMS broadcast, CRM Lead, Salvation assigned).</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1.2fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                      <h3>Automation Sequences Map</h3>
+                      <div style="display:flex; flex-direction:column; gap:12px; padding:15px; background:rgba(0,0,0,0.15); border-radius:6px;" id="formsWorkflowsChart">
+                        <!-- Auto maps rendered -->
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Create Automation Hook</h3>
+                      <div class="field">
+                        <label>When Form Submits</label>
+                        <select id="formsHookFormSelect" class="select" style="width:100%;"></select>
+                      </div>
+                      <div class="field">
+                        <label>Action Destination</label>
+                        <select id="formsHookActionSelect" class="select" style="width:100%;">
+                          <option value="crm">Sync to Ministry CRM Pipelines</option>
+                          <option value="sms">Dispatch Welcome SMS broadcast</option>
+                          <option value="email">Route email notification to Pastor</option>
+                        </select>
+                      </div>
+                      <button class="btn primary" onclick="submitFormsHook()"><i data-lucide="git-commit"></i>Bind Automation Sequence</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIVE MEETINGS CONSOLE CONTAINER -->
+          <div id="liveMeetingsConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Live Meetings</div>
+                  <button class="cms-nav-item active" data-meetings-tab="rooms" onclick="switchMeetingsTab('rooms')">
+                    <i data-lucide="video"></i><span>Active Video Rooms</span>
+                  </button>
+                  <button class="cms-nav-item" data-meetings-tab="schedule" onclick="switchMeetingsTab('schedule')">
+                    <i data-lucide="calendar"></i><span>Schedule meeting</span>
+                  </button>
+                  <button class="cms-nav-item" data-meetings-tab="analytics" onclick="switchMeetingsTab('analytics')">
+                    <i data-lucide="activity"></i><span>Call Analytics</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="meetingsRoomsTab" class="meetings-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Interactive Video Conference Lobbies</h2>
+                      <p>Run cellular webinars, pastoral counseling audio calls, and Bible study workshops.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 2fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h3>Active Conference Window</h3>
+                        <span class="badge success" id="meetingsActiveConferenceLabel">Sunday Cell Leaders Call</span>
+                      </div>
+                      <div id="meetingsVideoLayout" style="width:100%; height:320px; background:#070809; border:4px solid #1c1e21; border-radius:8px; display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:15px; position:relative; overflow:hidden;">
+                        <!-- Participants feeds -->
+                      </div>
+                      <div style="display:flex; justify-content:center; gap:20px; align-items:center;">
+                        <button class="btn btn-sm circle-btn" onclick="toggleMeetingsMic()"><i data-lucide="mic" id="meetingsMicIcon"></i></button>
+                        <button class="btn btn-sm circle-btn" onclick="toggleMeetingsCam()"><i data-lucide="video" id="meetingsCamIcon"></i></button>
+                        <button class="btn btn-sm danger" onclick="leaveMeetingsRoom()"><i data-lucide="phone-off"></i>Leave Room</button>
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:10px;">
+                      <h3>Active Room Members</h3>
+                      <div id="meetingsActiveMembersList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="meetingsScheduleTab" class="meetings-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Schedule video webinar conference</h2>
+                      <p>Distribute encrypted video links and session keys.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Video Room Config</h3>
+                      <div class="field">
+                        <label>Webinar Room Topic</label>
+                        <input type="text" id="meetingsNewTopic" class="input" placeholder="e.g. Wednesday Mid-Week prayer Meeting" style="width:100%;">
+                      </div>
+                      <div class="field">
+                        <label>Unique Room Link key</label>
+                        <input type="text" id="meetingsNewSlug" class="input" placeholder="e.g. wednesday-prayer" style="width:100%;">
+                      </div>
+                      <button class="btn primary" onclick="submitMeetingsSchedule()"><i data-lucide="plus"></i>Schedule Room</button>
+                    </div>
+                    <div class="panel" style="padding:0; overflow:hidden;">
+                      <table class="mini-table">
+                        <thead>
+                          <tr>
+                            <th>Room Topic</th>
+                            <th>Invite Slug</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody id="meetingsScheduleTableBody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div id="meetingsAnalyticsTab" class="meetings-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Video Stream Quality Logs</h2>
+                      <p>Track call bandwidth packets, dropouts, and participant durations.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px;" id="meetingsStatsGrid"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- MULTI-BRANCH CONSOLE CONTAINER -->
+          <div id="multiBranchConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Multi-Campus CRM</div>
+                  <button class="cms-nav-item active" data-branch-tab="campuses" onclick="switchBranchTab('campuses')">
+                    <i data-lucide="map-pin"></i><span>Campuses Directories</span>
+                  </button>
+                  <button class="cms-nav-item" data-branch-tab="finance" onclick="switchBranchTab('finance')">
+                    <i data-lucide="dollar-sign"></i><span>Financial Splits</span>
+                  </button>
+                  <button class="cms-nav-item" data-branch-tab="logs" onclick="switchBranchTab('logs')">
+                    <i data-lucide="file-text"></i><span>Campus Logs</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="branchCampusesTab" class="branch-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Multi-Campus Management Panel</h2>
+                      <p>View decentralized branch metrics, designated pastors, and localized directories.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateCampusModal()"><i data-lucide="plus"></i>Register Campus Location</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="branchCampusesGrid"></div>
+                </div>
+                <div id="branchFinanceTab" class="branch-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Campus Revenue Splits</h2>
+                      <p>Manage branch tithes allocations and administrative split splits payouts.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Campus Name</th>
+                          <th>Regional Splitting Ratio</th>
+                          <th>Quarterly gross Revenue</th>
+                          <th>Splits payout (Regional)</th>
+                          <th>Net Local balance</th>
+                        </tr>
+                      </thead>
+                      <tbody id="branchFinanceTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div id="branchLogsTab" class="branch-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Global Campus Audit Trails</h2>
+                      <p>Verify administrative movements across regional databases.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Timestamp</th>
+                          <th>Campus Context</th>
+                          <th>Authorizer Name</th>
+                          <th>Action logged</th>
+                        </tr>
+                      </thead>
+                      <tbody id="branchLogsTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- OUTREACH CONSOLE CONTAINER -->
+          <div id="outreachConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Outreach Campaigns</div>
+                  <button class="cms-nav-item active" data-outreach-tab="campaigns" onclick="switchOutreachTab('campaigns')">
+                    <i data-lucide="megaphone"></i><span>Campaigns Registry</span>
+                  </button>
+                  <button class="cms-nav-item" data-outreach-tab="cards" onclick="switchOutreachTab('cards')">
+                    <i data-lucide="image"></i><span>Invitation Cards</span>
+                  </button>
+                  <button class="cms-nav-item" data-outreach-tab="leads" onclick="switchOutreachTab('leads')">
+                    <i data-lucide="users"></i><span>Outreach Leads</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="outreachCampaignsTab" class="outreach-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Outreach Campaigns Registry</h2>
+                      <p>Launch customized invitation programs, goal trackers, and referral counters.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateOutreachCampaignModal()"><i data-lucide="plus"></i>Register Outreach Campaign</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="outreachCampaignsGrid"></div>
+                </div>
+                <div id="outreachCardsTab" class="outreach-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Personal Invite card Generator</h2>
+                      <p>Permit members to draft customized visual cards with overlay graphics to share.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                      <h3>Personal Flyer Graphics Layout</h3>
+                      <div id="outreachFlyerMock" style="width:100%; height:260px; background:radial-gradient(circle, #2c3e50, #000); border:1px solid #1c1e21; border-radius:8px; display:flex; flex-direction:column; align-items:center; justify-content:center; color:#fff; text-align:center; padding:30px; position:relative; overflow:hidden;">
+                        <h2 id="outreachFlyerTitle" style="font-size:22px; font-weight:800; text-transform:uppercase;">Easter Concert</h2>
+                        <p id="outreachFlyerMsg" style="font-size:12px; margin-top:10px; color:#ccc;">He is Risen! Celebrate hope with us.</p>
+                        <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.2); padding-top:10px; font-size:10px; color:var(--success);">Personal Referral Link: churchos.io/invite/admin</div>
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Compose Card Overlay</h3>
+                      <div class="field">
+                        <label>Flyer Header Text</label>
+                        <input type="text" id="outreachCardTitleInput" class="input" placeholder="e.g. Easter Concert" oninput="runOutreachFlyerRender()" style="width:100%;">
+                      </div>
+                      <div class="field">
+                        <label>Welcome Message</label>
+                        <input type="text" id="outreachCardMsgInput" class="input" placeholder="e.g. Join me this Sunday!" oninput="runOutreachFlyerRender()" style="width:100%;">
+                      </div>
+                      <button class="btn btn-sm" onclick="showToast('Flyer successfully exported to gallery!')"><i data-lucide="download"></i>Export PNG Graphics</button>
+                    </div>
+                  </div>
+                </div>
+                <div id="outreachLeadsTab" class="outreach-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Campaign Outreach Leads</h2>
+                      <p>Trace newcomers referred directly via dynamic referral inviter IDs.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Lead Identity</th>
+                          <th>Email Address</th>
+                          <th>Referred By (ID)</th>
+                          <th>Campaign Context</th>
+                          <th>Sign Up Date</th>
+                        </tr>
+                      </thead>
+                      <tbody id="outreachLeadsTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SALVATION CONSOLE CONTAINER -->
+          <div id="salvationConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Salvation Journeys</div>
+                  <button class="cms-nav-item active" data-salvation-tab="wall" onclick="switchSalvationTab('wall')">
+                    <i data-lucide="heart"></i><span>Decisions Wall</span>
+                  </button>
+                  <button class="cms-nav-item" data-salvation-tab="assimilation" onclick="switchSalvationTab('assimilation')">
+                    <i data-lucide="milestone"></i><span>Assimilation Track</span>
+                  </button>
+                  <button class="cms-nav-item" data-salvation-tab="leaders" onclick="switchSalvationTab('leaders')">
+                    <i data-lucide="user-check"></i><span>Leaders Registry</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="salvationWallTab" class="salvation-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Salvation decisions Wall</h2>
+                      <p>View decision logs and allocate follow-up discipleship leaders.</p>
+                    </div>
+                    <button class="btn primary" onclick="openIntakeSalvationModal()"><i data-lucide="plus"></i>Register Salvation Call</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;" id="salvationDecisionsGrid"></div>
+                </div>
+                <div id="salvationAssimilationTab" class="salvation-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>New Believers assimilation progress</h2>
+                      <p>Monitor assimilation checklists and discipleship pathway completions.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Select Believer to Track</h3>
+                      <div class="field">
+                        <label>Active Believer</label>
+                        <select id="salvationBelieverSelect" class="select" onchange="loadSalvationMilestones()" style="width:100%;"></select>
+                      </div>
+                      <h3>Assimilation Checklists</h3>
+                      <div id="salvationMilestonesList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:14px;">
+                      <h3>Discipleship Milestone analytics</h3>
+                      <p class="muted" style="font-size:12px;">The platform tracks when new converts join cells and complete foundational LMS courses automatically.</p>
+                      <div id="salvationBelieverProfileSummary" style="padding:15px; background:rgba(0,0,0,0.15); border-radius:6px; font-size:12px; display:flex; flex-direction:column; gap:8px;">
+                        <!-- dynamic convertido -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="salvationLeadersTab" class="salvation-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Discipleship Leaders Registry</h2>
+                      <p>Verify active follow-up assistants, assignments count, and response SLA rates.</p>
+                    </div>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Leader Name</th>
+                          <th>Allocated Converts</th>
+                          <th>Response speed (SLA)</th>
+                          <th>Follow-Up Status</th>
+                        </tr>
+                      </thead>
+                      <tbody id="salvationLeadersTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHITE-LABEL APP CONSOLE CONTAINER -->
+          <div id="whiteLabelConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">White-Label App</div>
+                  <button class="cms-nav-item active" data-wl-tab="branding" onclick="switchWlTab('branding')">
+                    <i data-lucide="smartphone"></i><span>App Branding</span>
+                  </button>
+                  <button class="cms-nav-item" data-wl-tab="notifications" onclick="switchWlTab('notifications')">
+                    <i data-lucide="bell-ring"></i><span>Push Manager</span>
+                  </button>
+                  <button class="cms-nav-item" data-wl-tab="compiler" onclick="switchWlTab('compiler')">
+                    <i data-lucide="terminal"></i><span>Build compiler</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="wlBrandingTab" class="wl-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Dedicated White-Label branding Studio</h2>
+                      <p>Customize native iOS and Android application UI, styles, logo configurations, and packages.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:14px;">
+                      <h3>Design configuration</h3>
+                      <div class="field">
+                        <label>App Display Name</label>
+                        <input type="text" id="wlAppName" class="input" placeholder="e.g. Grace City App" style="width:100%;">
+                      </div>
+                      <div class="grid" style="grid-template-columns:1fr 1fr; gap:10px;">
+                        <div class="field">
+                          <label>Primary Theme Color</label>
+                          <input type="color" id="wlAppPrimaryColor" class="input" style="width:100%; height:40px; padding:0; cursor:pointer;" value="#4f46e5">
+                        </div>
+                        <div class="field">
+                          <label>Unique Bundle ID</label>
+                          <input type="text" id="wlAppBundleId" class="input" placeholder="e.g. org.gracechurch.app" style="width:100%;">
+                        </div>
+                      </div>
+                      <button class="btn primary" onclick="saveWlBranding()"><i data-lucide="save"></i>Save App Branding Settings</button>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px; align-items:center; justify-content:center;">
+                      <h3>iOS / Android Mobile Frame</h3>
+                      <div style="width:200px; height:380px; background:#070809; border:6px solid #1c1e21; border-radius:24px; position:relative; padding:15px; display:flex; flex-direction:column; justify-content:space-between; color:#fff; text-align:center;">
+                        <div style="width:50px; height:12px; background:#1c1e21; border-radius:10px; margin: 0 auto;"></div>
+                        <div style="margin-top:20px;">
+                          <div style="width:50px; height:50px; background:#4f46e5; border-radius:12px; margin: 0 auto; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:24px;" id="wlAppFrameLogo">G</div>
+                          <h4 style="margin-top:10px; font-size:14px;" id="wlAppFrameName">Grace City App</h4>
+                          <span style="font-size:10px; color:#666;">org.gracechurch.app</span>
+                        </div>
+                        <div style="width:40px; height:4px; background:#1c1e21; border-radius:2px; margin:0 auto 10px;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="wlNotificationsTab" class="wl-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Push Notifications Center</h2>
+                      <p>Send and schedule targeted mobile alert payloads to native devices.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Compose Push Message</h3>
+                      <div class="field">
+                        <label>Push Notification Header</label>
+                        <input type="text" id="wlPushTitle" class="input" placeholder="e.g. Sunday Service starts in 30 mins!" style="width:100%;">
+                      </div>
+                      <div class="field">
+                        <label>Alert Message body</label>
+                        <textarea id="wlPushBody" class="textarea" rows="4" placeholder="e.g. Join us live for an impactful message!" style="width:100%;"></textarea>
+                      </div>
+                      <button class="btn primary" onclick="submitWlPush()"><i data-lucide="bell"></i>Broadcast Push Notification</button>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Recent Push Alerts</h3>
+                      <div id="wlPushHistoryList" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="wlCompilerTab" class="wl-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Xcode / Android SDK build compiler</h2>
+                      <p>Generate, sign, and build compile packages for Google Play Console and App Store Connect.</p>
+                    </div>
+                    <button class="btn primary" onclick="triggerWlCompile()"><i data-lucide="cog"></i>Launch App Compile Build</button>
+                  </div>
+                  <div class="panel" style="background:#070809; border:1px solid #1c1e21; border-radius:6px; padding:15px; font-family:monospace; color:#00ff00; font-size:12px; height:320px; overflow-y:auto; display:flex; flex-direction:column; gap:6px;" id="wlCompilerConsole">
+                    <!-- build logs output dynamically -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMMUNITY CONSOLE CONTAINER -->
+          <div id="communityConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Notice & Forums</div>
+                  <button class="cms-nav-item active" data-community-tab="forums" onclick="switchCommunityTab('forums')">
+                    <i data-lucide="message-square"></i><span>Forum Rooms</span>
+                  </button>
+                  <button class="cms-nav-item" data-community-tab="notice" onclick="switchCommunityTab('notice')">
+                    <i data-lucide="pin"></i><span>Lobby Notice Board</span>
+                  </button>
+                  <button class="cms-nav-item" data-community-tab="profiles" onclick="switchCommunityTab('profiles')">
+                    <i data-lucide="users"></i><span>Members Directories</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="communityForumsTab" class="community-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Forums & Spiritual Discussions</h2>
+                      <p>Organize congregational forums, cellular study chats, and testimonials.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateForumThreadModal()"><i data-lucide="plus"></i>Post New Thread</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;" id="communityForumsGrid"></div>
+                </div>
+                <div id="communityNoticeTab" class="community-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Lobby Notice Board Notices</h2>
+                      <p>Publish virtual notice boards, event announcements, and newsletters flyers.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateLobbyNoticeModal()"><i data-lucide="plus"></i>Publish Notice Flyer</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;" id="communityNoticesGrid"></div>
+                </div>
+                <div id="communityProfilesTab" class="community-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Congregation profile Directory</h2>
+                      <p>Verify active member bios, connection cards, and department registry tags.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px;" id="communityProfilesGrid"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIVE CHAT CONSOLE CONTAINER -->
+          <div id="liveChatConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Pastoral Live Chat</div>
+                  <button class="cms-nav-item active" data-lc-tab="chat" onclick="switchLcTab('chat')">
+                    <i data-lucide="message-circle"></i><span>Active Chats Desk</span>
+                  </button>
+                  <button class="cms-nav-item" data-lc-tab="tickets" onclick="switchLcTab('tickets')">
+                    <i data-lucide="heart-pulse"></i><span>Pastoral Tickets</span>
+                  </button>
+                  <button class="cms-nav-item" data-lc-tab="sla" onclick="switchLcTab('sla')">
+                    <i data-lucide="clock"></i><span>SLA Dashboard</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="lcChatTab" class="lc-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Real-Time Pastoral Care live Chat</h2>
+                      <p>Chat with active online seekers, salvation applicants, and members.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 2fr 1fr; gap:10px; height:450px; background:#070809; border:1px solid #1c1e21; border-radius:6px; overflow:hidden;">
+                    <!-- Left chat queue -->
+                    <div style="border-right:1px solid #1c1e21; padding:10px; display:flex; flex-direction:column; gap:10px; height:100%; overflow-y:auto;">
+                      <h3>Chat Queue</h3>
+                      <div id="lcChatsQueueList" style="display:flex; flex-direction:column; gap:6px;"></div>
+                    </div>
+                    <!-- Center conversation box -->
+                    <div style="display:flex; flex-direction:column; justify-content:space-between; height:100%; padding:15px; position:relative;">
+                      <div id="lcActiveChatHeader" style="padding-bottom:10px; border-bottom:1px solid #1c1e21; font-weight:800; font-size:14px;">Selected Chat</div>
+                      <div id="lcChatsMessagesList" style="flex-grow:1; overflow-y:auto; padding:10px 0; display:flex; flex-direction:column; gap:12px;">
+                        <!-- messages dynamically rendered -->
+                      </div>
+                      <div style="display:flex; gap:8px;">
+                        <input type="text" id="lcChatComposerInput" class="input" placeholder="Type comfort reply..." style="flex-grow:1;" onkeydown="checkLcChatComposerSubmit(event)">
+                        <button class="btn primary" onclick="submitLcChatReply()"><i data-lucide="send"></i></button>
+                      </div>
+                    </div>
+                    <!-- Right details drawer -->
+                    <div style="border-left:1px solid #1c1e21; padding:10px; display:flex; flex-direction:column; gap:12px; height:100%; overflow-y:auto; font-size:11px;">
+                      <h3>Member Context</h3>
+                      <div id="lcMemberContextDrawer" style="display:flex; flex-direction:column; gap:10px;"></div>
+                    </div>
+                  </div>
+                </div>
+                <div id="lcTicketsTab" class="lc-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Pastoral Care Tickets</h2>
+                      <p>Escalate and track counselling queues, hospital visits, and home blessings.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px;" id="lcTicketsBoard">
+                    <!-- Status columns -->
+                  </div>
+                </div>
+                <div id="lcSlaTab" class="lc-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Pastoral response SLA scorecards</h2>
+                      <p>Monitor responder speeds and care satisfaction analytics.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap:16px;" id="lcSlaStatsGrid"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- COMMUNICATION CONSOLE CONTAINER -->
+          <div id="communicationConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Automated Broadcasts</div>
+                  <button class="cms-nav-item active" data-comm-tab="newsletters" onclick="switchCommTab('newsletters')">
+                    <i data-lucide="mail"></i><span>Email Broadcasts</span>
+                  </button>
+                  <button class="cms-nav-item" data-comm-tab="sms" onclick="switchCommTab('sms')">
+                    <i data-lucide="smartphone"></i><span>SMS Broadcaster</span>
+                  </button>
+                  <button class="cms-nav-item" data-comm-tab="sequences" onclick="switchCommTab('sequences')">
+                    <i data-lucide="shuffle"></i><span>Automation Flows</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="commNewslettersTab" class="comm-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Email Newsletter broadcasts</h2>
+                      <p>Draft newsletters layouts, manage subscriber groups, and log dispatch rates.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateNewsletterModal()"><i data-lucide="plus"></i>Compile Email newsletter</button>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1.2fr 1fr; gap:16px;">
+                    <div class="panel" style="padding:0; overflow:hidden;">
+                      <table class="mini-table">
+                        <thead>
+                          <tr>
+                            <th>Newsletter Title</th>
+                            <th>Target Group</th>
+                            <th>Dispatch status</th>
+                            <th>Open rate</th>
+                          </tr>
+                        </thead>
+                        <tbody id="commNewslettersTableBody"></tbody>
+                      </table>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:14px;">
+                      <h3>Live Email preview Canvas</h3>
+                      <div id="commNewsletterPreviewCanvas" style="width:100%; height:200px; background:#fff; border:1px solid #1c1e21; border-radius:6px; color:#000; padding:15px; overflow-y:auto; text-align:left; font-size:12px;">
+                        <!-- dynamic rendering -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div id="commSmsTab" class="comm-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>SMS Messaging Center</h2>
+                      <p>Queue global SMS notices and alerts to mobile numbers.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Broadcast SMS alerts</h3>
+                      <div class="field">
+                        <label>Receiver Group</label>
+                        <select id="commSmsTargetGroup" class="select" style="width:100%;">
+                          <option value="All Members">All Members</option>
+                          <option value="Cell Leaders">Cell Leaders</option>
+                          <option value="Volunteers">Active Volunteers</option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label>SMS alert Body</label>
+                        <textarea id="commSmsBody" class="textarea" rows="4" placeholder="e.g. Join us tonight for a special communion service!" style="width:100%;"></textarea>
+                      </div>
+                      <button class="btn primary" onclick="submitCommSms()"><i data-lucide="send"></i>Broadcast SMS message</button>
+                    </div>
+                    <div class="panel" style="padding:0; overflow:hidden;">
+                      <table class="mini-table">
+                        <thead>
+                          <tr>
+                            <th>Target Group</th>
+                            <th>SMS message snippet</th>
+                            <th>Total sent</th>
+                          </tr>
+                        </thead>
+                        <tbody id="commSmsTableBody"></tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div id="commSequencesTab" class="comm-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Automation notification flow sequences</h2>
+                      <p>Design multi-stage follow-up cascades triggered by church events.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: 1fr 1.2fr; gap:16px;">
+                    <div class="panel" style="display:flex; flex-direction:column; gap:16px;">
+                      <h3>Automation Sequences timeline</h3>
+                      <div style="display:flex; flex-direction:column; gap:12px; padding:15px; background:rgba(0,0,0,0.15); border-radius:6px;" id="commSequencesChart">
+                        <!-- sequences chart -->
+                      </div>
+                    </div>
+                    <div class="panel" style="display:flex; flex-direction:column; gap:12px;">
+                      <h3>Register Cascade Notification</h3>
+                      <div class="field">
+                        <label>Cascade Trigger Context</label>
+                        <select id="commNewSeqTrigger" class="select" style="width:100%;">
+                          <option value="New Belconvert salvation logged">New Converts salvation logged</option>
+                          <option value="First-Time Guest RSVP checked-in">First-Time Guests checked-in</option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label>Cascade Sequence Pipeline</label>
+                        <input type="text" id="commNewSeqName" class="input" placeholder="e.g. Day 1: Welcome Email -> Day 3: SMS" style="width:100%;">
+                      </div>
+                      <button class="btn primary" onclick="submitCommSequence()"><i data-lucide="git-merge"></i>Publish Automation Sequence</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CRM PIPELINES CONSOLE CONTAINER -->
+          <div id="crmConsoleContainer" class="hidden">
+            <div class="cms-view-layout">
+              <aside class="cms-nav-panel">
+                <div class="cms-nav-group">
+                  <div class="cms-nav-header">Ministry CRM Pipelines</div>
+                  <button class="cms-nav-item active" data-crm-tab="kanban" onclick="switchCrmTab('kanban')">
+                    <i data-lucide="kanban"></i><span>Pipeline Board</span>
+                  </button>
+                  <button class="cms-nav-item" data-crm-tab="tasks" onclick="switchCrmTab('tasks')">
+                    <i data-lucide="clipboard-list"></i><span>Task Roster</span>
+                  </button>
+                  <button class="cms-nav-item" data-crm-tab="analytics" onclick="switchCrmTab('analytics')">
+                    <i data-lucide="bar-chart-2"></i><span>Pipelines Reports</span>
+                  </button>
+                </div>
+              </aside>
+              <div class="cms-content-panel" style="padding: 0; display: flex; flex-direction: column; gap: 16px;">
+                <div id="crmKanbanTab" class="crm-tab-content">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Assimilation pipelines Kanban</h2>
+                      <p>Click on member cards to advance newcomers from First Visit to Integrated Leaders.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap:12px;" id="crmKanbanBoard">
+                    <!-- Kanban columns -->
+                  </div>
+                </div>
+                <div id="crmTasksTab" class="crm-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px; align-items: center; justify-content: space-between;">
+                    <div>
+                      <h2>Follow-up tasks roster</h2>
+                      <p>Track follow-up items allocated to the pastoral care team.</p>
+                    </div>
+                    <button class="btn primary" onclick="openCreateCrmTaskModal()"><i data-lucide="plus"></i>Register Care Task</button>
+                  </div>
+                  <div class="panel" style="padding:0; overflow:hidden;">
+                    <table class="mini-table">
+                      <thead>
+                        <tr>
+                          <th>Task details</th>
+                          <th>Care Agent</th>
+                          <th>Due Date</th>
+                          <th>Priority</th>
+                          <th>Reconciled</th>
+                        </tr>
+                      </thead>
+                      <tbody id="crmTasksTableBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div id="crmAnalyticsTab" class="crm-tab-content hidden">
+                  <div class="section-head" style="margin-bottom: 20px;">
+                    <div>
+                      <h2>Pipeline Conversion analytics</h2>
+                      <p>Monitor newcomer retention rates, speeds to care, and conversions.</p>
+                    </div>
+                  </div>
+                  <div class="grid" style="grid-template-columns: repeat(3, 1fr); gap: 16px;" id="crmStatsGrid"></div>
+                </div>
+              </div>
+            </div>
+          </div>

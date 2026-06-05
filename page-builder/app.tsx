@@ -601,7 +601,7 @@ export const App: React.FC = () => {
       theme: themeMode,
       accent: brandAccent
     });
-    window.location.href = `/dashboard.html?${params.toString()}`;
+    window.location.href = `/admin.html?${params.toString()}`;
   };
 
   // Breadcrumbs path calculations

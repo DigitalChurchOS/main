@@ -1,0 +1,1388 @@
+import * as runtime from "@prisma/client/runtime/client";
+import * as $Class from "./internal/class";
+import * as Prisma from "./internal/prismaNamespace";
+export * as $Enums from './enums';
+export * from "./enums";
+/**
+ * ## Prisma Client
+ *
+ * Type-safe database client for TypeScript
+ * @example
+ * ```
+ * const prisma = new PrismaClient({
+ *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
+ * })
+ * // Fetch zero or more Tenants
+ * const tenants = await prisma.tenant.findMany()
+ * ```
+ *
+ * Read more in our [docs](https://pris.ly/d/client).
+ */
+export declare const PrismaClient: $Class.PrismaClientConstructor;
+export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>;
+export { Prisma };
+/**
+ * Model Tenant
+ *
+ */
+export type Tenant = Prisma.TenantModel;
+/**
+ * Model Branch
+ *
+ */
+export type Branch = Prisma.BranchModel;
+/**
+ * Model BranchRegion
+ *
+ */
+export type BranchRegion = Prisma.BranchRegionModel;
+/**
+ * Model BranchLeader
+ *
+ */
+export type BranchLeader = Prisma.BranchLeaderModel;
+/**
+ * Model User
+ *
+ */
+export type User = Prisma.UserModel;
+/**
+ * Model Member
+ *
+ */
+export type Member = Prisma.MemberModel;
+/**
+ * Model Role
+ *
+ */
+export type Role = Prisma.RoleModel;
+/**
+ * Model Permission
+ *
+ */
+export type Permission = Prisma.PermissionModel;
+/**
+ * Model RolePermission
+ *
+ */
+export type RolePermission = Prisma.RolePermissionModel;
+/**
+ * Model UserRole
+ *
+ */
+export type UserRole = Prisma.UserRoleModel;
+/**
+ * Model ProviderCategory
+ *
+ */
+export type ProviderCategory = Prisma.ProviderCategoryModel;
+/**
+ * Model Provider
+ *
+ */
+export type Provider = Prisma.ProviderModel;
+/**
+ * Model TenantConnectedService
+ *
+ */
+export type TenantConnectedService = Prisma.TenantConnectedServiceModel;
+/**
+ * Model ModuleProviderOverride
+ *
+ */
+export type ModuleProviderOverride = Prisma.ModuleProviderOverrideModel;
+/**
+ * Model ModuleDefinition
+ *
+ */
+export type ModuleDefinition = Prisma.ModuleDefinitionModel;
+/**
+ * Model TenantModule
+ *
+ */
+export type TenantModule = Prisma.TenantModuleModel;
+/**
+ * Model Theme
+ *
+ */
+export type Theme = Prisma.ThemeModel;
+/**
+ * Model Website
+ *
+ */
+export type Website = Prisma.WebsiteModel;
+/**
+ * Model Page
+ *
+ */
+export type Page = Prisma.PageModel;
+/**
+ * Model Family
+ *
+ */
+export type Family = Prisma.FamilyModel;
+/**
+ * Model CrmPipeline
+ *
+ */
+export type CrmPipeline = Prisma.CrmPipelineModel;
+/**
+ * Model CrmStage
+ *
+ */
+export type CrmStage = Prisma.CrmStageModel;
+/**
+ * Model MemberCrmStage
+ *
+ */
+export type MemberCrmStage = Prisma.MemberCrmStageModel;
+/**
+ * Model CrmContact
+ *
+ */
+export type CrmContact = Prisma.CrmContactModel;
+/**
+ * Model CrmTimelineEvent
+ *
+ */
+export type CrmTimelineEvent = Prisma.CrmTimelineEventModel;
+/**
+ * Model CrmFollowUpTask
+ *
+ */
+export type CrmFollowUpTask = Prisma.CrmFollowUpTaskModel;
+/**
+ * Model ConsentRecord
+ *
+ */
+export type ConsentRecord = Prisma.ConsentRecordModel;
+/**
+ * Model CommunicationTemplate
+ *
+ */
+export type CommunicationTemplate = Prisma.CommunicationTemplateModel;
+/**
+ * Model CommunicationLog
+ *
+ */
+export type CommunicationLog = Prisma.CommunicationLogModel;
+/**
+ * Model NotificationPreference
+ *
+ */
+export type NotificationPreference = Prisma.NotificationPreferenceModel;
+/**
+ * Model ScheduledMessage
+ *
+ */
+export type ScheduledMessage = Prisma.ScheduledMessageModel;
+/**
+ * Model AutomationWorkflow
+ *
+ */
+export type AutomationWorkflow = Prisma.AutomationWorkflowModel;
+/**
+ * Model FollowUpSequence
+ *
+ */
+export type FollowUpSequence = Prisma.FollowUpSequenceModel;
+/**
+ * Model FollowUpStep
+ *
+ */
+export type FollowUpStep = Prisma.FollowUpStepModel;
+/**
+ * Model SubscriptionPlan
+ *
+ */
+export type SubscriptionPlan = Prisma.SubscriptionPlanModel;
+/**
+ * Model TenantSubscription
+ *
+ */
+export type TenantSubscription = Prisma.TenantSubscriptionModel;
+/**
+ * Model UsageMeter
+ *
+ */
+export type UsageMeter = Prisma.UsageMeterModel;
+/**
+ * Model Invoice
+ *
+ */
+export type Invoice = Prisma.InvoiceModel;
+/**
+ * Model BillingSubscriptionManagementModule
+ *
+ */
+export type BillingSubscriptionManagementModule = Prisma.BillingSubscriptionManagementModuleModel;
+/**
+ * Model BillingSubscriptionManagementModuleActivity
+ *
+ */
+export type BillingSubscriptionManagementModuleActivity = Prisma.BillingSubscriptionManagementModuleActivityModel;
+/**
+ * Model BillingSubscriptionManagementModuleSettings
+ *
+ */
+export type BillingSubscriptionManagementModuleSettings = Prisma.BillingSubscriptionManagementModuleSettingsModel;
+/**
+ * Model BillingAddOn
+ *
+ */
+export type BillingAddOn = Prisma.BillingAddOnModel;
+/**
+ * Model TenantSubscriptionAddOn
+ *
+ */
+export type TenantSubscriptionAddOn = Prisma.TenantSubscriptionAddOnModel;
+/**
+ * Model BillingCoupon
+ *
+ */
+export type BillingCoupon = Prisma.BillingCouponModel;
+/**
+ * Model AnalyticsEvent
+ *
+ */
+export type AnalyticsEvent = Prisma.AnalyticsEventModel;
+/**
+ * Model PluginDefinition
+ *
+ */
+export type PluginDefinition = Prisma.PluginDefinitionModel;
+/**
+ * Model TenantPlugin
+ *
+ */
+export type TenantPlugin = Prisma.TenantPluginModel;
+/**
+ * Model PluginWebhook
+ *
+ */
+export type PluginWebhook = Prisma.PluginWebhookModel;
+/**
+ * Model PluginEngine
+ *
+ */
+export type PluginEngine = Prisma.PluginEngineModel;
+/**
+ * Model PluginEnginePermission
+ *
+ */
+export type PluginEnginePermission = Prisma.PluginEnginePermissionModel;
+/**
+ * Model PluginExtensionsEngineModule
+ *
+ */
+export type PluginExtensionsEngineModule = Prisma.PluginExtensionsEngineModuleModel;
+/**
+ * Model PluginExtensionsEngineActivity
+ *
+ */
+export type PluginExtensionsEngineActivity = Prisma.PluginExtensionsEngineActivityModel;
+/**
+ * Model PluginExtensionsEngineSetting
+ *
+ */
+export type PluginExtensionsEngineSetting = Prisma.PluginExtensionsEngineSettingModel;
+/**
+ * Model DeveloperProfile
+ *
+ */
+export type DeveloperProfile = Prisma.DeveloperProfileModel;
+/**
+ * Model MarketplaceAsset
+ *
+ */
+export type MarketplaceAsset = Prisma.MarketplaceAssetModel;
+/**
+ * Model AssetSubmission
+ *
+ */
+export type AssetSubmission = Prisma.AssetSubmissionModel;
+/**
+ * Model SubmissionReview
+ *
+ */
+export type SubmissionReview = Prisma.SubmissionReviewModel;
+/**
+ * Model AssetFeedback
+ *
+ */
+export type AssetFeedback = Prisma.AssetFeedbackModel;
+/**
+ * Model AssetPurchase
+ *
+ */
+export type AssetPurchase = Prisma.AssetPurchaseModel;
+/**
+ * Model SandboxTenant
+ *
+ */
+export type SandboxTenant = Prisma.SandboxTenantModel;
+/**
+ * Model LanguageRegistry
+ *
+ */
+export type LanguageRegistry = Prisma.LanguageRegistryModel;
+/**
+ * Model TranslationKey
+ *
+ */
+export type TranslationKey = Prisma.TranslationKeyModel;
+/**
+ * Model MediaCategory
+ *
+ */
+export type MediaCategory = Prisma.MediaCategoryModel;
+/**
+ * Model MediaTag
+ *
+ */
+export type MediaTag = Prisma.MediaTagModel;
+/**
+ * Model Speaker
+ *
+ */
+export type Speaker = Prisma.SpeakerModel;
+/**
+ * Model MediaSeries
+ *
+ */
+export type MediaSeries = Prisma.MediaSeriesModel;
+/**
+ * Model MediaAsset
+ *
+ */
+export type MediaAsset = Prisma.MediaAssetModel;
+/**
+ * Model MediaAssetTag
+ *
+ */
+export type MediaAssetTag = Prisma.MediaAssetTagModel;
+/**
+ * Model MediaPlaylist
+ *
+ */
+export type MediaPlaylist = Prisma.MediaPlaylistModel;
+/**
+ * Model MediaPlaylistItem
+ *
+ */
+export type MediaPlaylistItem = Prisma.MediaPlaylistItemModel;
+/**
+ * Model Livestream
+ *
+ */
+export type Livestream = Prisma.LivestreamModel;
+/**
+ * Model LivestreamChat
+ *
+ */
+export type LivestreamChat = Prisma.LivestreamChatModel;
+/**
+ * Model LivestreamViewer
+ *
+ */
+export type LivestreamViewer = Prisma.LivestreamViewerModel;
+/**
+ * Model LivestreamInteraction
+ *
+ */
+export type LivestreamInteraction = Prisma.LivestreamInteractionModel;
+/**
+ * Model ChurchService
+ *
+ */
+export type ChurchService = Prisma.ChurchServiceModel;
+/**
+ * Model ServiceScripture
+ *
+ */
+export type ServiceScripture = Prisma.ServiceScriptureModel;
+/**
+ * Model ServiceAttachment
+ *
+ */
+export type ServiceAttachment = Prisma.ServiceAttachmentModel;
+/**
+ * Model ChurchServicesModule
+ *
+ */
+export type ChurchServicesModule = Prisma.ChurchServicesModuleModel;
+/**
+ * Model ChurchServicesModuleActivity
+ *
+ */
+export type ChurchServicesModuleActivity = Prisma.ChurchServicesModuleActivityModel;
+/**
+ * Model ChurchServicesModuleSettings
+ *
+ */
+export type ChurchServicesModuleSettings = Prisma.ChurchServicesModuleSettingsModel;
+/**
+ * Model LivestreamModule
+ *
+ */
+export type LivestreamModule = Prisma.LivestreamModuleModel;
+/**
+ * Model LivestreamModuleActivity
+ *
+ */
+export type LivestreamModuleActivity = Prisma.LivestreamModuleActivityModel;
+/**
+ * Model LivestreamModuleSettings
+ *
+ */
+export type LivestreamModuleSettings = Prisma.LivestreamModuleSettingsModel;
+/**
+ * Model BlogCategory
+ *
+ */
+export type BlogCategory = Prisma.BlogCategoryModel;
+/**
+ * Model BlogTag
+ *
+ */
+export type BlogTag = Prisma.BlogTagModel;
+/**
+ * Model BlogPost
+ *
+ */
+export type BlogPost = Prisma.BlogPostModel;
+/**
+ * Model BlogPostTag
+ *
+ */
+export type BlogPostTag = Prisma.BlogPostTagModel;
+/**
+ * Model BlogPostScripture
+ *
+ */
+export type BlogPostScripture = Prisma.BlogPostScriptureModel;
+/**
+ * Model BlogPostComment
+ *
+ */
+export type BlogPostComment = Prisma.BlogPostCommentModel;
+/**
+ * Model LibraryCategory
+ *
+ */
+export type LibraryCategory = Prisma.LibraryCategoryModel;
+/**
+ * Model LibraryResource
+ *
+ */
+export type LibraryResource = Prisma.LibraryResourceModel;
+/**
+ * Model LibraryPurchase
+ *
+ */
+export type LibraryPurchase = Prisma.LibraryPurchaseModel;
+/**
+ * Model PodcastAudioBroadcastingModuleSettings
+ *
+ */
+export type PodcastAudioBroadcastingModuleSettings = Prisma.PodcastAudioBroadcastingModuleSettingsModel;
+/**
+ * Model PodcastChannel
+ *
+ */
+export type PodcastChannel = Prisma.PodcastChannelModel;
+/**
+ * Model PodcastSpeaker
+ *
+ */
+export type PodcastSpeaker = Prisma.PodcastSpeakerModel;
+/**
+ * Model PodcastSeries
+ *
+ */
+export type PodcastSeries = Prisma.PodcastSeriesModel;
+/**
+ * Model PodcastPlaylist
+ *
+ */
+export type PodcastPlaylist = Prisma.PodcastPlaylistModel;
+/**
+ * Model PodcastPlaylistItem
+ *
+ */
+export type PodcastPlaylistItem = Prisma.PodcastPlaylistItemModel;
+/**
+ * Model PodcastEpisodeScripture
+ *
+ */
+export type PodcastEpisodeScripture = Prisma.PodcastEpisodeScriptureModel;
+/**
+ * Model PodcastEpisodeResource
+ *
+ */
+export type PodcastEpisodeResource = Prisma.PodcastEpisodeResourceModel;
+/**
+ * Model PodcastDistributionTarget
+ *
+ */
+export type PodcastDistributionTarget = Prisma.PodcastDistributionTargetModel;
+/**
+ * Model PodcastActivity
+ *
+ */
+export type PodcastActivity = Prisma.PodcastActivityModel;
+/**
+ * Model PodcastAnalyticsDaily
+ *
+ */
+export type PodcastAnalyticsDaily = Prisma.PodcastAnalyticsDailyModel;
+/**
+ * Model PodcastEpisode
+ *
+ */
+export type PodcastEpisode = Prisma.PodcastEpisodeModel;
+/**
+ * Model AiMediaJob
+ *
+ */
+export type AiMediaJob = Prisma.AiMediaJobModel;
+/**
+ * Model DisplayScreen
+ *
+ */
+export type DisplayScreen = Prisma.DisplayScreenModel;
+/**
+ * Model SignagePlaylist
+ *
+ */
+export type SignagePlaylist = Prisma.SignagePlaylistModel;
+/**
+ * Model SignageSlide
+ *
+ */
+export type SignageSlide = Prisma.SignageSlideModel;
+/**
+ * Model SignagePlaylistItem
+ *
+ */
+export type SignagePlaylistItem = Prisma.SignagePlaylistItemModel;
+/**
+ * Model WorshipSong
+ *
+ */
+export type WorshipSong = Prisma.WorshipSongModel;
+/**
+ * Model WorshipPlaylist
+ *
+ */
+export type WorshipPlaylist = Prisma.WorshipPlaylistModel;
+/**
+ * Model WorshipPlaylistItem
+ *
+ */
+export type WorshipPlaylistItem = Prisma.WorshipPlaylistItemModel;
+/**
+ * Model WorshipSession
+ *
+ */
+export type WorshipSession = Prisma.WorshipSessionModel;
+/**
+ * Model GivingCategory
+ *
+ */
+export type GivingCategory = Prisma.GivingCategoryModel;
+/**
+ * Model Donation
+ *
+ */
+export type Donation = Prisma.DonationModel;
+/**
+ * Model RecurringGiving
+ *
+ */
+export type RecurringGiving = Prisma.RecurringGivingModel;
+/**
+ * Model PartnershipCategory
+ *
+ */
+export type PartnershipCategory = Prisma.PartnershipCategoryModel;
+/**
+ * Model Partnership
+ *
+ */
+export type Partnership = Prisma.PartnershipModel;
+/**
+ * Model RecurringPartnership
+ *
+ */
+export type RecurringPartnership = Prisma.RecurringPartnershipModel;
+/**
+ * Model Campaign
+ *
+ */
+export type Campaign = Prisma.CampaignModel;
+/**
+ * Model CampaignUpdate
+ *
+ */
+export type CampaignUpdate = Prisma.CampaignUpdateModel;
+/**
+ * Model ProductCategory
+ *
+ */
+export type ProductCategory = Prisma.ProductCategoryModel;
+/**
+ * Model Product
+ *
+ */
+export type Product = Prisma.ProductModel;
+/**
+ * Model ProductVariant
+ *
+ */
+export type ProductVariant = Prisma.ProductVariantModel;
+/**
+ * Model StoreCoupon
+ *
+ */
+export type StoreCoupon = Prisma.StoreCouponModel;
+/**
+ * Model StoreOrder
+ *
+ */
+export type StoreOrder = Prisma.StoreOrderModel;
+/**
+ * Model OrderItem
+ *
+ */
+export type OrderItem = Prisma.OrderItemModel;
+/**
+ * Model FinancialAccount
+ *
+ */
+export type FinancialAccount = Prisma.FinancialAccountModel;
+/**
+ * Model FinancialBudget
+ *
+ */
+export type FinancialBudget = Prisma.FinancialBudgetModel;
+/**
+ * Model FinancialTransaction
+ *
+ */
+export type FinancialTransaction = Prisma.FinancialTransactionModel;
+/**
+ * Model ExpenseRequest
+ *
+ */
+export type ExpenseRequest = Prisma.ExpenseRequestModel;
+/**
+ * Model ReconciliationRecord
+ *
+ */
+export type ReconciliationRecord = Prisma.ReconciliationRecordModel;
+/**
+ * Model MinistryFunnel
+ *
+ */
+export type MinistryFunnel = Prisma.MinistryFunnelModel;
+/**
+ * Model FunnelStep
+ *
+ */
+export type FunnelStep = Prisma.FunnelStepModel;
+/**
+ * Model FunnelSubmission
+ *
+ */
+export type FunnelSubmission = Prisma.FunnelSubmissionModel;
+/**
+ * Model FunnelAnalytics
+ *
+ */
+export type FunnelAnalytics = Prisma.FunnelAnalyticsModel;
+/**
+ * Model MemberCheckIn
+ *
+ */
+export type MemberCheckIn = Prisma.MemberCheckInModel;
+/**
+ * Model MemberNote
+ *
+ */
+export type MemberNote = Prisma.MemberNoteModel;
+/**
+ * Model MemberTag
+ *
+ */
+export type MemberTag = Prisma.MemberTagModel;
+/**
+ * Model MemberTagAssignment
+ *
+ */
+export type MemberTagAssignment = Prisma.MemberTagAssignmentModel;
+/**
+ * Model CommunityPost
+ *
+ */
+export type CommunityPost = Prisma.CommunityPostModel;
+/**
+ * Model PrayerRequest
+ *
+ */
+export type PrayerRequest = Prisma.PrayerRequestModel;
+/**
+ * Model Testimony
+ *
+ */
+export type Testimony = Prisma.TestimonyModel;
+/**
+ * Model CommunityComment
+ *
+ */
+export type CommunityComment = Prisma.CommunityCommentModel;
+/**
+ * Model CommunityReaction
+ *
+ */
+export type CommunityReaction = Prisma.CommunityReactionModel;
+/**
+ * Model ChatConversation
+ *
+ */
+export type ChatConversation = Prisma.ChatConversationModel;
+/**
+ * Model ChatMessage
+ *
+ */
+export type ChatMessage = Prisma.ChatMessageModel;
+/**
+ * Model CareRequest
+ *
+ */
+export type CareRequest = Prisma.CareRequestModel;
+/**
+ * Model SavedReply
+ *
+ */
+export type SavedReply = Prisma.SavedReplyModel;
+/**
+ * Model ChatFollowUpTask
+ *
+ */
+export type ChatFollowUpTask = Prisma.ChatFollowUpTaskModel;
+/**
+ * Model OutreachCampaign
+ *
+ */
+export type OutreachCampaign = Prisma.OutreachCampaignModel;
+/**
+ * Model InviteAsset
+ *
+ */
+export type InviteAsset = Prisma.InviteAssetModel;
+/**
+ * Model PersonalizedInvitePage
+ *
+ */
+export type PersonalizedInvitePage = Prisma.PersonalizedInvitePageModel;
+/**
+ * Model InviteLinkClick
+ *
+ */
+export type InviteLinkClick = Prisma.InviteLinkClickModel;
+/**
+ * Model ShareEvent
+ *
+ */
+export type ShareEvent = Prisma.ShareEventModel;
+/**
+ * Model VolunteerProfile
+ *
+ */
+export type VolunteerProfile = Prisma.VolunteerProfileModel;
+/**
+ * Model VolunteerDepartment
+ *
+ */
+export type VolunteerDepartment = Prisma.VolunteerDepartmentModel;
+/**
+ * Model VolunteerTeam
+ *
+ */
+export type VolunteerTeam = Prisma.VolunteerTeamModel;
+/**
+ * Model VolunteerTeamAssignment
+ *
+ */
+export type VolunteerTeamAssignment = Prisma.VolunteerTeamAssignmentModel;
+/**
+ * Model VolunteerAvailability
+ *
+ */
+export type VolunteerAvailability = Prisma.VolunteerAvailabilityModel;
+/**
+ * Model VolunteerShift
+ *
+ */
+export type VolunteerShift = Prisma.VolunteerShiftModel;
+/**
+ * Model VolunteerAssignment
+ *
+ */
+export type VolunteerAssignment = Prisma.VolunteerAssignmentModel;
+/**
+ * Model VolunteerAnnouncement
+ *
+ */
+export type VolunteerAnnouncement = Prisma.VolunteerAnnouncementModel;
+/**
+ * Model CustomForm
+ *
+ */
+export type CustomForm = Prisma.CustomFormModel;
+/**
+ * Model FormSubmission
+ *
+ */
+export type FormSubmission = Prisma.FormSubmissionModel;
+/**
+ * Model FormWorkflowTrigger
+ *
+ */
+export type FormWorkflowTrigger = Prisma.FormWorkflowTriggerModel;
+/**
+ * Model FormWorkflowAction
+ *
+ */
+export type FormWorkflowAction = Prisma.FormWorkflowActionModel;
+/**
+ * Model PrayerSession
+ *
+ */
+export type PrayerSession = Prisma.PrayerSessionModel;
+/**
+ * Model PrayerSessionParticipation
+ *
+ */
+export type PrayerSessionParticipation = Prisma.PrayerSessionParticipationModel;
+/**
+ * Model PrayerPoint
+ *
+ */
+export type PrayerPoint = Prisma.PrayerPointModel;
+/**
+ * Model PrayerSessionReaction
+ *
+ */
+export type PrayerSessionReaction = Prisma.PrayerSessionReactionModel;
+/**
+ * Model PrayerMedia
+ *
+ */
+export type PrayerMedia = Prisma.PrayerMediaModel;
+/**
+ * Model NewBelieverProfile
+ *
+ */
+export type NewBelieverProfile = Prisma.NewBelieverProfileModel;
+/**
+ * Model NewBelieverReminder
+ *
+ */
+export type NewBelieverReminder = Prisma.NewBelieverReminderModel;
+/**
+ * Model LmsCourse
+ *
+ */
+export type LmsCourse = Prisma.LmsCourseModel;
+/**
+ * Model LmsModule
+ *
+ */
+export type LmsModule = Prisma.LmsModuleModel;
+/**
+ * Model LmsLesson
+ *
+ */
+export type LmsLesson = Prisma.LmsLessonModel;
+/**
+ * Model LmsQuiz
+ *
+ */
+export type LmsQuiz = Prisma.LmsQuizModel;
+/**
+ * Model LmsAssignment
+ *
+ */
+export type LmsAssignment = Prisma.LmsAssignmentModel;
+/**
+ * Model LmsEnrollment
+ *
+ */
+export type LmsEnrollment = Prisma.LmsEnrollmentModel;
+/**
+ * Model LmsLessonProgress
+ *
+ */
+export type LmsLessonProgress = Prisma.LmsLessonProgressModel;
+/**
+ * Model LmsQuizAnswer
+ *
+ */
+export type LmsQuizAnswer = Prisma.LmsQuizAnswerModel;
+/**
+ * Model LmsAssignmentSubmission
+ *
+ */
+export type LmsAssignmentSubmission = Prisma.LmsAssignmentSubmissionModel;
+/**
+ * Model BibleTranslation
+ *
+ */
+export type BibleTranslation = Prisma.BibleTranslationModel;
+/**
+ * Model BibleBook
+ *
+ */
+export type BibleBook = Prisma.BibleBookModel;
+/**
+ * Model BibleVerse
+ *
+ */
+export type BibleVerse = Prisma.BibleVerseModel;
+/**
+ * Model BibleReadingPlan
+ *
+ */
+export type BibleReadingPlan = Prisma.BibleReadingPlanModel;
+/**
+ * Model BibleReadingPlanDay
+ *
+ */
+export type BibleReadingPlanDay = Prisma.BibleReadingPlanDayModel;
+/**
+ * Model BibleReadingPlanEnrollment
+ *
+ */
+export type BibleReadingPlanEnrollment = Prisma.BibleReadingPlanEnrollmentModel;
+/**
+ * Model BibleBookmark
+ *
+ */
+export type BibleBookmark = Prisma.BibleBookmarkModel;
+/**
+ * Model BibleVerseNote
+ *
+ */
+export type BibleVerseNote = Prisma.BibleVerseNoteModel;
+/**
+ * Model DailyDevotional
+ *
+ */
+export type DailyDevotional = Prisma.DailyDevotionalModel;
+/**
+ * Model BibleVerseHighlight
+ *
+ */
+export type BibleVerseHighlight = Prisma.BibleVerseHighlightModel;
+/**
+ * Model BibleAudioTrack
+ *
+ */
+export type BibleAudioTrack = Prisma.BibleAudioTrackModel;
+/**
+ * Model BibleScriptureReference
+ *
+ */
+export type BibleScriptureReference = Prisma.BibleScriptureReferenceModel;
+/**
+ * Model BibleVerseShareAsset
+ *
+ */
+export type BibleVerseShareAsset = Prisma.BibleVerseShareAssetModel;
+/**
+ * Model BibleActivity
+ *
+ */
+export type BibleActivity = Prisma.BibleActivityModel;
+/**
+ * Model BibleAnalyticsDaily
+ *
+ */
+export type BibleAnalyticsDaily = Prisma.BibleAnalyticsDailyModel;
+/**
+ * Model GroupType
+ *
+ */
+export type GroupType = Prisma.GroupTypeModel;
+/**
+ * Model Group
+ *
+ */
+export type Group = Prisma.GroupModel;
+/**
+ * Model GroupMember
+ *
+ */
+export type GroupMember = Prisma.GroupMemberModel;
+/**
+ * Model GroupMeeting
+ *
+ */
+export type GroupMeeting = Prisma.GroupMeetingModel;
+/**
+ * Model GroupAttendance
+ *
+ */
+export type GroupAttendance = Prisma.GroupAttendanceModel;
+/**
+ * Model GroupInviteLink
+ *
+ */
+export type GroupInviteLink = Prisma.GroupInviteLinkModel;
+/**
+ * Model GroupInviteConversion
+ *
+ */
+export type GroupInviteConversion = Prisma.GroupInviteConversionModel;
+/**
+ * Model GroupNoticeBoard
+ *
+ */
+export type GroupNoticeBoard = Prisma.GroupNoticeBoardModel;
+/**
+ * Model GroupNoticePost
+ *
+ */
+export type GroupNoticePost = Prisma.GroupNoticePostModel;
+/**
+ * Model GroupPromotion
+ *
+ */
+export type GroupPromotion = Prisma.GroupPromotionModel;
+/**
+ * Model GroupSettings
+ *
+ */
+export type GroupSettings = Prisma.GroupSettingsModel;
+/**
+ * Model ChildProfile
+ *
+ */
+export type ChildProfile = Prisma.ChildProfileModel;
+/**
+ * Model ChildGuardian
+ *
+ */
+export type ChildGuardian = Prisma.ChildGuardianModel;
+/**
+ * Model PickupAuthorization
+ *
+ */
+export type PickupAuthorization = Prisma.PickupAuthorizationModel;
+/**
+ * Model ChildrenClass
+ *
+ */
+export type ChildrenClass = Prisma.ChildrenClassModel;
+/**
+ * Model ChildrenClassEnrollment
+ *
+ */
+export type ChildrenClassEnrollment = Prisma.ChildrenClassEnrollmentModel;
+/**
+ * Model ChildrenClassResource
+ *
+ */
+export type ChildrenClassResource = Prisma.ChildrenClassResourceModel;
+/**
+ * Model ChildrenCheckIn
+ *
+ */
+export type ChildrenCheckIn = Prisma.ChildrenCheckInModel;
+/**
+ * Model EventCategory
+ *
+ */
+export type EventCategory = Prisma.EventCategoryModel;
+/**
+ * Model Event
+ *
+ */
+export type Event = Prisma.EventModel;
+/**
+ * Model EventRegistration
+ *
+ */
+export type EventRegistration = Prisma.EventRegistrationModel;
+/**
+ * Model EventTicket
+ *
+ */
+export type EventTicket = Prisma.EventTicketModel;
+/**
+ * Model EventRsvp
+ *
+ */
+export type EventRsvp = Prisma.EventRsvpModel;
+/**
+ * Model EventReminder
+ *
+ */
+export type EventReminder = Prisma.EventReminderModel;
+/**
+ * Model LiveMeeting
+ *
+ */
+export type LiveMeeting = Prisma.LiveMeetingModel;
+/**
+ * Model LiveMeetingParticipant
+ *
+ */
+export type LiveMeetingParticipant = Prisma.LiveMeetingParticipantModel;
+/**
+ * Model LiveMeetingChat
+ *
+ */
+export type LiveMeetingChat = Prisma.LiveMeetingChatModel;
+/**
+ * Model LiveMeetingAttendance
+ *
+ */
+export type LiveMeetingAttendance = Prisma.LiveMeetingAttendanceModel;
+/**
+ * Model LiveMeetingReminder
+ *
+ */
+export type LiveMeetingReminder = Prisma.LiveMeetingReminderModel;
+/**
+ * Model AppointmentType
+ *
+ */
+export type AppointmentType = Prisma.AppointmentTypeModel;
+/**
+ * Model StaffAvailability
+ *
+ */
+export type StaffAvailability = Prisma.StaffAvailabilityModel;
+/**
+ * Model Appointment
+ *
+ */
+export type Appointment = Prisma.AppointmentModel;
+/**
+ * Model AppointmentReminder
+ *
+ */
+export type AppointmentReminder = Prisma.AppointmentReminderModel;
+/**
+ * Model MobilePushToken
+ *
+ */
+export type MobilePushToken = Prisma.MobilePushTokenModel;
+/**
+ * Model WhiteLabelApp
+ *
+ */
+export type WhiteLabelApp = Prisma.WhiteLabelAppModel;
+/**
+ * Model WhiteLabelBuild
+ *
+ */
+export type WhiteLabelBuild = Prisma.WhiteLabelBuildModel;
+/**
+ * Model TranslationJob
+ *
+ */
+export type TranslationJob = Prisma.TranslationJobModel;
+/**
+ * Model TranslatedContent
+ *
+ */
+export type TranslatedContent = Prisma.TranslatedContentModel;
+/**
+ * Model LiveTranslationFeed
+ *
+ */
+export type LiveTranslationFeed = Prisma.LiveTranslationFeedModel;
+/**
+ * Model MediaCaption
+ *
+ */
+export type MediaCaption = Prisma.MediaCaptionModel;
+/**
+ * Model AiAssistantJob
+ *
+ */
+export type AiAssistantJob = Prisma.AiAssistantJobModel;
+/**
+ * Model AgentPresence
+ *
+ */
+export type AgentPresence = Prisma.AgentPresenceModel;
+/**
+ * Model CommunityChannel
+ *
+ */
+export type CommunityChannel = Prisma.CommunityChannelModel;
+/**
+ * Model ChatKbArticle
+ *
+ */
+export type ChatKbArticle = Prisma.ChatKbArticleModel;
+/**
+ * Model AltarCallResponse
+ *
+ */
+export type AltarCallResponse = Prisma.AltarCallResponseModel;
+/**
+ * Model ModuleSettings
+ *
+ */
+export type ModuleSettings = Prisma.ModuleSettingsModel;
+/**
+ * Model CentralizedSettingsEngineModule
+ *
+ */
+export type CentralizedSettingsEngineModule = Prisma.CentralizedSettingsEngineModuleModel;
+/**
+ * Model CentralizedSettingsEngineModuleActivity
+ *
+ */
+export type CentralizedSettingsEngineModuleActivity = Prisma.CentralizedSettingsEngineModuleActivityModel;
+/**
+ * Model CentralizedSettingsEngineModuleSettings
+ *
+ */
+export type CentralizedSettingsEngineModuleSettings = Prisma.CentralizedSettingsEngineModuleSettingsModel;
+/**
+ * Model PageRevision
+ *
+ */
+export type PageRevision = Prisma.PageRevisionModel;
+/**
+ * Model NavigationMenu
+ *
+ */
+export type NavigationMenu = Prisma.NavigationMenuModel;
+/**
+ * Model CmsFooter
+ *
+ */
+export type CmsFooter = Prisma.CmsFooterModel;
+/**
+ * Model ReusableBlock
+ *
+ */
+export type ReusableBlock = Prisma.ReusableBlockModel;
+/**
+ * Model CmsActivityLog
+ *
+ */
+export type CmsActivityLog = Prisma.CmsActivityLogModel;
+/**
+ * Model ThemeEngineModule
+ *
+ */
+export type ThemeEngineModule = Prisma.ThemeEngineModuleModel;
+/**
+ * Model ThemeEngineModuleActivity
+ *
+ */
+export type ThemeEngineModuleActivity = Prisma.ThemeEngineModuleActivityModel;
+/**
+ * Model ThemeEngineModuleSettings
+ *
+ */
+export type ThemeEngineModuleSettings = Prisma.ThemeEngineModuleSettingsModel;
+/**
+ * Model DeveloperMarketplaceModule
+ *
+ */
+export type DeveloperMarketplaceModule = Prisma.DeveloperMarketplaceModuleModel;
+/**
+ * Model DeveloperMarketplaceModuleActivity
+ *
+ */
+export type DeveloperMarketplaceModuleActivity = Prisma.DeveloperMarketplaceModuleActivityModel;
+/**
+ * Model DeveloperMarketplaceModuleSettings
+ *
+ */
+export type DeveloperMarketplaceModuleSettings = Prisma.DeveloperMarketplaceModuleSettingsModel;
+/**
+ * Model DomainTenantManagementModule
+ *
+ */
+export type DomainTenantManagementModule = Prisma.DomainTenantManagementModuleModel;
+/**
+ * Model DomainTenantManagementModuleActivity
+ *
+ */
+export type DomainTenantManagementModuleActivity = Prisma.DomainTenantManagementModuleActivityModel;
+/**
+ * Model DomainTenantManagementModuleSettings
+ *
+ */
+export type DomainTenantManagementModuleSettings = Prisma.DomainTenantManagementModuleSettingsModel;
+/**
+ * Model DigitalLibraryResourceCenterModule
+ *
+ */
+export type DigitalLibraryResourceCenterModule = Prisma.DigitalLibraryResourceCenterModuleModel;
+/**
+ * Model DigitalLibraryResourceCenterModuleActivity
+ *
+ */
+export type DigitalLibraryResourceCenterModuleActivity = Prisma.DigitalLibraryResourceCenterModuleActivityModel;
+/**
+ * Model DigitalLibraryResourceCenterModuleSettings
+ *
+ */
+export type DigitalLibraryResourceCenterModuleSettings = Prisma.DigitalLibraryResourceCenterModuleSettingsModel;
+/**
+ * Model MediaModule
+ *
+ */
+export type MediaModule = Prisma.MediaModuleModel;
+/**
+ * Model MediaModuleActivity
+ *
+ */
+export type MediaModuleActivity = Prisma.MediaModuleActivityModel;
+/**
+ * Model MediaModuleSettings
+ *
+ */
+export type MediaModuleSettings = Prisma.MediaModuleSettingsModel;
+/**
+ * Model DynamicBlogPublishingEngineModule
+ *
+ */
+export type DynamicBlogPublishingEngineModule = Prisma.DynamicBlogPublishingEngineModuleModel;
+/**
+ * Model DynamicBlogPublishingEngineModuleActivity
+ *
+ */
+export type DynamicBlogPublishingEngineModuleActivity = Prisma.DynamicBlogPublishingEngineModuleActivityModel;
+/**
+ * Model DynamicBlogPublishingEngineModuleSettings
+ *
+ */
+export type DynamicBlogPublishingEngineModuleSettings = Prisma.DynamicBlogPublishingEngineModuleSettingsModel;
+/**
+ * Model LiveMeetingsModule
+ *
+ */
+export type LiveMeetingsModule = Prisma.LiveMeetingsModuleModel;
+/**
+ * Model LiveMeetingsModuleActivity
+ *
+ */
+export type LiveMeetingsModuleActivity = Prisma.LiveMeetingsModuleActivityModel;
+/**
+ * Model LiveMeetingsModuleSettings
+ *
+ */
+export type LiveMeetingsModuleSettings = Prisma.LiveMeetingsModuleSettingsModel;

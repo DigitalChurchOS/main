@@ -1,0 +1,16 @@
+export const typographyTokens = {
+  fontSans: '"Outfit", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontSerif: '"Playfair Display", Georgia, serif',
+  sizeXs: '0.75rem',
+  sizeSm: '0.875rem',
+  sizeBase: '1rem',
+  sizeLg: '1.125rem',
+  sizeXl: '1.25rem',
+  size2xl: '1.5rem',
+  size3xl: '1.875rem',
+  size4xl: '2.25rem',
+  weightNormal: '400',
+  weightMedium: '500',
+  weightSemiBold: '600',
+  weightBold: '700',
+};

@@ -1,0 +1,11 @@
+name = "churchos-tenant-dashboard"
+main = "apps/tenant-dashboard/src/app.tsx"
+compatibility_date = "2026-05-28"
+compatibility_flags = ["nodejs_compat"]
+
+[build]
+command = "npm install && npm run build"
+
+[site]
+bucket = "public"
+entry-point = "apps/tenant-dashboard"

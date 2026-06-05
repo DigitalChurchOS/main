@@ -1,0 +1,1556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Church OS — The Complete Church Operating System</title>
+  <meta name="description" content="Build, manage, and grow your church online. Digital Church OS gives ministries a complete platform to launch websites, manage members, accept giving, publish sermons, and run livestreams." />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg: #f8f4ed;
+      --bg-2: #fffaf3;
+      --ink: #15171a;
+      --muted: #73706b;
+      --soft: rgba(255,255,255,.72);
+      --solid: #ffffff;
+      --line: rgba(21,23,26,.1);
+      --accent: #f97316;
+      --accent-2: #ffc27a;
+      --accent-soft: rgba(249,115,22,.12);
+      --charcoal: #1d1d1c;
+      --shadow: 0 30px 90px rgba(61, 44, 21, .12);
+      --shadow-soft: 0 18px 44px rgba(61, 44, 21, .08);
+      --radius: 34px;
+      --radius-sm: 22px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --bg: #151413;
+      --bg-2: #1d1b19;
+      --ink: #f7f0e8;
+      --muted: #aaa29a;
+      --soft: rgba(37,36,34,.68);
+      --solid: #22201e;
+      --line: rgba(255,255,255,.1);
+      --accent-soft: rgba(249,115,22,.18);
+      --shadow: 0 30px 100px rgba(0,0,0,.35);
+      --shadow-soft: 0 18px 50px rgba(0,0,0,.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at 15% 10%, var(--accent-soft), transparent 28%),
+        radial-gradient(circle at 92% 4%, rgba(91, 33, 182, .12), transparent 24%),
+        linear-gradient(135deg, var(--bg), var(--bg-2));
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      opacity: .22;
+      background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(circle at top, black 0%, transparent 75%);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      width: 460px;
+      height: 460px;
+      right: -180px;
+      top: 26%;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--accent) 16%, transparent);
+      filter: blur(32px);
+      pointer-events: none;
+      z-index: -1;
+      animation: breathe 7s ease-in-out infinite alternate;
+    }
+
+    @keyframes breathe {
+      from { transform: translate3d(0,0,0) scale(1); opacity: .7; }
+      to { transform: translate3d(-60px,40px,0) scale(1.16); opacity: .42; }
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    .shell {
+      width: min(1160px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .nav {
+      position: fixed;
+      z-index: 50;
+      top: 18px;
+      left: 50%;
+      width: min(1120px, calc(100% - 32px));
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--solid) 72%, transparent);
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding-left: 8px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+    }
+
+    .brand-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 15px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: 0 18px 32px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .nav-links a {
+      padding: 11px 13px;
+      border-radius: 999px;
+      transition: .25s ease;
+    }
+
+    .nav-links a:hover {
+      background: var(--accent-soft);
+      color: var(--ink);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn, .icon-btn {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+
+    .btn {
+      min-height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 900;
+      background: var(--soft);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+
+    .btn:hover, .icon-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 0;
+      box-shadow: 0 18px 38px color-mix(in srgb, var(--accent) 24%, transparent);
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.02fr .98fr;
+      align-items: center;
+      gap: clamp(30px, 5vw, 80px);
+      padding-top: 90px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity .85s cubic-bezier(.2,.8,.2,1), transform .85s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 24px;
+      font-size: clamp(48px, 7vw, 92px);
+      line-height: .88;
+      letter-spacing: -.085em;
+      max-width: 850px;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .lead {
+      font-size: clamp(17px, 2vw, 21px);
+      line-height: 1.75;
+      color: var(--muted);
+      max-width: 680px;
+      margin-bottom: 32px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .art-board {
+      position: relative;
+      min-height: 620px;
+      display: grid;
+      place-items: center;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 44%, transparent);
+      backdrop-filter: blur(24px);
+      animation: float 7s ease-in-out infinite alternate;
+    }
+
+    .orb.one { width: 160px; height: 160px; top: 28px; left: 16px; }
+    .orb.two { width: 96px; height: 96px; right: 4px; top: 140px; animation-delay: -.9s; }
+    .orb.three { width: 126px; height: 126px; bottom: 36px; left: 80px; animation-delay: -1.8s; }
+
+    @keyframes float {
+      from { transform: translate3d(0,0,0); }
+      to { transform: translate3d(22px,-28px,0); }
+    }
+
+    .product-card {
+      position: relative;
+      z-index: 2;
+      width: min(480px, 100%);
+      padding: 18px;
+      border-radius: 42px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 74%, transparent);
+      backdrop-filter: blur(26px);
+      box-shadow: var(--shadow);
+      transform: rotate(-2deg);
+      transition: .5s ease;
+    }
+
+    .product-card:hover {
+      transform: rotate(0deg) translateY(-8px);
+    }
+
+    .browser {
+      overflow: hidden;
+      border-radius: 30px;
+      border: 1px solid var(--line);
+      background: var(--solid);
+    }
+
+    .browser-top {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: 16px;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--soft) 78%, transparent);
+    }
+
+    .dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--muted) 34%, transparent);
+    }
+
+    .browser-url {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+
+    .mini-site {
+      padding: 18px;
+    }
+
+    .mini-hero {
+      min-height: 260px;
+      border-radius: 26px;
+      padding: 24px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      background:
+        linear-gradient(135deg, rgba(0,0,0,.28), rgba(0,0,0,.06)),
+        radial-gradient(circle at 76% 20%, rgba(255,255,255,.24), transparent 18%),
+        linear-gradient(135deg, var(--accent), #161616);
+    }
+
+    .mini-hero h3 {
+      font-size: 30px;
+      line-height: .98;
+      letter-spacing: -.06em;
+      margin-bottom: 10px;
+    }
+
+    .mini-hero p {
+      color: rgba(255,255,255,.75);
+      line-height: 1.55;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    .soft-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .soft-tile {
+      min-height: 76px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-weight: 900;
+      background: color-mix(in srgb, var(--soft) 72%, transparent);
+      border: 1px solid var(--line);
+    }
+
+    .section {
+      padding: 110px 0;
+    }
+
+    .section.compact {
+      padding: 70px 0;
+    }
+
+    .section-head {
+      max-width: 780px;
+      margin-bottom: 54px;
+    }
+
+    .section-head.center {
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: clamp(38px, 5vw, 68px);
+      line-height: .94;
+      letter-spacing: -.075em;
+      margin-bottom: 18px;
+    }
+
+    .section-copy {
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.75;
+      margin-bottom: 0;
+    }
+
+    .quiet-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .quiet-card {
+      min-height: 260px;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--solid) 58%, transparent);
+      backdrop-filter: blur(22px);
+      box-shadow: var(--shadow-soft);
+      transition: .35s ease;
+    }
+
+    .quiet-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow);
+    }
+
+    .quiet-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: var(--accent-soft);
+      margin-bottom: 38px;
+    }
+
+    .quiet-card h3 {
+      font-size: 22px;
+      letter-spacing: -.04em;
+      margin-bottom: 10px;
+    }
+
+    .quiet-card p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin-bottom: 0;
+      font-size: 14px;
+    }
+
+    /* Tabs for Login & Registration forms */
+    .signup-container {
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--solid) 62%, transparent);
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .signup-copy {
+      padding: clamp(34px, 5vw, 64px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 640px;
+    }
+
+    .signup-copy h2 {
+      max-width: 540px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 20px;
+      margin-top: 38px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .timeline-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: var(--accent-soft);
+    }
+
+    .timeline-item strong {
+      display: block;
+      letter-spacing: -.03em;
+      margin-bottom: 5px;
+    }
+
+    .timeline-item span {
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .form-panel {
+      padding: clamp(26px, 4vw, 44px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .form-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+      background: color-mix(in srgb, var(--bg) 50%, transparent);
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+
+    .form-tab {
+      flex: 1;
+      border: 0;
+      cursor: pointer;
+      min-height: 42px;
+      border-radius: 999px;
+      font-weight: 800;
+      background: transparent;
+      color: var(--muted);
+      transition: .25s ease;
+    }
+
+    .form-tab.active {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 68%, transparent);
+      color: var(--ink);
+      border-radius: 17px;
+      min-height: 52px;
+      padding: 0 15px;
+      outline: 0;
+      transition: border .25s ease, box-shadow .25s ease, transform .25s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      box-shadow: 0 0 0 5px var(--accent-soft);
+      transform: translateY(-1px);
+    }
+
+    .domain-preview {
+      min-height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: color-mix(in srgb, var(--soft) 82%, transparent);
+      margin-top: 3px;
+    }
+
+    .domain-preview code {
+      color: var(--accent);
+      font-weight: 900;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 0 11px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+      white-space: nowrap;
+    }
+
+    .pill.ok {
+      color: #16a34a;
+      background: rgba(22,163,74,.12);
+      border-color: rgba(22,163,74,.22);
+    }
+
+    .pill.bad {
+      color: #dc2626;
+      background: rgba(220,38,38,.12);
+      border-color: rgba(220,38,38,.22);
+    }
+
+    /* Pricing section */
+    .pricing-toolbar {
+      display: flex;
+      justify-content: center;
+      margin-top: 34px;
+    }
+
+    .billing-toggle {
+      display: inline-flex;
+      gap: 6px;
+      padding: 6px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 60%, transparent);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .billing-toggle button {
+      border: 0;
+      cursor: pointer;
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 900;
+      transition: .25s ease;
+    }
+
+    .billing-toggle button.active {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 14px 28px color-mix(in srgb, var(--accent) 22%, transparent);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-top: 46px;
+    }
+
+    .price-card {
+      position: relative;
+      min-height: 560px;
+      padding: 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--solid) 58%, transparent);
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+    }
+
+    .price-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow);
+    }
+
+    .price-card.featured {
+      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      background:
+        radial-gradient(circle at 82% 12%, var(--accent-soft), transparent 30%),
+        color-mix(in srgb, var(--solid) 64%, transparent);
+    }
+
+    .price-card.featured::before {
+      content: "Most popular";
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 11px;
+      border-radius: 999px;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .price-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      color: var(--accent);
+      background: var(--accent-soft);
+      margin-bottom: 34px;
+    }
+
+    .price-card h3 {
+      font-size: 26px;
+      letter-spacing: -.05em;
+      margin-bottom: 10px;
+    }
+
+    .price-card p {
+      color: var(--muted);
+      line-height: 1.62;
+      margin-bottom: 0;
+      min-height: 78px;
+      font-size: 14px;
+    }
+
+    .price-value {
+      margin: 28px 0 24px;
+      font-size: 42px;
+      line-height: 1;
+      font-weight: 950;
+      letter-spacing: -.07em;
+    }
+
+    .price-value span {
+      color: var(--muted);
+      font-size: 14px;
+      letter-spacing: 0;
+      font-weight: 900;
+    }
+
+    .price-features {
+      display: grid;
+      gap: 13px;
+      margin: 0 0 28px;
+      padding: 0;
+      list-style: none;
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .price-features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .price-features i {
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+      color: #16a34a;
+      margin-top: 1px;
+    }
+
+    .price-card .btn {
+      margin-top: auto;
+      width: 100%;
+    }
+
+    .pricing-note {
+      margin: 28px auto 0;
+      max-width: 760px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    /* Modules Showcase Section */
+    .module-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      width: fit-content;
+    }
+    .module-badge.included {
+      background: rgba(22,163,74,.08);
+      color: #16a34a;
+      border-color: rgba(22,163,74,.15);
+    }
+    .module-badge.pro {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: color-mix(in srgb, var(--accent) 15%, transparent);
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(100px);
+      opacity: 0;
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--bg);
+      font-weight: 900;
+      font-size: 14px;
+      box-shadow: var(--shadow);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: transform .35s cubic-bezier(.175, .885, .32, 1.275), opacity .3s ease;
+    }
+    .toast-container.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    .footer {
+      padding: 60px 0 70px;
+      color: var(--muted);
+      text-align: center;
+      border-top: 1px solid var(--line);
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links {
+        display: none;
+      }
+      .hero, .signup-container {
+        grid-template-columns: 1fr;
+      }
+      .hero {
+        padding-top: 150px;
+      }
+      .art-board {
+        min-height: 520px;
+      }
+      .quiet-grid, .pricing-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .quiet-grid, .pricing-grid, .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .price-card {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header class="nav">
+    <a class="brand" href="#">
+      <span class="brand-icon"><i data-lucide="church"></i></span>
+      <span>Digital Church OS</span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#modules">Modules</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#signup">Signup</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+        <i data-lucide="moon"></i>
+      </button>
+      <a class="btn btn-primary" href="#signup">Start Church</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero shell">
+      <div class="reveal visible">
+        <div class="eyebrow"><i data-lucide="sparkles"></i> The SaaS platform for churches</div>
+        <h1>Build, manage, and grow your church <span class="gradient-text">online.</span></h1>
+        <p class="lead">
+          Digital Church OS gives churches a complete operating system to launch responsive public websites, manage members, accept giving, publish sermons, organize cells, and launch ministry modules.
+        </p>
+        <div class="hero-actions">
+          <a href="#signup" class="btn btn-primary"><i data-lucide="rocket"></i> Create Church Account</a>
+          <a href="#pricing" class="btn"><i data-lucide="credit-card"></i> View Plans</a>
+        </div>
+      </div>
+
+      <div class="art-board reveal visible">
+        <span class="orb one"></span>
+        <span class="orb two"></span>
+        <span class="orb three"></span>
+
+        <div class="product-card">
+          <div class="browser">
+            <div class="browser-top">
+              <div class="dots"><span></span><span></span><span></span></div>
+              <div class="browser-url" id="previewUrl">churchname.churchos.com</div>
+            </div>
+            <div class="mini-site">
+              <div class="mini-hero">
+                <div class="pill" style="background:rgba(255,255,255,.18); color:#fff; border-color:rgba(255,255,255,.22); width:fit-content; margin-bottom:14px;">
+                  <i data-lucide="wand-sparkles"></i> Christo Theme
+                </div>
+                <h3 id="heroPreviewName">Your church, beautifully launched.</h3>
+                <p>Website, giving, members, livestream, events, media, and ministry tools from one place.</p>
+              </div>
+              <div class="soft-row">
+                <div class="soft-tile"><i data-lucide="users"></i></div>
+                <div class="soft-tile"><i data-lucide="hand-coins"></i></div>
+                <div class="soft-tile"><i data-lucide="radio"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Features Grid -->
+    <section class="section shell" id="features">
+      <div class="section-head center reveal visible">
+        <div class="eyebrow"><i data-lucide="layout"></i> Platform Capabilities</div>
+        <h2>One workspace. Infinite reach.</h2>
+        <p class="section-copy">
+          Digital Church OS replaces ten fragmented systems. Manage everything with clean design and atomic speed.
+        </p>
+      </div>
+
+      <div class="quiet-grid">
+        <article class="quiet-card reveal visible">
+          <div class="quiet-icon"><i data-lucide="globe-2"></i></div>
+          <h3>Church Website Builder</h3>
+          <p>Launch high-speed pages using our custom theme rendering engine. Zero setup required, fully integrated with your dashboard databases.</p>
+        </article>
+
+        <article class="quiet-card reveal visible">
+          <div class="quiet-icon"><i data-lucide="users"></i></div>
+          <h3>Member CRM & Portal</h3>
+          <p>Nurture your community. Track discipleship pathways, follow up visitors, manage volunteer teams, and provide personal dashboard accounts.</p>
+        </article>
+
+        <article class="quiet-card reveal visible">
+          <div class="quiet-icon"><i data-lucide="hand-coins"></i></div>
+          <h3>Giving & Online Tithes</h3>
+          <p>Accept secure giving, direct bank transfers, and mobile payments. Set up custom giving campaigns, goals, and export tax statements.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Modules Grid -->
+    <section class="section compact shell" id="modules">
+      <div class="section-head center reveal visible">
+        <div class="eyebrow"><i data-lucide="blocks"></i> Ministry Modules</div>
+        <h2>Activate only what you need.</h2>
+        <p class="section-copy">
+          Our modular plug-and-play architecture allows you to scale features as your ministry grows.
+        </p>
+      </div>
+
+      <div class="quiet-grid">
+        <article class="quiet-card reveal visible">
+          <div class="module-badge included">Included in all plans</div>
+          <h3 style="margin-top: 14px;"><i data-lucide="calendar"></i> Events Calendar</h3>
+          <p>Organize local services, conferences, and prayer meetings with capacity limits, reminder notifications, and ticketing.</p>
+        </article>
+
+        <article class="quiet-card reveal visible">
+          <div class="module-badge pro">Growth & Pro Plans</div>
+          <h3 style="margin-top: 14px;"><i data-lucide="video"></i> Livestream Hub</h3>
+          <p>Stream services directly to your custom website. Features live prayer requests, chat rooms, notes, and giving CTAs.</p>
+        </article>
+
+        <article class="quiet-card reveal visible">
+          <div class="module-badge pro">Pro Plan Exclusive</div>
+          <h3 style="margin-top: 14px;"><i data-lucide="graduation-cap"></i> LMS Discipleship</h3>
+          <p>Create discipleship courses, school of ministry classes, quizzes, and leadership training programs online.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Pricing Page Section -->
+    <section class="section shell" id="pricing">
+      <div class="section-head center reveal visible">
+        <div class="eyebrow"><i data-lucide="credit-card"></i> Simple, Transparent Pricing</div>
+        <h2>Find the right fit for your church.</h2>
+        <p class="section-copy">
+          All accounts start with a 14-day free trial. Scale or downgrade anytime as requirements change.
+        </p>
+
+        <div class="pricing-toolbar">
+          <div class="billing-toggle" aria-label="Billing cycle">
+            <button class="active" type="button" data-billing="monthly">Monthly</button>
+            <button type="button" data-billing="yearly">Yearly <span style="opacity:.75;">save 20%</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Starter Plan -->
+        <article class="price-card reveal visible">
+          <div class="price-icon"><i data-lucide="sprout"></i></div>
+          <h3>Starter</h3>
+          <p>For smaller congregations launching a primary website and basic member logs.</p>
+          <div class="price-value" data-monthly="$19" data-yearly="$182" data-slug="starter">$19<span>/mo</span></div>
+          <ul class="price-features">
+            <li><i data-lucide="check-circle-2"></i> Up to 50 active members</li>
+            <li><i data-lucide="check-circle-2"></i> Church Website & CMS</li>
+            <li><i data-lucide="check-circle-2"></i> Blog, pages, and basic events</li>
+            <li><i data-lucide="check-circle-2"></i> Christo Theme included</li>
+          </ul>
+          <button class="btn btn-select-plan" data-plan="starter" type="button">Select Starter</button>
+        </article>
+
+        <!-- Growth Plan -->
+        <article class="price-card featured reveal visible">
+          <div class="price-icon"><i data-lucide="trending-up"></i></div>
+          <h3>Growth</h3>
+          <p>For growing congregations managing giving, media libraries, cell groups, and notifications.</p>
+          <div class="price-value" data-monthly="$49" data-yearly="$470" data-slug="growth">$49<span>/mo</span></div>
+          <ul class="price-features">
+            <li><i data-lucide="check-circle-2"></i> Up to 500 active members</li>
+            <li><i data-lucide="check-circle-2"></i> Giving & payment processing</li>
+            <li><i data-lucide="check-circle-2"></i> Media library & audio podcasts</li>
+            <li><i data-lucide="check-circle-2"></i> Cell Groups directory</li>
+          </ul>
+          <button class="btn btn-primary btn-select-plan" data-plan="growth" type="button">Select Growth</button>
+        </article>
+
+        <!-- Pro Plan -->
+        <article class="price-card reveal visible">
+          <div class="price-icon"><i data-lucide="radio"></i></div>
+          <h3>Pro</h3>
+          <p>For churches running live broadcasts, interactive prayer walls, and discipleship courses.</p>
+          <div class="price-value" data-monthly="$99" data-yearly="$950" data-slug="pro">$99<span>/mo</span></div>
+          <ul class="price-features">
+            <li><i data-lucide="check-circle-2"></i> Up to 5,000 active members</li>
+            <li><i data-lucide="check-circle-2"></i> Livestream Hub & live chat</li>
+            <li><i data-lucide="check-circle-2"></i> Prayer wall & testimony wall</li>
+            <li><i data-lucide="check-circle-2"></i> Discipleship LMS & quizzes</li>
+          </ul>
+          <button class="btn btn-select-plan" data-plan="pro" type="button">Select Pro</button>
+        </article>
+
+        <!-- Enterprise Plan -->
+        <article class="price-card reveal visible">
+          <div class="price-icon"><i data-lucide="network"></i></div>
+          <h3>Enterprise</h3>
+          <p>For multi-campus churches and denominations requiring custom bandwidth and dedicated support.</p>
+          <div class="price-value" data-monthly="Custom" data-yearly="Custom" data-slug="enterprise">Custom</div>
+          <ul class="price-features">
+            <li><i data-lucide="check-circle-2"></i> Unlimited active members</li>
+            <li><i data-lucide="check-circle-2"></i> Multi-branch/campus support</li>
+            <li><i data-lucide="check-circle-2"></i> Custom theme/plugin coding</li>
+            <li><i data-lucide="check-circle-2"></i> Dedicated account engineer</li>
+          </ul>
+          <button class="btn btn-select-plan" data-plan="enterprise" type="button">Contact Sales</button>
+        </article>
+      </div>
+    </section>
+
+    <!-- Interactive Signup & Login Panel Section -->
+    <section class="section shell" id="signup">
+      <div class="signup-container">
+        <!-- Information side -->
+        <div class="panel signup-copy reveal visible">
+          <div>
+            <div class="eyebrow"><i data-lucide="shield-check"></i> Secure Onboarding</div>
+            <h2 id="copyTitle">Provision your church workspace in 30 seconds.</h2>
+            <p class="section-copy" id="copyDesc">
+              Enter your details, choose a unique church subdomain, and proceed directly to the interactive onboarding wizard.
+            </p>
+          </div>
+
+          <div class="timeline" id="timelineList">
+            <div class="timeline-item">
+              <div class="timeline-icon"><i data-lucide="badge-check"></i></div>
+              <div><strong>Validate subdomain</strong><span>Ensure your preferred church URL is available and secure.</span></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-icon"><i data-lucide="database"></i></div>
+              <div><strong>Workspace setup</strong><span>Transactional setup of your custom database and default website template.</span></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-icon"><i data-lucide="wand-2"></i></div>
+              <div><strong>Onboarding Wizard</strong><span>Quick configuration of design styles, modules, and team details.</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Forms side -->
+        <div class="panel form-panel reveal visible">
+          <div class="form-tabs">
+            <button class="form-tab active" id="tabRegister" type="button">Register Church</button>
+            <button class="form-tab" id="tabLogin" type="button">Sign In</button>
+          </div>
+
+          <!-- Registration Form -->
+          <form id="signupForm" class="form-grid">
+            <div class="field full">
+              <label for="churchName">Church Name</label>
+              <input id="churchName" placeholder="e.g. Christ Embassy Calgary" required />
+            </div>
+
+            <div class="field">
+              <label for="ownerName">Pastor/Owner Full Name</label>
+              <input id="ownerName" placeholder="e.g. Pastor David Cole" required />
+            </div>
+
+            <div class="field">
+              <label for="ownerEmail">Owner Email Address</label>
+              <input id="ownerEmail" type="email" placeholder="e.g. pastor@church.org" required />
+            </div>
+
+            <div class="field">
+              <label for="plan">Plan Option</label>
+              <select id="plan" required>
+                <option value="starter">Starter</option>
+                <option value="growth" selected>Growth</option>
+                <option value="pro">Pro</option>
+                <option value="enterprise">Enterprise</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="country">Country</label>
+              <input id="country" placeholder="e.g. Canada" required />
+            </div>
+
+            <div class="field full">
+              <label for="subdomain">Preferred Subdomain</label>
+              <input id="subdomain" placeholder="e.g. cecalgary" required />
+              <div class="domain-preview">
+                <code id="domainText">cecalgary.churchos.com</code>
+                <span class="pill ok" id="domainStatus"><i data-lucide="check-circle-2"></i> Available</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <input id="password" type="password" placeholder="••••••••" required minlength="8" />
+            </div>
+
+            <div class="field">
+              <label for="city">City</label>
+              <input id="city" placeholder="e.g. Calgary" required />
+            </div>
+
+            <div class="field full" style="margin-top: 10px;">
+              <button class="btn btn-primary" type="submit" style="width:100%; min-height:56px;">
+                <i data-lucide="rocket"></i> Create Workspace & Start
+              </button>
+            </div>
+          </form>
+
+          <!-- Login Form (Initially Hidden) -->
+          <form id="loginForm" class="form-grid" style="display: none;">
+            <div class="field full">
+              <label for="loginSubdomain">Church Subdomain</label>
+              <input id="loginSubdomain" placeholder="e.g. cecalgary" required />
+              <div class="domain-preview" style="margin-bottom: 10px;">
+                <code id="loginDomainText">cecalgary.churchos.com</code>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label for="loginEmail">Email Address</label>
+              <input id="loginEmail" type="email" placeholder="e.g. pastor@church.org" required />
+            </div>
+
+            <div class="field full">
+              <label for="loginPassword">Password</label>
+              <input id="loginPassword" type="password" placeholder="••••••••" required />
+            </div>
+
+            <div class="field full" style="margin-top: 20px;">
+              <button class="btn btn-primary" type="submit" style="width:100%; min-height:56px;">
+                <i data-lucide="log-in"></i> Sign In to Dashboard
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer shell">
+    Digital Church OS — The Complete Church Management Platform. © 2026. All rights reserved.
+  </footer>
+
+  <!-- Toast Element -->
+  <div class="toast-container" id="toast">
+    <i data-lucide="info" id="toastIcon"></i>
+    <span id="toastMessage">Workspace created successfully!</span>
+  </div>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+    const churchNameInput = document.getElementById("churchName");
+    const heroPreviewName = document.getElementById("heroPreviewName");
+    const subdomainInput = document.getElementById("subdomain");
+    const domainText = document.getElementById("domainText");
+    const domainStatus = document.getElementById("domainStatus");
+    const planSelect = document.getElementById("plan");
+    const previewUrl = document.getElementById("previewUrl");
+
+    const tabRegister = document.getElementById("tabRegister");
+    const tabLogin = document.getElementById("tabLogin");
+    const signupForm = document.getElementById("signupForm");
+    const loginForm = document.getElementById("loginForm");
+    const copyTitle = document.getElementById("copyTitle");
+    const copyDesc = document.getElementById("copyDesc");
+    const timelineList = document.getElementById("timelineList");
+
+    const loginSubdomain = document.getElementById("loginSubdomain");
+    const loginDomainText = document.getElementById("loginDomainText");
+
+    function icon(name) {
+      return `<i data-lucide="${name}"></i>`;
+    }
+
+    // Initialize icons
+    lucide.createIcons();
+
+    // Toggle theme
+    function syncThemeIcon() {
+      const isDark = body.dataset.theme === "dark";
+      themeToggle.innerHTML = isDark ? icon("sun") : icon("moon");
+      lucide.createIcons();
+    }
+
+    themeToggle.addEventListener("click", () => {
+      body.dataset.theme = body.dataset.theme === "dark" ? "light" : "dark";
+      syncThemeIcon();
+    });
+
+    // Subdomain formatting and validation
+    function cleanSubdomain(value) {
+      return value.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-");
+    }
+
+    let checkTimeout;
+    function updateDomain() {
+      const clean = cleanSubdomain(subdomainInput.value);
+      subdomainInput.value = clean;
+      domainText.textContent = `${clean || "cecalgary"}.churchos.com`;
+      previewUrl.textContent = `${clean || "churchname"}.churchos.com`;
+
+      if (clean.length < 4) {
+        domainStatus.className = "pill bad";
+        domainStatus.innerHTML = `${icon("x-circle")} Too short (min 4)`;
+        lucide.createIcons();
+        return;
+      }
+
+      // Debounced live check
+      clearTimeout(checkTimeout);
+      domainStatus.className = "pill";
+      domainStatus.innerHTML = `${icon("loader")} Checking...`;
+      lucide.createIcons();
+
+      checkTimeout = setTimeout(() => {
+        fetch('/api/public/check-subdomain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subdomain: clean })
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.available) {
+            domainStatus.className = "pill ok";
+            domainStatus.innerHTML = `${icon("check-circle-2")} Available`;
+          } else {
+            domainStatus.className = "pill bad";
+            domainStatus.innerHTML = `${icon("x-circle")} ${data.error || "Not available"}`;
+          }
+          lucide.createIcons();
+        })
+        .catch(err => {
+          console.error(err);
+          domainStatus.className = "pill bad";
+          domainStatus.innerHTML = `${icon("alert-circle")} Check failed`;
+          lucide.createIcons();
+        });
+      }, 400);
+    }
+
+    subdomainInput.addEventListener("input", updateDomain);
+    subdomainInput.addEventListener("blur", updateDomain);
+
+    churchNameInput.addEventListener("input", () => {
+      heroPreviewName.textContent = churchNameInput.value ? `${churchNameInput.value}, beautifully launched.` : "Your church, beautifully launched.";
+    });
+
+    // Login subdomain mirror
+    loginSubdomain.addEventListener("input", () => {
+      const clean = cleanSubdomain(loginSubdomain.value);
+      loginSubdomain.value = clean;
+      loginDomainText.textContent = `${clean || "cecalgary"}.churchos.com`;
+    });
+
+    // Billing toggle
+    document.querySelectorAll("[data-billing]").forEach(button => {
+      button.addEventListener("click", () => {
+        const cycle = button.dataset.billing;
+        document.querySelectorAll("[data-billing]").forEach(item => item.classList.toggle("active", item === button));
+        document.querySelectorAll(".price-value").forEach(price => {
+          const value = price.dataset[cycle];
+          if (value === "Custom") {
+            price.innerHTML = "Custom";
+          } else {
+            price.innerHTML = `${value}<span>/${cycle === "monthly" ? "mo" : "yr"}</span>`;
+          }
+        });
+      });
+    });
+
+    // Plan selection buttons
+    document.querySelectorAll(".btn-select-plan").forEach(button => {
+      button.addEventListener("click", () => {
+        const plan = button.dataset.plan;
+        planSelect.value = plan;
+        document.getElementById("signup").scrollIntoView({ behavior: "smooth" });
+        showToast(`Selected ${plan.toUpperCase()} plan. Complete the form to start.`);
+      });
+    });
+
+    // Toggle between login and register forms
+    tabRegister.addEventListener("click", () => {
+      tabRegister.classList.add("active");
+      tabLogin.classList.remove("active");
+      signupForm.style.display = "grid";
+      loginForm.style.display = "none";
+      copyTitle.textContent = "Provision your church workspace in 30 seconds.";
+      copyDesc.textContent = "Enter your details, choose a unique church subdomain, and proceed directly to the interactive onboarding wizard.";
+      timelineList.style.display = "grid";
+    });
+
+    tabLogin.addEventListener("click", () => {
+      tabLogin.classList.add("active");
+      tabRegister.classList.remove("active");
+      signupForm.style.display = "none";
+      loginForm.style.display = "grid";
+      copyTitle.textContent = "Welcome back to your Church Office.";
+      copyDesc.textContent = "Enter your workspace details and credentials to manage your website, giving gateway, membership logs, and plugins.";
+      timelineList.style.display = "none";
+    });
+
+    // Toast utility
+    const toastEl = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMessage");
+    function showToast(msg, error = false) {
+      toastMsg.textContent = msg;
+      toastEl.className = "toast-container show";
+      if (error) {
+        toastEl.style.background = "#dc2626";
+      } else {
+        toastEl.style.background = "var(--ink)";
+      }
+      setTimeout(() => {
+        toastEl.className = "toast-container";
+      }, 3000);
+    }
+
+    // Parse URL params for plan selection on start
+    window.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const plan = params.get("plan");
+      if (plan && ["starter", "growth", "pro", "enterprise"].includes(plan.toLowerCase())) {
+        planSelect.value = plan.toLowerCase();
+        document.getElementById("signup").scrollIntoView({ behavior: "smooth" });
+      }
+    });
+
+    // Handle Registration Submission
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = churchNameInput.value.trim();
+      const ownerName = document.getElementById("ownerName").value.trim();
+      const ownerEmail = document.getElementById("ownerEmail").value.trim();
+      const ownerPassword = document.getElementById("password").value;
+      const subdomain = subdomainInput.value.trim();
+      const plan = planSelect.value;
+      const country = document.getElementById("country").value.trim();
+      const city = document.getElementById("city").value.trim();
+
+      try {
+        showToast("Provisioning church workspace...", false);
+        
+        // 1. Create tenant and owner
+        const regRes = await fetch('/api/auth/register-tenant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, subdomain, ownerName, ownerEmail, ownerPassword, plan, country, city })
+        });
+        const regData = await regRes.json();
+
+        if (!regRes.ok) {
+          throw new Error(regData.error || "Workspace creation failed");
+        }
+
+        const tenant = regData.data;
+
+        // 2. Perform direct login to obtain token
+        showToast("Workspace created. Logging in...", false);
+        const loginRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-tenant-id': tenant.id
+          },
+          body: JSON.stringify({ email: ownerEmail, password: ownerPassword })
+        });
+        const loginData = await loginRes.json();
+
+        if (!loginRes.ok) {
+          throw new Error(loginData.error || "Onboarding authorization failed");
+        }
+
+        // 3. Save token & tenant credentials
+        localStorage.setItem("churchos.token", loginData.token);
+        localStorage.setItem("churchos.tenantId", tenant.id);
+        localStorage.setItem("churchos.subdomain", tenant.subdomain);
+
+        showToast("Success! Redirecting to onboarding...", false);
+        setTimeout(() => {
+          window.location.href = "/onboarding";
+        }, 1000);
+
+      } catch (err) {
+        showToast(err.message || "An unexpected error occurred", true);
+      }
+    });
+
+    // Handle Login Submission
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const subdomain = loginSubdomain.value.trim();
+      const email = document.getElementById("loginEmail").value.trim();
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        showToast("Resolving church workspace...", false);
+        
+        // 1. Resolve subdomain to tenant ID
+        const resolveRes = await fetch('/api/public/resolve-subdomain', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subdomain })
+        });
+        const resolveData = await resolveRes.json();
+
+        if (!resolveRes.ok) {
+          throw new Error(resolveData.error || "This church workspace does not exist.");
+        }
+
+        const tenantId = resolveData.tenantId;
+
+        // 2. Perform login
+        showToast("Signing in...", false);
+        const loginRes = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-tenant-id': tenantId
+          },
+          body: JSON.stringify({ email, password })
+        });
+        const loginData = await loginRes.json();
+
+        if (!loginRes.ok) {
+          throw new Error(loginData.error || "Invalid credentials.");
+        }
+
+        // 3. Save token & tenant credentials
+        localStorage.setItem("churchos.token", loginData.token);
+        localStorage.setItem("churchos.tenantId", tenantId);
+        localStorage.setItem("churchos.subdomain", subdomain);
+
+        showToast("Login successful! Redirecting to dashboard...", false);
+        setTimeout(() => {
+          window.location.href = "/admin";
+        }, 1000);
+      } catch (err) {
+        showToast(err.message || "Login failed: " + err.message, true);
+      }
+    });
+  </script>
+</body>
+</html>

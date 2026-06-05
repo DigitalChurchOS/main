@@ -5,6 +5,8 @@ node_modules/
 jspm_packages/
 web_modules/
 .npm-cache/
+.npm-cache*/
+.tmp.driveupload/
 
 # Production/Distribution builds
 dist/
@@ -46,3 +48,7 @@ Desktop.ini
 digitalchurch-docs-ready/
 digitalchurch-docs-checkout/
 digitalchurch-docs-ready.zip
+
+# Executables
+*.exe
+

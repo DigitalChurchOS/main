@@ -1,0 +1,10 @@
+{
+  "name": "@churchos/tenant-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/app.tsx",
+  "scripts": {
+    "dev": "echo \"Tenant dashboard dev server not configured yet\"",
+    "build": "node ../../scripts/verify-static-app.js public/index.html src/index.html"
+  }
+}

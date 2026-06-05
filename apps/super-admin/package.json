@@ -1,0 +1,9 @@
+{
+  "name": "@churchos/super-admin",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "echo \"Super Admin dev server not configured yet\"",
+    "build": "node ../../scripts/verify-static-app.js public/index.html"
+  }
+}

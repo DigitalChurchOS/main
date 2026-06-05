@@ -1,0 +1,2527 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-accent="orange">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Church OS — Super Admin Console</title>
+  <meta name="description" content="Platform-wide operating center for Digital Church OS multi-tenant SaaS">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, sans-serif;
+      --radius-xs:8px; --radius-sm:12px; --radius-md:16px; --radius-lg:22px; --radius-xl:30px;
+      --sidebar-width:284px; --sidebar-collapsed:82px;
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --shadow-soft: 0 22px 70px rgba(15,23,42,.08);
+      --shadow-card: 0 14px 40px rgba(15,23,42,.07);
+      --success:#16a34a; --success-soft:rgba(22,163,74,.12);
+      --warning:#d97706; --warning-soft:rgba(217,119,6,.14);
+      --danger:#dc2626; --danger-soft:rgba(220,38,38,.12);
+      --info:#2563eb; --info-soft:rgba(37,99,235,.12);
+      --purple:#7c3aed; --purple-soft:rgba(124,58,237,.12);
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    html[data-theme="light"]{
+      --bg:#f7f5f1; --bg-2:#fbfaf7; --surface:rgba(255,255,255,.84); --surface-strong:#ffffff;
+      --surface-raised:#ffffff; --sidebar:rgba(255,255,255,.76);
+      --border:rgba(15,23,42,.09); --border-strong:rgba(15,23,42,.13);
+      --text:#18202f; --muted:#667085; --muted-2:#98a2b3;
+      --glass:rgba(255,255,255,.72); --backdrop:rgba(15,23,42,.44);
+      --gridline:rgba(15,23,42,.08);
+    }
+    html[data-theme="dark"]{
+      --bg:#111723; --bg-2:#151d2b; --surface:rgba(24,33,48,.82); --surface-strong:#182130;
+      --surface-raised:#1d2839; --sidebar:rgba(20,28,42,.82);
+      --border:rgba(226,232,240,.09); --border-strong:rgba(226,232,240,.15);
+      --text:#f5f7fb; --muted:#a7b0c2; --muted-2:#707c91;
+      --glass:rgba(24,33,48,.74); --backdrop:rgba(0,0,0,.56);
+      --gridline:rgba(226,232,240,.08);
+      --shadow-soft:0 22px 70px rgba(0,0,0,.24); --shadow-card:0 14px 40px rgba(0,0,0,.18);
+    }
+    html[data-accent="orange"]{--accent:#f97316;--accent-2:#fb923c;--accent-soft:rgba(249,115,22,.14);--accent-shadow:rgba(249,115,22,.28);}
+    html[data-accent="blue"]{--accent:#2563eb;--accent-2:#60a5fa;--accent-soft:rgba(37,99,235,.14);--accent-shadow:rgba(37,99,235,.28);}
+    html[data-accent="purple"]{--accent:#7c3aed;--accent-2:#a78bfa;--accent-soft:rgba(124,58,237,.14);--accent-shadow:rgba(124,58,237,.28);}
+    html[data-accent="green"]{--accent:#16a34a;--accent-2:#4ade80;--accent-soft:rgba(22,163,74,.14);--accent-shadow:rgba(22,163,74,.28);}
+    html[data-accent="red"]{--accent:#dc2626;--accent-2:#f87171;--accent-soft:rgba(220,38,38,.14);--accent-shadow:rgba(220,38,38,.28);}
+    html[data-accent="pink"]{--accent:#db2777;--accent-2:#f472b6;--accent-soft:rgba(219,39,119,.14);--accent-shadow:rgba(219,39,119,.28);}
+    html[data-accent="gray"]{--accent:#475569;--accent-2:#94a3b8;--accent-soft:rgba(71,85,105,.14);--accent-shadow:rgba(71,85,105,.28);}
+
+    *{box-sizing:border-box;}
+    body{margin:0;font-family:var(--font);background:radial-gradient(circle at top left,var(--accent-soft),transparent 34rem),radial-gradient(circle at 78% 14%,rgba(14,165,233,.12),transparent 28rem),var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+    button,input,select,textarea{font:inherit;}
+    button{cursor:pointer;}
+    a{color:inherit;text-decoration:none;}
+    ::-webkit-scrollbar{width:6px;height:6px;}
+    ::-webkit-scrollbar-track{background:transparent;}
+    ::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:999px;}
+
+    .app-shell{display:grid;grid-template-columns:var(--sidebar-width) 1fr;min-height:100vh;transition:grid-template-columns .32s cubic-bezier(0.25, 1, 0.5, 1);}
+    .app-shell.collapsed{grid-template-columns:var(--sidebar-collapsed) 1fr;}
+
+    /* Sidebar */
+    .sidebar{position:sticky;top:0;height:100vh;padding:16px 14px;border-right:1px solid var(--border);background:var(--sidebar);backdrop-filter:blur(24px);display:flex;flex-direction:column;gap:18px;z-index:25;overflow:visible;transition:padding .32s cubic-bezier(0.25, 1, 0.5, 1), background-color .3s ease;}
+    .brand{display:flex;align-items:center;gap:12px;min-height:48px;padding:8px 8px 8px 10px;border-radius:var(--radius-md);transition:gap .32s cubic-bezier(0.25, 1, 0.5, 1), padding .32s cubic-bezier(0.25, 1, 0.5, 1);}
+    .brand-mark{width:38px;height:38px;flex:0 0 auto;border-radius:14px;display:grid;place-items:center;background:linear-gradient(145deg,var(--accent),var(--accent-2));color:white;box-shadow:0 16px 34px var(--accent-shadow);position:relative;overflow:hidden;}
+    .brand-mark:after{content:"";position:absolute;width:48px;height:48px;border:1px solid rgba(255,255,255,.35);transform:rotate(35deg);border-radius:16px;}
+    .brand-mark svg,.brand-mark i{width:18px;height:18px;}
+    .brand-text, .nav-section-title, .status-card-content {
+      opacity: 1;
+      max-width: 200px;
+      transition: opacity 0.15s ease, max-width 0.32s cubic-bezier(0.25, 1, 0.5, 1), margin 0.32s cubic-bezier(0.25, 1, 0.5, 1), padding 0.32s cubic-bezier(0.25, 1, 0.5, 1);
+      overflow: hidden;
+      white-space: nowrap;
+      display: block;
+    }
+    .brand-text strong{display:block;letter-spacing:-.03em;font-size:15px;}
+    .brand-text span{display:block;color:var(--muted);font-size:12px;margin-top:2px;}
+    .app-shell.collapsed .brand-text,
+    .app-shell.collapsed .nav-section-title,
+    .app-shell.collapsed .status-card-content {
+      opacity: 0;
+      max-width: 0;
+      margin: 0 !important;
+      padding: 0 !important;
+      pointer-events: none;
+    }
+    .app-shell.collapsed .brand {
+      gap: 0 !important;
+      padding: 8px 0 !important;
+      justify-content: center !important;
+    }
+    .collapse-btn{position:absolute;right:-15px;top:22px;width:30px;height:30px;border-radius:999px;border:1px solid var(--border);background:var(--surface-strong);color:var(--muted);display:grid;place-items:center;box-shadow:var(--shadow-card);z-index:30;}
+    .collapse-btn svg, .collapse-btn i {width:16px;height:16px;transition:transform .22s var(--ease);}
+    .app-shell.collapsed .collapse-btn svg, .app-shell.collapsed .collapse-btn i {transform:rotate(180deg);}
+    .nav-scroll{overflow-y:auto;overflow-x:hidden;flex:1;padding-right:4px;}
+    .nav-section{margin:11px 0 18px;transition:margin .2s var(--ease), border .2s var(--ease), padding .2s var(--ease);}
+    .nav-section-title{color:var(--muted-2);text-transform:uppercase;letter-spacing:.13em;font-weight:700;font-size:10px;padding:0 10px 8px;}
+    .nav-item{display:flex;align-items:center;gap:11px;height:38px;padding:0 11px;border-radius:12px;color:var(--muted);margin:2px 0;border:1px solid transparent;transition:all .22s var(--ease);position:relative;cursor:pointer;}
+    .nav-item i,.nav-item svg{width:18px;height:18px;flex:0 0 auto;transition:all .22s var(--ease);}
+    .nav-item:hover{background:var(--accent-soft);color:var(--text);}
+    .nav-item.active{background:linear-gradient(90deg,var(--accent-soft),transparent 88%);border-color:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--text);}
+    .nav-item.active:before{content:"";position:absolute;left:4px;width:4px;height:18px;border-radius:999px;background:var(--accent);transition:all .22s var(--ease);}
+    .nav-label{white-space:nowrap;font-size:13px;font-weight:650;}
+    .sidebar-footer{margin-top:auto;display:grid;gap:10px;transition:all .22s var(--ease);}
+
+    /* Collapsed Sidebar Custom Rules */
+    .app-shell.collapsed .brand {justify-content:center !important;padding:8px 0 !important;}
+    .app-shell.collapsed .nav-section {margin:8px 0 !important;border-top:1px dashed var(--border) !important;padding-top:8px !important;}
+    .app-shell.collapsed .nav-section:first-of-type {border-top:0 !important;padding-top:0 !important;}
+    .app-shell.collapsed .nav-item {flex-direction:column !important;height:auto !important;padding:10px 4px !important;gap:5px !important;align-items:center !important;justify-content:center !important;}
+    .app-shell.collapsed .nav-item i, .app-shell.collapsed .nav-item svg {width:22px !important;height:22px !important;}
+    .app-shell.collapsed .nav-label {display:block !important;font-size:10px !important;font-weight:600 !important;text-align:center !important;max-width:100% !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;margin:0 !important;}
+    .nav-label-full {display:inline;}
+    .nav-label-collapsed {display:none;}
+    .app-shell.collapsed .nav-label-full {display:none !important;}
+    .app-shell.collapsed .nav-label-collapsed {display:block !important;}
+    .app-shell.collapsed .nav-item.active {background:var(--surface-strong) !important;border-color:var(--border) !important;box-shadow:var(--shadow-soft) !important;border-radius:12px !important;color:var(--accent) !important;}
+    .app-shell.collapsed .nav-item.active:before {content:"" !important;position:absolute !important;left:0 !important;top:15% !important;bottom:15% !important;width:4px !important;height:auto !important;border-radius:0 4px 4px 0 !important;background:var(--accent) !important;}
+    .app-shell.collapsed .sidebar-footer {gap:6px !important;}
+    .app-shell.collapsed .nav-scroll {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+      mask-image: linear-gradient(to bottom, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%) !important;
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20px, black calc(100% - 20px), transparent 100%) !important;
+    }
+    .app-shell.collapsed .nav-scroll::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* Main & Topbar */
+    .main{min-width:0;}
+    .topbar{position:sticky;top:0;z-index:18;height:74px;border-bottom:1px solid var(--border);background:var(--glass);backdrop-filter:blur(24px);display:flex;align-items:center;justify-content:space-between;gap:18px;padding:0 26px;}
+    .icon-btn.mobile-menu{display:none;}
+    .title-group{display:none !important;}
+    .search-wrap{position:relative;width:400px;transition:width .24s var(--ease);}
+    .search-wrap:focus-within{width:500px;}
+    .search-wrap i,.search-wrap svg{position:absolute;width:17px;height:17px;left:14px;top:50%;transform:translateY(-50%);color:var(--muted-2);pointer-events:none;}
+    .global-search{width:100%;height:42px;border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:0 18px 0 40px;outline:none;font-size:13px;transition:border-color .18s var(--ease), box-shadow .18s var(--ease);}
+    .global-search:focus{border-color:color-mix(in srgb,var(--accent) 42%,var(--border));box-shadow:0 0 0 4px var(--accent-soft);}
+    .search-results{display:none;position:absolute;left:0;right:0;top:calc(100% + 10px);background:var(--surface-strong);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-soft);overflow:hidden;max-height:430px;z-index:60;}
+    .search-results.show{display:block;}
+    .result-group{padding:12px;border-bottom:1px solid var(--border);}
+    .result-group:last-child{border-bottom:0;}
+    .result-group h4{margin:0 0 8px;font-size:11px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.12em;}
+    .result-item{padding:8px 10px;border-radius:11px;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;border:0;background:none;width:100%;text-align:left;color:var(--text);font-size:13px;font-weight:650;}
+    .result-item:hover{background:var(--accent-soft);}
+    .result-item small{color:var(--muted);}
+    .top-actions{display:flex;align-items:center;gap:10px;}
+
+    /* Buttons */
+    .btn{height:40px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;font-weight:750;font-size:13px;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;white-space:nowrap;}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(15,23,42,.06);}
+    .btn svg{width:17px;height:17px;}
+    .btn.primary{background:linear-gradient(145deg,var(--accent),var(--accent-2));border-color:transparent;color:white;box-shadow:0 12px 28px var(--accent-shadow);}
+    .btn.primary:hover{box-shadow:0 16px 34px var(--accent-shadow);}
+    .btn.danger{background:var(--danger-soft);border-color:rgba(220,38,38,.22);color:var(--danger);}
+    .btn.ghost{background:transparent;}
+    .icon-btn{width:40px;height:40px;padding:0;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--muted);display:grid;place-items:center;}
+    .icon-btn svg{width:18px;height:18px;}
+    .small-btn{min-height:30px;border-radius:999px;border:1px solid var(--border);background:var(--surface-strong);color:var(--text);padding:0 10px;font-size:12px;font-weight:750;display:inline-flex;align-items:center;gap:6px;cursor:pointer;}
+    .small-btn svg{width:14px;height:14px;}
+    .profile-pill{display:flex;align-items:center;gap:8px;padding:4px 6px 4px 4px;border-radius:999px;border:1px solid var(--border);background:var(--surface);min-width:126px;}
+    .avatar{width:32px;height:32px;border-radius:999px;background:linear-gradient(145deg,#111827,#64748b);color:white;display:grid;place-items:center;font-weight:850;font-size:12px;}
+    .profile-pill span{font-size:12px;font-weight:800;}
+    .accent-popover{position:absolute;top:62px;right:92px;padding:10px;display:none;grid-template-columns:repeat(7,1fr);gap:8px;background:var(--surface-strong);border:1px solid var(--border);border-radius:18px;box-shadow:var(--shadow-soft);z-index:80;}
+    .accent-popover.show{display:grid;}
+    .swatch{width:28px;height:28px;border-radius:999px;border:3px solid var(--surface-strong);box-shadow:0 0 0 1px var(--border);cursor:pointer;}
+    .swatch[data-color="orange"]{background:#f97316;} .swatch[data-color="blue"]{background:#2563eb;}
+    .swatch[data-color="purple"]{background:#7c3aed;} .swatch[data-color="green"]{background:#16a34a;}
+    .swatch[data-color="red"]{background:#dc2626;} .swatch[data-color="pink"]{background:#db2777;}
+    .swatch[data-color="gray"]{background:#475569;}
+
+    /* Content */
+    .content{padding:26px;}
+    .page{display:none;animation:fadeIn .22s ease both;}
+    .page.active{display:block;}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+    .hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;padding:12px 0 24px 0;}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--accent);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;}
+    .eyebrow svg{width:15px;height:15px;}
+    .hero h2{margin:10px 0 8px;font-size:clamp(26px,4vw,42px);line-height:1.02;letter-spacing:-.055em;}
+    .hero p{max-width:780px;margin:0;color:var(--muted);line-height:1.65;}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+
+    /* Grid & Cards */
+    .grid{display:grid;gap:16px;}
+    .kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:18px;}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);padding:18px;min-width:0;}
+    .kpi-card{position:relative;overflow:hidden;min-height:140px;}
+    .kpi-card:after{content:"";position:absolute;right:-36px;bottom:-42px;width:110px;height:110px;border-radius:999px;background:var(--accent-soft);}
+    .kpi-top{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1;}
+    .kpi-icon{width:36px;height:36px;border-radius:14px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;}
+    .kpi-icon svg{width:18px;height:18px;}
+    .kpi-label{color:var(--muted);font-size:12px;font-weight:750;}
+    .kpi-value{margin-top:18px;font-size:30px;letter-spacing:-.055em;font-weight:850;position:relative;z-index:1;}
+    .trend{margin-top:7px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;position:relative;z-index:1;}
+    .trend.good{color:var(--success);} .trend.warn{color:var(--warning);} .trend.bad{color:var(--danger);}
+    .chart-grid{grid-template-columns:1.3fr .7fr;margin-top:16px;}
+    .panel-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px;}
+    .section-title{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:16px;}
+    .section-title h3{margin:0;font-size:16px;letter-spacing:-.025em;}
+    .section-title p{margin:4px 0 0;color:var(--muted);font-size:13px;}
+
+    /* Badges */
+    .badge{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--border);background:var(--surface-strong);color:var(--muted);white-space:nowrap;}
+    .badge.success{color:var(--success);background:var(--success-soft);border-color:rgba(22,163,74,.18);}
+    .badge.warning{color:var(--warning);background:var(--warning-soft);border-color:rgba(217,119,6,.18);}
+    .badge.danger{color:var(--danger);background:var(--danger-soft);border-color:rgba(220,38,38,.18);}
+    .badge.info{color:var(--info);background:var(--info-soft);border-color:rgba(37,99,235,.18);}
+    .badge.purple{color:var(--purple);background:var(--purple-soft);border-color:rgba(124,58,237,.18);}
+    .pill{display:inline-flex;align-items:center;gap:6px;min-height:26px;padding:4px 9px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--border);background:var(--surface-strong);color:var(--muted);white-space:nowrap;}
+
+    /* Lists */
+    .list{display:grid;gap:10px;}
+    .list-item{display:flex;gap:10px;align-items:flex-start;padding:11px;border-radius:var(--radius-sm);background:color-mix(in srgb,var(--surface-strong) 70%,transparent);border:1px solid var(--border);}
+    .list-icon{width:28px;height:28px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:0 0 auto;}
+    .list-icon svg{width:15px;height:15px;}
+    .list-item strong{display:block;font-size:13px;}
+    .list-item span{display:block;color:var(--muted);font-size:12px;margin-top:3px;line-height:1.4;}
+
+    /* Canvas Charts */
+    .canvas-wrap{height:290px;position:relative;}
+    canvas{width:100%;height:100%;display:block;}
+
+    /* Bar Charts */
+    .bar-row{display:grid;grid-template-columns:128px 1fr 44px;align-items:center;gap:10px;font-size:12px;}
+    .bar-row span:first-child{color:var(--muted);font-weight:650;}
+    .bar-track{height:10px;background:color-mix(in srgb,var(--muted) 12%,transparent);border-radius:999px;overflow:hidden;}
+    .bar-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2));width:var(--w);}
+
+    /* Donut Chart */
+    .donut-zone{display:grid;grid-template-columns:160px 1fr;gap:16px;align-items:center;}
+    .donut{width:150px;height:150px;border-radius:999px;background:conic-gradient(var(--accent) 0 34%,#38bdf8 34% 55%,#a78bfa 55% 70%,#22c55e 70% 82%,#f59e0b 82% 92%,#94a3b8 92% 100%);position:relative;margin:auto;box-shadow:inset 0 0 0 1px var(--border),0 18px 35px rgba(15,23,42,.08);}
+    .donut:after{content:"";position:absolute;inset:24px;border-radius:inherit;background:var(--surface-strong);}
+    .donut-center{position:absolute;inset:0;display:grid;place-items:center;z-index:1;text-align:center;font-weight:850;letter-spacing:-.04em;}
+    .donut-center small{display:block;color:var(--muted);font-size:11px;font-weight:750;letter-spacing:0;margin-top:4px;}
+    .legend{display:grid;gap:9px;}
+    .legend-item{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);}
+    .legend-item:before{content:"";width:10px;height:10px;border-radius:999px;background:var(--accent);margin-top:4px;flex:0 0 auto;}
+    .legend-item:nth-child(2):before{background:#38bdf8;}
+    .legend-item:nth-child(3):before{background:#a78bfa;}
+    .legend-item:nth-child(4):before{background:#22c55e;}
+    .legend-item:nth-child(5):before{background:#f59e0b;}
+    .legend-item:nth-child(6):before{background:#94a3b8;}
+
+    /* Tables */
+    .table-card{padding:0;overflow:hidden;}
+    .table-wrap{overflow-x:auto;}
+    table{width:100%;border-collapse:collapse;min-width:880px;}
+    th,td{text-align:left;padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+    th{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;background:color-mix(in srgb,var(--surface-strong) 78%,transparent);}
+    tr:last-child td{border-bottom:0;}
+    tbody tr:hover td{background:color-mix(in srgb,var(--accent) 5%,transparent);}
+    .church-cell{display:flex;align-items:center;gap:10px;min-width:220px;}
+    .church-logo{width:34px;height:34px;border-radius:13px;display:grid;place-items:center;font-size:12px;font-weight:850;background:var(--accent-soft);color:var(--accent);flex:0 0 auto;}
+    .church-cell strong{display:block;font-size:13px;}
+    .church-cell small{color:var(--muted);}
+    .action-cell{display:flex;gap:8px;}
+
+    /* Page Header */
+    .page-header{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:18px;align-items:center;margin-bottom:16px;}
+    .page-header h2{margin:0;font-size:28px;letter-spacing:-.055em;}
+    .page-header p{margin:7px 0 0;color:var(--muted);line-height:1.55;max-width:720px;}
+
+    /* Filter Bar */
+    .filter-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);margin-bottom:16px;}
+    .filter-chip,select.f-select,input.f-input{height:36px;border:1px solid var(--border);background-color:var(--surface-strong);color:var(--text);border-radius:999px;padding:0 12px;font-size:12px;font-weight:750;outline:none;}
+
+    /* Module Cards */
+    .module-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .module-card{display:grid;gap:13px;}
+    .module-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;}
+    .module-title{display:flex;gap:10px;}
+    .module-icon{width:42px;height:42px;border-radius:15px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex:0 0 auto;}
+    .module-icon svg{width:20px;height:20px;}
+    .module-title h4{margin:0;font-size:14px;}
+    .module-title span{color:var(--muted);font-size:12px;display:block;margin-top:4px;line-height:1.35;}
+    .pill-row{display:flex;gap:8px;flex-wrap:wrap;}
+    .meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
+    .meta{border:1px solid var(--border);background:var(--surface-strong);border-radius:12px;padding:9px;}
+    .meta span{color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:800;}
+    .meta strong{display:block;margin-top:5px;font-size:12px;}
+
+    /* Switch */
+    .switch{position:relative;width:44px;height:24px;flex:0 0 auto;}
+    .switch input{opacity:0;width:0;height:0;}
+    .slider{position:absolute;inset:0;background:color-mix(in srgb,var(--muted) 20%,transparent);border-radius:999px;transition:.2s;cursor:pointer;}
+    .slider:before{content:"";position:absolute;width:20px;height:20px;left:2px;top:2px;border-radius:999px;background:white;transition:.2s;box-shadow:0 3px 9px rgba(0,0,0,.22);}
+    .switch input:checked+.slider{background:var(--accent);}
+    .switch input:checked+.slider:before{transform:translateX(20px);}
+
+    /* Plans */
+    .plan-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .plan-card{position:relative;overflow:hidden;}
+    .plan-card.featured{border-color:color-mix(in srgb,var(--accent) 35%,var(--border));box-shadow:0 24px 70px var(--accent-shadow);}
+    .plan-card h3{margin:0;font-size:20px;}
+    .price{margin:12px 0;font-size:32px;font-weight:900;letter-spacing:-.06em;}
+    .price small{font-size:13px;color:var(--muted);font-weight:700;}
+    .feature-list{display:grid;gap:9px;margin:16px 0;}
+    .feature{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;}
+    .feature svg{width:15px;height:15px;color:var(--success);}
+
+    /* Usage */
+    .usage-card{display:grid;gap:13px;}
+    .usage-progress{height:10px;background:color-mix(in srgb,var(--muted) 12%,transparent);border-radius:999px;overflow:hidden;}
+    .usage-progress div{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:inherit;width:var(--w);}
+
+    /* Health */
+    .health-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
+    .health-card{display:grid;gap:14px;}
+    .health-top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .health-top h3{margin:0;font-size:15px;}
+    .metric-row{display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);}
+
+    /* Settings */
+    .settings-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .settings-card{display:grid;gap:11px;}
+    .settings-card h3{margin:0;font-size:15px;}
+    .field{display:grid;gap:6px;}
+    .field label{color:var(--muted);font-size:12px;font-weight:750;margin-left:4px;}
+    .field input,.field select,.field textarea{width:calc(100% - 8px);margin:4px;border:1px solid var(--border);background-color:var(--surface-strong);color:var(--text);border-radius:13px;min-height:40px;padding:9px 11px;outline:none;font-size:13px;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:color-mix(in srgb,var(--accent) 42%,var(--border));box-shadow:0 0 0 4px var(--accent-soft);}
+    .field textarea{min-height:94px;resize:vertical;}
+    .form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;}
+ 
+    /* Custom Modern Select Dropdowns */
+    select {
+      appearance: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(255,255,255,0.45)' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E") !important;
+      background-repeat: no-repeat !important;
+      background-position: right 14px center !important;
+      background-size: 13px !important;
+      padding-right: 36px !important;
+      cursor: pointer;
+      font-family: inherit;
+      transition: border-color 0.18s var(--ease), box-shadow 0.18s var(--ease);
+    }
+    html[data-theme="light"] select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='rgba(15,23,42,0.45)' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E") !important;
+    }
+    select:focus {
+      border-color: color-mix(in srgb, var(--accent) 42%, var(--border)) !important;
+      box-shadow: 0 0 0 4px var(--accent-soft) !important;
+    }
+    select.drawer-mod-status {
+      padding-right: 22px !important;
+      background-position: right 8px center !important;
+      background-size: 10px !important;
+    }
+ 
+    /* Modern Checkboxes & Radio Buttons */
+    input[type="checkbox"]:not(.switch input),
+    input[type="radio"] {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface-strong);
+      border-radius: 6px;
+      outline: none;
+      cursor: pointer;
+      display: inline-grid;
+      place-items: center;
+      transition: all 0.2s var(--ease);
+      margin: 0;
+      position: relative;
+      flex-shrink: 0;
+    }
+    input[type="radio"] {
+      border-radius: 50%;
+    }
+    /* Hover States */
+    input[type="checkbox"]:not(.switch input):hover,
+    input[type="radio"]:hover {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+    }
+    /* Focus States */
+    input[type="checkbox"]:not(.switch input):focus-visible,
+    input[type="radio"]:focus-visible {
+      box-shadow: 0 0 0 3px var(--accent-soft);
+      border-color: var(--accent);
+    }
+    /* Checkbox Checked State */
+    input[type="checkbox"]:not(.switch input):checked {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-shadow);
+    }
+    input[type="checkbox"]:not(.switch input):checked::after {
+      content: "";
+      width: 4px;
+      height: 7px;
+      border: solid white;
+      border-width: 0 1.5px 1.5px 0;
+      transform: rotate(45deg) translate(0px, -1px);
+      display: block;
+    }
+    /* Radio Checked State */
+    input[type="radio"]:checked {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px var(--accent-shadow);
+    }
+    input[type="radio"]:checked::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      display: block;
+    }
+
+    /* Empty State */
+    .empty-state{text-align:center;padding:46px 22px;border-radius:var(--radius-lg);border:1px dashed var(--border-strong);background:color-mix(in srgb,var(--surface-strong) 64%,transparent);}
+    .empty-icon{width:54px;height:54px;border-radius:20px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;margin:0 auto 14px;}
+    .empty-state h3{margin:0;font-size:18px;}
+    .empty-state p{margin:8px auto 18px;color:var(--muted);max-width:420px;line-height:1.55;}
+
+    /* Modal */
+    .modal-backdrop,.drawer-backdrop{position:fixed;inset:0;background:var(--backdrop);display:none;z-index:90;}
+    .modal-backdrop.show,.drawer-backdrop.show{display:block;animation:backdropIn .18s ease both;backdrop-filter:blur(5px);}
+    @keyframes backdropIn{from{opacity:0;}to{opacity:1;}}
+    .modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-48%) scale(.98);width:min(620px,calc(100% - 28px));max-height:calc(100vh - 40px);overflow:auto;background:var(--surface-strong);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:0 40px 110px rgba(0,0,0,.28);display:none;z-index:101;}
+    .modal.show{display:block;animation:modalIn .2s var(--ease) both;}
+    @keyframes modalIn{to{transform:translate(-50%,-50%) scale(1);}}
+    .modal-accent-line{height:4px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+    .modal-header,.modal-body,.modal-footer{padding:18px;}
+    .modal-header{border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+    .modal-title-row{display:flex;align-items:center;gap:12px;min-width:0;}
+    .modal-icon{width:40px;height:40px;border-radius:15px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);flex:0 0 auto;}
+    .modal-icon svg{width:20px;height:20px;}
+    .modal-header h3{margin:0;font-size:19px;}
+    .modal-header p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.45;}
+    .modal-body{display:grid;gap:13px;max-height:min(68vh,680px);overflow-y:auto;overflow-x:hidden;padding:18px 24px !important;}
+    .modal-footer{border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px;align-items:center;}
+    .modal-footnote{margin-right:auto;color:var(--muted);font-size:12px;}
+
+    /* Drawer */
+    .drawer{position:fixed;top:0;right:0;width:min(700px,100%);height:100vh;background:var(--surface-strong);border-left:1px solid var(--border);box-shadow:-30px 0 80px rgba(0,0,0,.22);transform:translateX(100%);transition:transform .22s var(--ease);z-index:100;display:flex;flex-direction:column;}
+    .drawer.show{transform:translateX(0);}
+    .drawer-header{padding:18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:12px;}
+    .drawer-header h3{margin:0;font-size:18px;letter-spacing:-.035em;}
+    .drawer-body{padding:18px 24px !important;overflow-y:auto;overflow-x:hidden;flex:1;display:grid;gap:14px;align-content:start;}
+    .drawer-footer{margin-top:auto;padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end;}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;overflow:auto;padding:4px;border:1px solid var(--border);background:var(--surface);border-radius:999px;width:max-content;max-width:100%;}
+    .tab-btn{border:0;background:transparent;color:var(--muted);border-radius:999px;padding:9px 14px;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer;}
+    .tab-btn.active{background:var(--accent);color:white;box-shadow:0 10px 22px var(--accent-shadow);}
+    .tab-content{display:none;margin-top:16px;}
+    .tab-content.active{display:block;}
+
+    /* Toast */
+    .toast{position:fixed;right:22px;bottom:22px;background:var(--surface-strong);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-soft);padding:12px 14px;display:none;align-items:center;gap:10px;z-index:150;max-width:360px;}
+    .toast.show{display:flex;animation:fadeIn .18s ease both;}
+    .toast-icon{width:28px;height:28px;border-radius:999px;display:grid;place-items:center;flex:0 0 auto;}
+    .toast-icon.success{background:var(--success-soft);color:var(--success);}
+    .toast-icon.danger{background:var(--danger-soft);color:var(--danger);}
+    .toast-icon.warning{background:var(--warning-soft);color:var(--warning);}
+    .toast-icon.info{background:var(--accent-soft);color:var(--accent);}
+
+    /* Login */
+    #loginOverlay{position:fixed;inset:0;background:var(--backdrop);backdrop-filter:blur(16px);z-index:10000;display:none;place-items:center;}
+    #loginOverlay.show{display:grid;}
+    .login-box{background:var(--surface-strong);border:1px solid var(--border);border-radius:var(--radius-xl);width:min(420px,calc(100% - 32px));padding:32px;box-shadow:0 40px 110px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:20px;}
+    .login-box .brand-mark{width:48px;height:48px;margin:0 auto 8px;}
+    .login-box h2{text-align:center;font-size:1.3rem;margin:0;}
+    .login-box .sub{text-align:center;color:var(--muted);font-size:13px;margin-top:-8px;}
+
+    /* Mobile sidebar backdrop */
+    .mobile-sidebar-backdrop{display:none;}
+    .mobile-sidebar-backdrop.show{display:block;position:fixed;inset:0;z-index:20;background:var(--backdrop);}
+
+    /* Responsive */
+    @media(max-width:1180px){
+      .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+      .chart-grid,.detail-grid{grid-template-columns:1fr;}
+      .panel-grid,.module-grid,.health-grid,.settings-grid,.plan-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+    }
+    @media(max-width:880px){
+      .app-shell,.app-shell.collapsed{grid-template-columns:1fr;}
+      .sidebar{position:fixed;left:0;transform:translateX(-100%);width:286px;transition:transform .22s var(--ease);}
+      .sidebar.show{transform:translateX(0);}
+      .collapse-btn{display:none;}
+      .icon-btn.mobile-menu{display:grid;}
+      .topbar{padding:0 14px;gap:10px;}
+      .search-wrap, .search-wrap:focus-within {
+        width: auto !important;
+        flex: 1 !important;
+        min-width: 0 !important;
+      }
+      .profile-pill{display:none;}
+      .content{padding:16px;}
+      .hero,.page-header{grid-template-columns:1fr;}
+      .hero-actions,.page-header .top-actions{justify-content:flex-start;}
+      .form-grid,.donut-zone{grid-template-columns:1fr;}
+    }
+    /* Modules catalog sub-layout and sidebar menu */
+    .modules-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 28px;
+      align-items: start;
+    }
+    .modules-menu {
+      position: sticky;
+      top: 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-right: 16px;
+      border-right: 1px solid var(--border);
+      max-height: calc(100vh - 130px);
+      overflow-y: auto;
+    }
+    .modules-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 650;
+      color: var(--muted);
+      border: 0;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+      transition: all .16s var(--ease);
+      text-decoration: none;
+    }
+    .modules-menu-item i, .modules-menu-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+    .modules-menu-item:hover {
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+    .modules-menu-item.active {
+      background: var(--accent);
+      color: white;
+    }
+    @media(max-width: 880px) {
+      .modules-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .modules-menu {
+        position: static;
+        flex-direction: row;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+        padding-right: 0;
+        padding-bottom: 12px;
+        overflow-x: auto;
+        max-height: none;
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- LOGIN OVERLAY -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <div class="brand-mark"><i data-lucide="church"></i></div>
+      <h2>Super Admin Login</h2>
+      <p class="sub">Digital Church OS Platform Console</p>
+      <div class="field"><label>Platform Email</label><input type="email" id="loginEmail" value="superadmin@churchos.local"></div>
+      <div class="field"><label>Secret Password</label><input type="password" id="loginPassword" value="Password123!"></div>
+      <button class="btn primary" style="width:100%;height:44px;" onclick="submitLogin()">Sign In to Console</button>
+      <p id="loginErrorText" style="color:var(--danger);font-size:12px;text-align:center;display:none;margin:0;"></p>
+    </div>
+  </div>
+
+  <!-- MOBILE SIDEBAR BACKDROP -->
+  <div class="mobile-sidebar-backdrop" id="mobileBackdrop"></div>
+
+  <!-- APP SHELL -->
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <button class="collapse-btn" id="collapseBtn" title="Collapse sidebar"><i data-lucide="chevron-left"></i></button>
+      <div class="brand">
+        <div class="brand-mark"><i data-lucide="church"></i></div>
+        <div class="brand-text"><strong>Digital Church OS</strong><span>Super Admin</span></div>
+      </div>
+      <nav class="nav-scroll" id="navScroll"></nav>
+      <div class="sidebar-footer">
+        <a class="nav-item" style="width:100%;margin:0;justify-content:flex-start;" onclick="logoutAdmin()"><i data-lucide="log-out"></i><span class="nav-label"><span class="nav-label-full">Sign Out</span><span class="nav-label-collapsed">Sign</span></span></a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-menu" id="mobileMenu"><i data-lucide="menu"></i></button>
+        <div class="title-group">
+          <div class="crumb"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Super Admin</div>
+          <h1 id="viewTitle">Overview</h1>
+        </div>
+        <div class="search-wrap">
+          <i data-lucide="search"></i>
+          <input class="global-search" id="globalSearch" placeholder="Search churches, modules, tickets..." />
+          <div class="search-results" id="searchResults"></div>
+        </div>
+        <div class="top-actions">
+          <button class="btn primary" onclick="switchView('onboarding')"><i data-lucide="plus"></i><span>Create Tenant</span></button>
+          <button class="icon-btn" id="themeToggle" title="Toggle theme"><i data-lucide="moon"></i></button>
+          <button class="icon-btn" id="accentToggle" title="Accent color"><i data-lucide="palette"></i></button>
+          <div class="profile-pill"><div class="avatar">SA</div><span>Super Admin</span></div>
+        </div>
+        <div class="accent-popover" id="accentPopover">
+          <button class="swatch" data-color="orange" title="Orange"></button>
+          <button class="swatch" data-color="blue" title="Blue"></button>
+          <button class="swatch" data-color="purple" title="Purple"></button>
+          <button class="swatch" data-color="green" title="Green"></button>
+          <button class="swatch" data-color="red" title="Red"></button>
+          <button class="swatch" data-color="pink" title="Pink"></button>
+          <button class="swatch" data-color="gray" title="Gray"></button>
+        </div>
+      </header>
+      <section class="content">
+        <div id="pages"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- TENANT DRAWER -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="drawer" id="tenantDrawer">
+    <div class="drawer-header">
+      <div><h3 id="drawerTenantName">Tenant</h3><span style="color:var(--muted);font-size:12px;" id="drawerTenantSubdomain"></span></div>
+      <button class="icon-btn" onclick="closeDrawer()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="drawer-body">
+      <div class="tabs" id="drawerTabs">
+        <button class="tab-btn active" data-dtab="overview">Overview</button>
+        <button class="tab-btn" data-dtab="modules">Modules</button>
+        <button class="tab-btn" data-dtab="users">Users</button>
+        <button class="tab-btn" data-dtab="domains">Domains</button>
+        <button class="tab-btn" data-dtab="billing">Billing</button>
+      </div>
+      <div class="tab-content active" id="dtab-overview">
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div><strong>ID:</strong> <code id="drawerDetailId" style="font-size:11px;">...</code></div>
+          <div><strong>Status:</strong> <span class="badge success" id="drawerDetailStatus">...</span></div>
+          <div><strong>Location:</strong> <span id="drawerDetailLocation" style="font-size:13px;font-weight:500;">...</span></div>
+          <div><strong>Created:</strong> <span id="drawerDetailCreated">...</span></div>
+          <div><strong>Onboarding Status:</strong> <span id="drawerDetailOnboarding" style="font-size:13px;font-weight:500;text-transform:capitalize;">...</span></div>
+          <div><strong>Trial Ends:</strong> <span id="drawerDetailTrial" style="font-size:13px;font-weight:500;">...</span></div>
+        </div>
+        <div style="border:1px solid var(--border);background:var(--surface);border-radius:var(--radius-sm);padding:14px;margin-top:14px;">
+          <h4 style="margin:0 0 8px;font-size:14px;color:var(--text);">Manage Free Trial</h4>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">Extend the trial duration for this church.</p>
+          <div style="display:flex;gap:8px;">
+            <button class="small-btn" onclick="extendTrial(7)">+7 Days</button>
+            <button class="small-btn" onclick="extendTrial(14)">+14 Days</button>
+          </div>
+        </div>
+        <div style="border:1px solid rgba(220,38,38,.15);background:var(--danger-soft);border-radius:var(--radius-sm);padding:14px;margin-top:14px;">
+          <h4 style="margin:0 0 8px;font-size:14px;color:var(--danger);">Administrative Actions</h4>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 10px;">Suspending or archiving terminates public operations immediately.</p>
+          <div style="display:flex;gap:8px;">
+            <button class="small-btn" id="drawerSuspendBtn" onclick="actionSuspendTenant()">Suspend</button>
+            <button class="small-btn" style="color:var(--danger);" onclick="actionArchiveTenant()">Archive</button>
+          </div>
+        </div>
+      </div>
+      <div class="tab-content" id="dtab-modules">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h4 style="margin:0;font-size:14px;">Module Entitlements</h4>
+          <button class="small-btn" onclick="saveTenantEntitlements()"><i data-lucide="save"></i>Save</button>
+        </div>
+        <div id="drawerModulesContainer" style="max-height:450px;overflow-y:auto;"></div>
+      </div>
+      <div class="tab-content" id="dtab-users">
+        <h4 style="margin:0 0 10px;font-size:14px;">Staff Users</h4>
+        <div class="table-wrap"><table><thead><tr><th>Email</th><th>Name</th><th>Status</th></tr></thead><tbody id="drawerUsersBody"></tbody></table></div>
+      </div>
+      <div class="tab-content" id="dtab-domains">
+        <h4 style="margin:0 0 10px;font-size:14px;">Custom Domains</h4>
+        <div class="table-wrap"><table><thead><tr><th>Domain</th><th>Type</th><th>SSL</th><th>Actions</th></tr></thead><tbody id="drawerDomainsBody"></tbody></table></div>
+      </div>
+      <div class="tab-content" id="dtab-billing">
+        <h4 style="margin:0 0 10px;font-size:14px;">Subscription Override</h4>
+        <div class="field"><label>Plan Override</label><select id="drawerBillingPlanSelect"></select></div>
+        <button class="small-btn" style="margin-top:8px;" onclick="saveTenantPlanOverride()">Save Override</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- PRO MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <section class="modal" id="appModal">
+    <div class="modal-accent-line"></div>
+    <div class="modal-header">
+      <div class="modal-title-row">
+        <div class="modal-icon" id="modalIcon"><i data-lucide="layers-3"></i></div>
+        <div><h3 id="modalTitle">Modal</h3><p id="modalSubtitle">Subtitle</p></div>
+      </div>
+      <button class="icon-btn" onclick="closeModal()"><i data-lucide="x"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-footer">
+      <span class="modal-footnote" id="modalFootnote"></span>
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn primary" id="modalPrimaryBtn" onclick="handleModalPrimary()"><i data-lucide="check"></i><span>Save</span></button>
+    </div>
+  </section>
+
+  <!-- TOAST -->
+  <div class="toast" id="toast">
+    <div class="toast-icon success" id="toastIcon"><i data-lucide="check"></i></div>
+    <div><strong id="toastTitle">Saved</strong><div id="toastBody" style="font-size:12px;color:var(--muted);margin-top:2px;"></div></div>
+  </div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   STATE & CONFIGURATION
+   ═══════════════════════════════════════════════════════════════ */
+let currentActiveView = 'overview';
+let globalPlans = [];
+let globalModules = [];
+let globalTenants = [];
+let selectedTenantId = null;
+let activeModalAction = null;
+
+const navSections = [
+  {title:'Overview', items:[{key:'overview', label:'Overview', icon:'layout-dashboard'}]},
+  {title:'Platform', items:[
+    {key:'tenants', label:'Churches / Tenants', icon:'building-2'},
+    {key:'onboarding', label:'Tenant Onboarding', icon:'clipboard-check'},
+    {key:'modules', label:'Modules Catalog', icon:'blocks'},
+    {key:'plans', label:'Plans & Pricing', icon:'badge-dollar-sign'},
+    {key:'subscriptions', label:'Subscriptions', icon:'credit-card'},
+    {key:'usage', label:'Usage & Metering', icon:'gauge'},
+    {key:'domains', label:'Domains', icon:'globe'}
+  ]},
+  {title:'Operations', items:[
+    {key:'users-roles', label:'Users & Roles', icon:'shield-check'},
+    {key:'support', label:'Support Tickets', icon:'life-buoy'},
+    {key:'announcements', label:'Announcements', icon:'megaphone'},
+    {key:'audit', label:'Audit Logs', icon:'scroll-text'},
+    {key:'health', label:'System Health', icon:'activity'}
+  ]},
+  {title:'Ecosystem', items:[
+    {key:'marketplace', label:'Marketplace Queue', icon:'store'},
+    {key:'themes', label:'Themes Registry', icon:'palette'},
+    {key:'plugins', label:'Plugins Catalog', icon:'puzzle'},
+    {key:'integrations', label:'Integrations Hub', icon:'plug'}
+  ]},
+  {title:'Settings', items:[
+    {key:'settings', label:'Platform Settings', icon:'settings'}
+  ]}
+];
+
+const viewNames = {
+  overview:'Platform Overview', tenants:'Churches / Tenants', onboarding:'Tenant Onboarding',
+  modules:'Modules Catalog', plans:'Plans & Pricing', subscriptions:'Subscriptions',
+  usage:'Usage & Metering', domains:'Domains Management', 'users-roles':'Users & Roles',
+  support:'Support Tickets', announcements:'Announcements', audit:'Audit Logs',
+  health:'System Health', marketplace:'Marketplace Queue', themes:'Themes Registry',
+  plugins:'Plugins Catalog', integrations:'Integrations Hub', settings:'Platform Settings'
+};
+
+const moduleSections = {
+  'Core Platform':{keys:['website-cms','theme-engine','user-role-management','domain-tenant-management','billing-subscription-management','analytics-reporting','plugin-extensions-engine','marketplace','localization-multilingual-engine','centralized-settings-engine'],icon:'blocks'},
+  'Content & Media':{keys:['media','livestream','church-services','dynamic-blog-publishing-engine','digital-library-resource-center','podcast-audio-broadcasting','ai-media-content','digital-signage-tv-display','worship-experience'],icon:'library'},
+  'Giving & Commerce':{keys:['tithes-offerings','partnerships-contributions','campaigns-causes','e-commerce-church-store','financial-management-accounting'],icon:'hand-coins'},
+  'Community':{keys:['ministry-funnels-landing-pages','member-management','community-engagement','ministry-crm','communication-notification-follow-up','live-chat-pastoral-care-support','member-outreach-invite-campaign','check-in-attendance-management','volunteer-workforce-management','forms-workflow-automation','prayer-testimony'],icon:'users'},
+  'Discipleship':{keys:['salvation-new-believer-journey','lms-discipleship-training','bible-scripture-engagement','cell-fellowship','children-family-ministry'],icon:'graduation-cap'},
+  'Events':{keys:['events-registration','live-meetings','booking-appointment-management'],icon:'calendar-days'},
+  'Mobile':{keys:['mobile-app-access','dedicated-white-label-church-app'],icon:'smartphone'},
+  'Multi-Branch':{keys:['multi-branch-multi-campus-management','advanced-translation-multilingual'],icon:'git-branch'},
+  'AI Layer':{keys:['ai-assistant-ministry-copilot'],icon:'sparkles'}
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+   ═══════════════════════════════════════════════════════════════ */
+function ic(name){ return `<i data-lucide="${name}"></i>`; }
+function badgeClass(v){
+  const s = String(v).toLowerCase();
+  if(['active','paid','verified','healthy','enabled','resolved'].some(x=>s.includes(x))) return 'success';
+  if(['trial','pending','warning','open','trialing','in_progress','preview'].some(x=>s.includes(x))) return 'warning';
+  if(['suspended','failed','critical','past_due','closed','rejected','archived','degraded'].some(x=>s.includes(x))) return 'danger';
+  if(['beta','add-on','enterprise','info'].some(x=>s.includes(x))) return 'info';
+  return '';
+}
+function badge(v){ return `<span class="badge ${badgeClass(v)}">${v}</span>`; }
+function ri(){ if(window.lucide) lucide.createIcons(); }
+function fmtDate(d){ try{ return new Date(d).toLocaleDateString(); }catch(e){ return d||'N/A'; } }
+
+/* ═══════════════════════════════════════════════════════════════
+   API WRAPPER
+   ═══════════════════════════════════════════════════════════════ */
+async function apiFetch(url, options = {}) {
+  const token = localStorage.getItem('super_admin_token');
+  const headers = { 'Content-Type': 'application/json', ...options.headers };
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+  try {
+    const response = await fetch(url, { ...options, headers });
+    if (response.status === 401 || response.status === 403) {
+      showLoginScreen();
+      throw new Error('Unauthorized platform session');
+    }
+    const json = await response.json();
+    if (!response.ok) throw new Error(json.error || 'Server error occurred');
+    return json;
+  } catch (err) {
+    showToast(err.message || 'Network fetch failure', 'danger');
+    throw err;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTH
+   ═══════════════════════════════════════════════════════════════ */
+function checkSession() {
+  const token = localStorage.getItem('super_admin_token');
+  if (!token) showLoginScreen(); else { hideLoginScreen(); initializeConsole(); }
+}
+function showLoginScreen(){ document.getElementById('loginOverlay').classList.add('show'); }
+function hideLoginScreen(){ document.getElementById('loginOverlay').classList.remove('show'); }
+async function submitLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const err = document.getElementById('loginErrorText');
+  err.style.display = 'none';
+  try {
+    const res = await fetch('/api/super-admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({email,password}) });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Invalid credentials');
+    localStorage.setItem('super_admin_token', json.token);
+    hideLoginScreen();
+    showToast('Console authorized!', 'success');
+    initializeConsole();
+  } catch(e) { err.textContent = e.message; err.style.display = 'block'; }
+}
+function logoutAdmin(){ localStorage.removeItem('super_admin_token'); showLoginScreen(); showToast('Signed out','info'); }
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════════════════════════ */
+function showToast(msg, type='info') {
+  const t = document.getElementById('toast');
+  const icon = document.getElementById('toastIcon');
+  document.getElementById('toastTitle').textContent = msg;
+  document.getElementById('toastBody').textContent = '';
+  icon.className = `toast-icon ${type==='danger'?'danger':type==='warning'?'warning':type==='success'?'success':'info'}`;
+  icon.innerHTML = ic(type==='danger'?'x':type==='warning'?'alert-triangle':'check');
+  t.classList.add('show');
+  ri();
+  setTimeout(()=> t.classList.remove('show'), 3500);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NAVIGATION & VIEW ROUTING
+   ═══════════════════════════════════════════════════════════════ */
+function getCollapsedLabel(label) {
+  if (!label) return '';
+  const firstWord = label.trim().split(/\s+/)[0];
+  return firstWord.length > 9 ? firstWord.slice(0, 8) + '...' : firstWord;
+}
+
+function renderNav(){
+  document.getElementById('navScroll').innerHTML = navSections.map(s=>`
+    <div class="nav-section">
+      <div class="nav-section-title">${s.title}</div>
+      ${s.items.map(i=>`<a class="nav-item" data-view="${i.key}" title="${i.label}">${ic(i.icon)}<span class="nav-label"><span class="nav-label-full">${i.label}</span><span class="nav-label-collapsed">${getCollapsedLabel(i.label)}</span></span></a>`).join('')}
+    </div>`).join('');
+}
+
+function switchView(viewId) {
+  currentActiveView = viewId;
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view === viewId);
+  });
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active', p.id === `page-${viewId}`);
+  });
+  document.getElementById('viewTitle').textContent = viewNames[viewId] || viewId;
+  loadViewData(viewId);
+  ri();
+}
+
+function loadViewData(v) {
+  const loaders = {
+    overview:fetchOverview, tenants:fetchTenants, domains:fetchDomains,
+    modules:fetchModules, plans:fetchPlans, subscriptions:fetchSubscriptions,
+    usage:fetchUsage, marketplace:fetchMarketplace, themes:fetchThemes,
+    plugins:fetchPlugins, integrations:fetchIntegrations,
+    'users-roles':fetchPlatformUsers, support:fetchSupportTickets,
+    audit:fetchAuditLogs, health:fetchSystemHealth, settings:fetchPlatformSettings
+  };
+  if(loaders[v]) loaders[v]();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   RENDER ALL PAGES (called once at init)
+   ═══════════════════════════════════════════════════════════════ */
+function renderAllPages(){
+  const pg = document.getElementById('pages');
+  pg.innerHTML = [
+    renderOverviewPage(), renderTenantsPage(), renderOnboardingPage(),
+    renderModulesPage(), renderPlansPage(), renderSubscriptionsPage(),
+    renderUsagePage(), renderDomainsPage(), renderUsersRolesPage(),
+    renderSupportPage(), renderAnnouncementsPage(), renderAuditPage(),
+    renderHealthPage(), renderMarketplacePage(), renderThemesPage(),
+    renderPluginsPage(), renderIntegrationsPage(), renderSettingsPage()
+  ].join('');
+}
+
+function pw(key,html){ return `<section class="page" id="page-${key}">${html}</section>`; }
+
+function renderOverviewPage(){
+  return pw('overview',`
+    <div class="hero">
+      <div>
+        <div class="eyebrow">${ic('sparkles')} Super Admin Command Center</div>
+        <h2>Good evening, Super Admin</h2>
+        <p>Monitor churches, subscriptions, modules, domains, support, marketplace, usage and provider health from one premium operating center.</p>
+      </div>
+      <div class="hero-actions">
+        <button class="btn primary" onclick="switchView('onboarding')">${ic('plus')}Create Tenant</button>
+        <button class="btn" onclick="switchView('support')">${ic('life-buoy')}Review Tickets</button>
+        <button class="btn" onclick="switchView('health')">${ic('activity')}System Health</button>
+      </div>
+    </div>
+    <div class="grid kpi-grid" id="overviewKpis">
+      ${[1,2,3,4].map(()=>`<article class="card kpi-card"><div class="kpi-top"><div class="kpi-label">Loading...</div><div class="kpi-icon">${ic('loader')}</div></div><div class="kpi-value">—</div><div class="trend">Loading</div></article>`).join('')}
+    </div>
+    <div class="grid chart-grid">
+      <article class="card">
+        <div class="section-title"><div><h3>Tenant Growth</h3><p>Church registrations over the last 6 months.</p></div></div>
+        <div class="canvas-wrap"><canvas id="tenantGrowthChart"></canvas></div>
+      </article>
+      <article class="card">
+        <div class="section-title"><div><h3>Usage Breakdown</h3><p>Platform resource allocation.</p></div></div>
+        <div class="donut-zone">
+          <div class="donut"><div class="donut-center"><div>—<small>Total usage</small></div></div></div>
+          <div class="legend">
+            <div class="legend-item"><span>Media storage</span><strong>34%</strong></div>
+            <div class="legend-item"><span>Livestream</span><strong>21%</strong></div>
+            <div class="legend-item"><span>AI usage</span><strong>15%</strong></div>
+            <div class="legend-item"><span>Notifications</span><strong>12%</strong></div>
+            <div class="legend-item"><span>Meetings</span><strong>10%</strong></div>
+            <div class="legend-item"><span>Mobile</span><strong>8%</strong></div>
+          </div>
+        </div>
+      </article>
+    </div>
+    <div class="grid panel-grid">
+      <article class="card">
+        <div class="section-title"><div><h3>Needs Attention</h3><p>Items requiring action.</p></div></div>
+        <div class="list" id="overviewAttention"><div class="list-item"><div class="list-icon">${ic('loader')}</div><div><strong>Loading...</strong></div></div></div>
+      </article>
+      <article class="card">
+        <div class="section-title"><div><h3>Recent Activity</h3><p>Latest platform events.</p></div></div>
+        <div class="list" id="overviewActivity"><div class="list-item"><div class="list-icon">${ic('loader')}</div><div><strong>Loading...</strong></div></div></div>
+      </article>
+      <article class="card">
+        <div class="section-title"><div><h3>System Health</h3><p>Provider status.</p></div></div>
+        <div class="list" id="overviewHealth"><div class="list-item"><div class="list-icon">${ic('loader')}</div><div><strong>Loading...</strong></div></div></div>
+      </article>
+    </div>
+  `);
+}
+
+function renderTenantsPage(){
+  return pw('tenants',`
+    <div class="page-header"><div><h2>Churches / Tenants</h2><p>Manage every church workspace, subscription, domain, module access and billing status.</p></div>
+      <div class="top-actions"><button class="btn primary" onclick="switchView('onboarding')">${ic('plus')}Create Tenant</button></div>
+    </div>
+    <div class="filter-bar">
+      <input class="f-input" id="tenantSearch" placeholder="Search churches..." oninput="fetchTenants()" style="flex:1;min-width:200px;">
+      <select class="f-select" id="tenantFilterStatus" onchange="fetchTenants()"><option value="">All Statuses</option><option value="active">Active</option><option value="trialing">Trialing</option><option value="suspended">Suspended</option><option value="archived">Archived</option></select>
+    </div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Church</th><th>Location</th><th>Subdomain</th><th>Plan / Trial</th><th>Onboarding</th><th>Status</th><th>Created</th><th>Actions</th></tr></thead><tbody id="tenantsTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderOnboardingPage(){
+  return pw('onboarding',`
+    <div class="page-header"><div><h2>Tenant Onboarding</h2><p>Provision a new church workspace with plan and administrator.</p></div></div>
+    <article class="card" style="max-width:720px;">
+      <div class="form-grid">
+        <div class="field"><label>Church Name</label><input type="text" id="onboardName" placeholder="e.g. Grace Fellowship Church"></div>
+        <div class="field"><label>Subdomain Slug</label><input type="text" id="onboardSubdomain" placeholder="e.g. grace"></div>
+        <div class="field"><label>Subscription Plan</label><select id="onboardPlan"></select></div>
+        <div class="field"><label>Trial Days</label><input type="number" id="onboardTrialDays" value="14"></div>
+        <div class="field"><label>Admin Name</label><input type="text" id="onboardOwnerName" placeholder="Pastor John Doe"></div>
+        <div class="field"><label>Admin Email</label><input type="email" id="onboardOwnerEmail" placeholder="pastor@grace.org"></div>
+      </div>
+      <div class="field" style="margin-top:13px;"><label>Admin Password</label><input type="password" id="onboardOwnerPassword" value="Password123!"></div>
+      <button class="btn primary" style="width:100%;height:44px;margin-top:16px;" onclick="submitOnboarding()">${ic('cloud-lightning')} Provision Tenant</button>
+    </article>
+  `);
+}
+
+function renderModulesPage(){
+  return pw('modules',`
+    <div class="page-header"><div><h2>Modules Catalog</h2><p>Manage all platform modules, pricing visibility and tenant availability.</p></div></div>
+    <div class="modules-layout">
+      <aside class="modules-menu" id="modulesSidebarMenu"></aside>
+      <div id="modulesCatalogGrid"></div>
+    </div>
+  `);
+}
+
+function renderPlansPage(){
+  return pw('plans',`
+    <div class="page-header"><div><h2>Plans & Pricing</h2><p>SaaS product packaging, module bundles, limits and billing intervals.</p></div>
+      <div class="top-actions"><button class="btn primary" onclick="openPlanModal()">${ic('plus')}Create Plan</button></div>
+    </div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Plan</th><th>Slug</th><th>Price</th><th>Members</th><th>Storage</th><th>SMS</th><th>Interval</th><th>Actions</th></tr></thead><tbody id="plansTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderSubscriptionsPage(){
+  return pw('subscriptions',`
+    <div class="page-header"><div><h2>Subscriptions</h2><p>Billing states, plan changes, trials and tenant suspension controls.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Church</th><th>Plan</th><th>Status</th><th>Period Start</th><th>Period End</th><th>Trial Ends</th></tr></thead><tbody id="subscriptionsTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderUsagePage(){
+  return pw('usage',`
+    <div class="page-header"><div><h2>Usage & Metering</h2><p>Resource monitoring for storage, bandwidth, AI and communication.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Tenant</th><th>SMS Sent</th><th>Storage (MB)</th><th>Bandwidth (MB)</th><th>AI Tokens</th></tr></thead><tbody id="usageTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderDomainsPage(){
+  return pw('domains',`
+    <div class="page-header"><div><h2>Domains Management</h2><p>DNS verification, SSL and custom domain routing for tenants.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Domain</th><th>Church</th><th>Type</th><th>SSL</th><th>Verification</th><th>Actions</th></tr></thead><tbody id="domainsTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderUsersRolesPage(){
+  return pw('users-roles',`
+    <div class="page-header"><div><h2>Platform Team Users</h2><p>Console admins and support agents.</p></div>
+      <div class="top-actions"><button class="btn primary" onclick="openPlatformUserModal()">${ic('plus')}Invite Member</button></div>
+    </div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Email</th><th>Role</th><th>Status</th><th>Created</th></tr></thead><tbody id="platformUsersTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderSupportPage(){
+  return pw('support',`
+    <div class="page-header"><div><h2>Support Tickets</h2><p>Manage tenant support requests and escalations.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Subject</th><th>Church</th><th>Priority</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody id="supportTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderAnnouncementsPage(){
+  return pw('announcements',`
+    <div class="page-header"><div><h2>Announcements</h2><p>Broadcast system notifications to all tenants.</p></div></div>
+    <article class="card" style="max-width:640px;">
+      <div class="field"><label>Title</label><input type="text" id="announceTitle" placeholder="e.g. Scheduled Maintenance"></div>
+      <div class="field" style="margin-top:13px;"><label>Content</label><textarea id="announceContent" placeholder="Announcement details..."></textarea></div>
+      <div class="form-grid" style="margin-top:13px;">
+        <div class="field"><label>Type</label><select id="announceType"><option value="info">Info</option><option value="warning">Warning</option><option value="success">Success</option><option value="danger">Alert</option></select></div>
+        <div class="field"><label>Target Audience</label><select id="announceAudience"><option value="all">All Plans</option><option value="starter">Starter Only</option><option value="growth">Growth Only</option><option value="pro">Pro Only</option><option value="enterprise">Enterprise Only</option></select></div>
+      </div>
+      <button class="btn primary" style="width:100%;height:44px;margin-top:16px;" onclick="submitAnnouncement()">${ic('send')} Broadcast Notification</button>
+    </article>
+  `);
+}
+
+function renderAuditPage(){
+  return pw('audit',`
+    <div class="page-header"><div><h2>Audit Logs</h2><p>Security console trails and platform action history.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Actor</th><th>Role</th><th>Action</th><th>Resource</th><th>Target ID</th><th>Timestamp</th></tr></thead><tbody id="auditLogsTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderHealthPage(){
+  return pw('health',`
+    <div class="page-header"><div><h2>System Health</h2><p>Provider and infrastructure status monitoring.</p></div></div>
+    <div class="grid health-grid" id="healthGrid"></div>
+  `);
+}
+
+function renderMarketplacePage(){
+  return pw('marketplace',`
+    <div class="page-header">
+      <div>
+        <h2>Marketplace Command Center</h2>
+        <p>Review developer submissions, run security checks, manage developer profiles, check audit records and suspend listings.</p>
+      </div>
+    </div>
+    
+    <div class="grid kpi-grid" style="margin-top: 14px; margin-bottom: 22px;">
+      <article class="card kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Submissions Pending</div>
+          <div class="kpi-icon">${ic('inbox')}</div>
+        </div>
+        <div class="kpi-value" id="kpiMarketplaceSubmissions">—</div>
+        <div class="trend warning">Pending review</div>
+      </article>
+      <article class="card kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Registered Developers</div>
+          <div class="kpi-icon">${ic('code-2')}</div>
+        </div>
+        <div class="kpi-value" id="kpiMarketplaceDevelopers">—</div>
+        <div class="trend good">Active developers</div>
+      </article>
+      <article class="card kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Security Audits Run</div>
+          <div class="kpi-icon">${ic('shield-alert')}</div>
+        </div>
+        <div class="kpi-value" id="kpiMarketplaceSecurity">—</div>
+        <div class="trend good">Scans completed</div>
+      </article>
+      <article class="card kpi-card">
+        <div class="kpi-top">
+          <div class="kpi-label">Suspended Assets</div>
+          <div class="kpi-icon">${ic('alert-octagon')}</div>
+        </div>
+        <div class="kpi-value" id="kpiMarketplaceSuspended">—</div>
+        <div class="trend bad">Blocked listings</div>
+      </article>
+    </div>
+
+    <div class="tabs" style="margin-bottom: 18px;">
+      <button class="tab-btn active" onclick="switchMarketSubView('submissions', this)">
+        ${ic('inbox')} Submissions Queue
+      </button>
+      <button class="tab-btn" onclick="switchMarketSubView('developers', this)">
+        ${ic('users')} Developers Registry
+      </button>
+      <button class="tab-btn" onclick="switchMarketSubView('security', this)">
+        ${ic('shield-check')} Security Audits
+      </button>
+      <button class="tab-btn" onclick="switchMarketSubView('suspensions', this)">
+        ${ic('alert-octagon')} Catalog Suspension
+      </button>
+      <button class="tab-btn" onclick="switchMarketSubView('audits', this)">
+        ${ic('scroll-text')} Tenant Audits
+      </button>
+    </div>
+
+    <!-- SUB-PAGES -->
+    <div id="marketSubView-submissions" class="tab-content active">
+      <article class="card table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Pricing</th>
+                <th>Developer</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="marketplaceTableBody">
+              <tr><td colspan="8"><div class="empty-state"><p>Loading submissions...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div id="marketSubView-developers" class="tab-content">
+      <article class="card table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Company Name</th>
+                <th>Website</th>
+                <th>Payout Email</th>
+                <th>Status</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="marketDevelopersTableBody">
+              <tr><td colspan="5"><div class="empty-state"><p>Loading developers...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div id="marketSubView-security" class="tab-content">
+      <div style="display:flex; justify-content:flex-end; margin-bottom: 12px;">
+        <button class="btn primary" onclick="openRecordSecurityModal()">
+          ${ic('shield-alert')} Record Manual Audit
+        </button>
+      </div>
+      <article class="card table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Asset / Version</th>
+                <th>Audit Status</th>
+                <th>Auditor</th>
+                <th>Scanned Date</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody id="marketSecurityTableBody">
+              <tr><td colspan="5"><div class="empty-state"><p>Loading security logs...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div id="marketSubView-suspensions" class="tab-content">
+      <article class="card table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Asset Name</th>
+                <th>Type</th>
+                <th>Price</th>
+                <th>Developer</th>
+                <th>Version</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="marketSuspensionsTableBody">
+              <tr><td colspan="7"><div class="empty-state"><p>Loading catalog...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+
+    <div id="marketSubView-audits" class="tab-content">
+      <article class="card table-card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Church / Tenant</th>
+                <th>Asset ID</th>
+                <th>Version</th>
+                <th>Action</th>
+                <th>Operator</th>
+                <th>Timestamp</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="marketAuditsTableBody">
+              <tr><td colspan="7"><div class="empty-state"><p>Loading audit logs...</p></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </div>
+  `);
+}
+
+function renderThemesPage(){
+  return pw('themes',`
+    <div class="page-header"><div><h2>Themes Registry</h2><p>Global theme presets for tenant dashboards.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Theme</th><th>Slug</th><th>Primary Color</th><th>Author</th></tr></thead><tbody id="themesTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderPluginsPage(){
+  return pw('plugins',`
+    <div class="page-header"><div><h2>Plugins Catalog</h2><p>Platform plugins and third-party extensions.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Plugin</th><th>Key</th><th>Pricing</th><th>Status</th></tr></thead><tbody id="pluginsTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderIntegrationsPage(){
+  return pw('integrations',`
+    <div class="page-header"><div><h2>Integrations Hub</h2><p>Platform service providers and third-party connections.</p></div></div>
+    <article class="card table-card"><div class="table-wrap"><table><thead><tr><th>Provider</th><th>Key</th><th>Category</th></tr></thead><tbody id="integrationsTableBody"></tbody></table></div></article>
+  `);
+}
+
+function renderSettingsPage(){
+  return pw('settings',`
+    <div class="page-header"><div><h2>Platform Settings</h2><p>Global configuration for white-label branding and defaults.</p></div></div>
+    <div class="grid settings-grid">
+      <article class="card settings-card">
+        <h3>Branding</h3>
+        <div class="field"><label>Platform Name</label><input type="text" id="platformNameInput"></div>
+        <div class="field"><label>Default Trial Days</label><input type="number" id="platformTrialDaysInput"></div>
+        <div class="field" style="flex-direction:row;align-items:center;gap:8px;">
+          <input type="checkbox" id="platformSignupInput" style="width:18px;height:18px;">
+          <label for="platformSignupInput" style="margin:0;">Enable Tenant Registrations</label>
+        </div>
+      </article>
+      <article class="card settings-card">
+        <h3>Console Accent Color</h3>
+        <div style="display:flex;gap:10px;margin-top:8px;">
+          ${['#f97316','#2563eb','#7c3aed','#16a34a','#dc2626','#db2777','#475569'].map(c=>
+            `<button style="width:32px;height:32px;border-radius:999px;background:${c};border:3px solid var(--surface-strong);box-shadow:0 0 0 1px var(--border);cursor:pointer;" onclick="setAccentFromSettings('${c}')"></button>`
+          ).join('')}
+        </div>
+        <button class="btn primary" style="margin-top:16px;" onclick="savePlatformSettings()">${ic('save')} Save Settings</button>
+      </article>
+    </div>
+  `);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   API DATA LOADERS
+   ═══════════════════════════════════════════════════════════════ */
+async function fetchOverview() {
+  try {
+    const res = await apiFetch('/api/super-admin/overview');
+    if (!res.data) return;
+    const d = res.data;
+    document.getElementById('overviewKpis').innerHTML = [
+      {label:'Total Churches',value:d.totalChurches,trend:`Active: ${d.activeChurches}`,icon:'church',mood:'good'},
+      {label:'Trialing',value:d.trialChurches,trend:'In trial phase',icon:'timer',mood:'warn'},
+      {label:'Platform MRR',value:`$${(d.mrr||0).toLocaleString()}`,trend:'Aggregate revenue',icon:'line-chart',mood:'good'},
+      {label:'Custom Domains',value:d.totalCustomDomains,trend:'Connected domains',icon:'globe',mood:'good'}
+    ].map(k=>`<article class="card kpi-card"><div class="kpi-top"><div><div class="kpi-label">${k.label}</div></div><div class="kpi-icon">${ic(k.icon)}</div></div><div class="kpi-value">${k.value}</div><div class="trend ${k.mood}">${ic(k.mood==='bad'?'arrow-down-right':k.mood==='warn'?'minus':'arrow-up-right')} ${k.trend}</div></article>`).join('');
+
+    const actEl = document.getElementById('overviewActivity');
+    if (d.recentActivities && d.recentActivities.length > 0) {
+      actEl.innerHTML = d.recentActivities.map(a=>`<div class="list-item"><div class="list-icon">${ic('activity')}</div><div style="min-width:0;flex:1"><strong>${a.actorEmail}</strong><span>${a.action} on ${a.targetType} · ${fmtDate(a.createdAt)}</span></div></div>`).join('');
+    } else {
+      actEl.innerHTML = `<div class="list-item"><div class="list-icon">${ic('info')}</div><div><strong>No recent activities</strong></div></div>`;
+    }
+    document.getElementById('overviewAttention').innerHTML = [
+      ['Review support tickets','Open tickets need attention','life-buoy'],
+      ['Check domain verifications','Pending DNS records','globe'],
+      ['Marketplace queue','Submissions awaiting review','store']
+    ].map(([t,d,i])=>`<div class="list-item"><div class="list-icon">${ic(i)}</div><div style="min-width:0;flex:1"><strong>${t}</strong><span>${d}</span></div></div>`).join('');
+
+    document.getElementById('overviewHealth').innerHTML = [
+      ['Database','healthy','database'],['API','healthy','activity'],['Email','healthy','mail']
+    ].map(([n,s,i])=>`<div class="list-item"><div class="list-icon">${ic(i)}</div><div style="min-width:0;flex:1"><strong>${n}</strong><span>${s}</span></div>${badge(s)}</div>`).join('');
+
+    drawCharts();
+    ri();
+  } catch(e){}
+}
+
+async function fetchTenants() {
+  try {
+    const search = document.getElementById('tenantSearch')?.value || '';
+    const status = document.getElementById('tenantFilterStatus')?.value || '';
+    let url = '/api/super-admin/tenants';
+    const params = [];
+    if (search) params.push(`search=${encodeURIComponent(search)}`);
+    if (status) params.push(`status=${encodeURIComponent(status)}`);
+    if (params.length > 0) url += '?' + params.join('&');
+    const res = await apiFetch(url);
+    if (!res.data) return;
+    globalTenants = res.data;
+    const tbody = document.getElementById('tenantsTableBody');
+    if (globalTenants.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">'+ic('frown')+'</div><h3>No churches found</h3></div></td></tr>';
+    } else {
+      tbody.innerHTML = globalTenants.map(t=>`<tr>
+        <td><div class="church-cell"><div class="church-logo">${(t.name||'?').split(' ').map(w=>w[0]).slice(0,2).join('')}</div><div><strong style="cursor:pointer;color:var(--accent);" onclick="openDrawer('${t.id}')">${t.name}</strong><small>${t.subdomain}</small></div></div></td>
+        <td>${t.city && t.country ? `${t.city}, ${t.country}` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td><code>${t.subdomain}</code></td>
+        <td>
+          ${t.subscription?.plan?.name||'<span style="color:var(--muted)">No Plan</span>'}
+          ${t.trialEndsAt ? `<br><small style="color:var(--muted)">Trial ends: ${fmtDate(t.trialEndsAt)}</small>` : ''}
+        </td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:50px;height:6px;background:var(--border);border-radius:3px;overflow:hidden;">
+              <div style="width:${t.onboardingStatus === 'completed' ? '100%' : (t.onboardingStatus === 'in_progress' ? '50%' : '10%')};height:100%;background:var(--accent);"></div>
+            </div>
+            <small style="text-transform: capitalize;">${t.onboardingStatus || 'pending'}</small>
+          </div>
+        </td>
+        <td>${badge(t.status)}</td>
+        <td>${fmtDate(t.createdAt)}</td>
+        <td><div class="action-cell"><button class="small-btn" onclick="openDrawer('${t.id}')">${ic('eye')}View</button></div></td>
+      </tr>`).join('');
+    }
+    ri();
+  } catch(e){}
+}
+
+async function submitOnboarding() {
+  const name = document.getElementById('onboardName').value;
+  const subdomain = document.getElementById('onboardSubdomain').value;
+  const planId = document.getElementById('onboardPlan').value;
+  const trialDays = document.getElementById('onboardTrialDays').value;
+  const ownerName = document.getElementById('onboardOwnerName').value;
+  const ownerEmail = document.getElementById('onboardOwnerEmail').value;
+  const ownerPassword = document.getElementById('onboardOwnerPassword').value;
+  if (!name || !subdomain || !ownerEmail) { showToast('Name, subdomain and email required','warning'); return; }
+  try {
+    const res = await apiFetch('/api/super-admin/tenants', { method:'POST', body:JSON.stringify({name,subdomain,planId,trialDays,ownerName,ownerEmail,ownerPassword}) });
+    if (res.data) { showToast(`Tenant '${name}' onboarded!`,'success'); document.getElementById('onboardName').value=''; document.getElementById('onboardSubdomain').value=''; switchView('tenants'); }
+  } catch(e){}
+}
+
+async function fetchDomains() {
+  try {
+    const res = await apiFetch('/api/super-admin/domains');
+    if (!res.data) return;
+    const tbody = document.getElementById('domainsTableBody');
+    if (res.data.length === 0) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><h3>No domains</h3></div></td></tr>'; }
+    else { tbody.innerHTML = res.data.map(d=>`<tr><td><strong>${d.domain}</strong></td><td>${d.tenant?.name||'Unknown'}</td><td>${d.isPrimary?'Primary':'Alias'}</td><td>${badge(d.status)}</td><td><code>${d.providerMetadata||'—'}</code></td><td><button class="small-btn" onclick="verifyDomain('${d.id}')">${ic('refresh-cw')}Verify</button></td></tr>`).join(''); }
+    ri();
+  } catch(e){}
+}
+async function verifyDomain(id) {
+  try { await apiFetch(`/api/super-admin/domains/${id}/verify`,{method:'POST'}); showToast('DNS check completed!','success'); fetchDomains(); } catch(e){}
+}
+
+async function fetchModules() {
+  try {
+    const res = await apiFetch('/api/super-admin/modules');
+    if (!res.data) return;
+    globalModules = res.data;
+    const grid = document.getElementById('modulesCatalogGrid');
+    
+    let html = '';
+    let menuHtml = '';
+    const groupedKeys = new Set();
+    const getSlug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    
+    for (const [sectionName, config] of Object.entries(moduleSections)) {
+      const sectionModules = globalModules.filter(m => config.keys.includes(m.key));
+      sectionModules.forEach(m => groupedKeys.add(m.key));
+      
+      if (sectionModules.length > 0) {
+        const slug = getSlug(sectionName);
+        menuHtml += `
+          <a href="#cat-${slug}" class="modules-menu-item">
+            ${ic(config.icon)} <span>${sectionName}</span>
+          </a>
+        `;
+        
+        html += `
+          <div class="category-section" id="cat-${slug}" style="margin-top:28px; scroll-margin-top:90px;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px;">
+              <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0;">
+                ${ic(config.icon)}
+              </div>
+              <h3 style="margin:0;font-size:16px;letter-spacing:-.02em;font-weight:700;">${sectionName}</h3>
+            </div>
+            <div class="grid module-grid">
+              ${sectionModules.map(m => `
+                <article class="card module-card">
+                  <div class="module-head">
+                    <div class="module-title">
+                      <div class="module-icon">${ic(m.icon || config.icon)}</div>
+                      <div>
+                        <h4>${m.name}</h4>
+                        <span>${m.description || m.category || 'Module'}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="pill-row" style="margin-top:auto; padding-top:8px; display:flex; align-items:center; justify-content:space-between; width:100%;">
+                    <button class="small-btn" onclick="openModuleSettings('${m.key}')">${ic('settings')}Settings</button>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                      <span style="font-size:11px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">${m.status === 'active' ? 'Active' : 'Hidden'}</span>
+                      <label class="switch" style="margin:0;">
+                        <input type="checkbox" ${m.status === 'active' ? 'checked' : ''} onchange="toggleModuleCatalogStatus('${m.key}',this.checked)">
+                        <span class="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                </article>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    const otherModules = globalModules.filter(m => !groupedKeys.has(m.key));
+    if (otherModules.length > 0) {
+      const otherSlug = 'uncategorized';
+      menuHtml += `
+        <a href="#cat-${otherSlug}" class="modules-menu-item">
+          ${ic('puzzle')} <span>Other Modules</span>
+        </a>
+      `;
+      
+      html += `
+        <div class="category-section" id="cat-${otherSlug}" style="margin-top:28px; scroll-margin-top:90px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;border-bottom:1px solid var(--border);padding-bottom:8px;">
+            <div style="width:32px;height:32px;border-radius:10px;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;flex-shrink:0;">
+              ${ic('puzzle')}
+            </div>
+            <h3 style="margin:0;font-size:16px;letter-spacing:-.02em;font-weight:700;">Uncategorized & Extensions</h3>
+          </div>
+          <div class="grid module-grid">
+            ${otherModules.map(m => `
+              <article class="card module-card">
+                <div class="module-head">
+                  <div class="module-title">
+                    <div class="module-icon">${ic(m.icon || 'puzzle')}</div>
+                    <div>
+                      <h4>${m.name}</h4>
+                      <span>${m.description || m.category || 'Module'}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="pill-row" style="margin-top:auto; padding-top:8px; display:flex; align-items:center; justify-content:space-between; width:100%;">
+                  <button class="small-btn" onclick="openModuleSettings('${m.key}')">${ic('settings')}Settings</button>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-size:11px;font-weight:750;color:var(--muted);text-transform:uppercase;letter-spacing:0.04em;">${m.status === 'active' ? 'Active' : 'Hidden'}</span>
+                    <label class="switch" style="margin:0;">
+                      <input type="checkbox" ${m.status === 'active' ? 'checked' : ''} onchange="toggleModuleCatalogStatus('${m.key}',this.checked)">
+                      <span class="slider"></span>
+                    </label>
+                  </div>
+                </div>
+              </article>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('modulesSidebarMenu').innerHTML = menuHtml;
+    grid.innerHTML = html;
+    ri();
+  } catch(e){}
+}
+async function toggleModuleCatalogStatus(key, checked) {
+  try {
+    await apiFetch(`/api/super-admin/modules/${key}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status: checked ? 'active' : 'hidden' })
+    });
+    showToast(`Module '${key}' updated!`, 'success');
+    fetchModules();
+  } catch(e){}
+}
+function openModuleSettings(moduleKey) {
+  const mod = globalModules.find(m=>m.key===moduleKey);
+  if(!mod) return;
+  openModal({
+    title:`${mod.name} Settings`,
+    subtitle:`Configure system settings for the ${mod.name} platform module.`,
+    icon:'settings',
+    primaryText:'Save Settings',
+    body:`
+      <div style="display:flex;flex-direction:column;gap:14px;max-height:60vh;overflow-y:auto;padding-right:4px;">
+        <!-- General Metadata Section -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="field" style="grid-column: span 2;">
+            <label>Module Display Name</label>
+            <input type="text" id="modSettingsName" value="${mod.name || ''}">
+          </div>
+          <div class="field" style="grid-column: span 2;">
+            <label>Description</label>
+            <textarea id="modSettingsDesc" style="min-height:60px;">${mod.description || ''}</textarea>
+          </div>
+          <div class="field">
+            <label>Category</label>
+            <select id="modSettingsCategory">
+              <option value="Core" ${mod.category==='Core'?'selected':''}>Core Platform</option>
+              <option value="Content" ${mod.category==='Content'?'selected':''}>Content & Media</option>
+              <option value="Finance" ${mod.category==='Finance'?'selected':''}>Giving & Commerce</option>
+              <option value="Engagement" ${mod.category==='Engagement'?'selected':''}>Community & Engagement</option>
+              <option value="Discipleship" ${mod.category==='Discipleship'?'selected':''}>Salvation & Discipleship</option>
+              <option value="Meetings" ${mod.category==='Meetings'?'selected':''}>Events & Meetings</option>
+              <option value="Mobile" ${mod.category==='Mobile'?'selected':''}>Mobile App Access</option>
+              <option value="Global" ${mod.category==='Global'?'selected':''}>Multi-Branch & Global</option>
+              <option value="Intelligence" ${mod.category==='Intelligence'?'selected':''}>AI & Intelligence</option>
+              <option value="Admin" ${mod.category==='Admin'?'selected':''}>System Admin Tools</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Lucide Icon Slug</label>
+            <input type="text" id="modSettingsIcon" value="${mod.icon || 'package'}">
+          </div>
+          <div class="field">
+            <label>System Status</label>
+            <select id="modSettingsStatus">
+              <option value="active" ${mod.status==='active'?'selected':''}>Active (Production)</option>
+              <option value="beta" ${mod.status==='beta'?'selected':''}>Beta (Testing)</option>
+              <option value="hidden" ${mod.status==='hidden'?'selected':''}>Hidden</option>
+              <option value="deprecated" ${mod.status==='deprecated'?'selected':''}>Deprecated</option>
+              <option value="coming_soon" ${mod.status==='coming_soon'?'selected':''}>Coming Soon</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Display Order (Priority)</label>
+            <input type="number" id="modSettingsOrder" value="${mod.displayOrder || 0}">
+          </div>
+          <div class="field" style="grid-column: span 2;">
+            <label>Dependencies (JSON array, e.g. ["website-cms"])</label>
+            <input type="text" id="modSettingsDependencies" value='${mod.dependencies || "[]"}'>
+          </div>
+        </div>
+
+        <!-- Capability Toggles Section -->
+        <div style="border-top:1px solid var(--border);padding-top:12px;">
+          <h4 style="margin:0 0 10px 0;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;font-weight:750;">Module Flags & Capabilities</h4>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="modSettingsAddOn" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.isAddOn?'checked':''}>
+              <label for="modSettingsAddOn" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Paid Add-on Module</label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="modSettingsUsageBilling" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.supportsUsageBilling?'checked':''}>
+              <label for="modSettingsUsageBilling" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Supports Usage Billing</label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="modSettingsProviderModes" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.supportsProviderModes?'checked':''}>
+              <label for="modSettingsProviderModes" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Supports Provider Modes</label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="modSettingsPublicFacing" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.isPublicFacing?'checked':''}>
+              <label for="modSettingsPublicFacing" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Public-Facing Pages</label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="modSettingsDashboardPages" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.hasDashboardPages?'checked':''}>
+              <label for="modSettingsDashboardPages" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Has Dashboard Views</label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="checkbox" id="modSettingsMobileFeatures" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.hasMobileFeatures?'checked':''}>
+              <label for="modSettingsMobileFeatures" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Has Mobile Features</label>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;grid-column: span 2;">
+              <input type="checkbox" id="modSettingsThirdParty" style="width:16px;height:16px;margin:0;cursor:pointer;" ${mod.requiresThirdParty?'checked':''}>
+              <label for="modSettingsThirdParty" style="font-size:12px;color:var(--text);margin:0;cursor:pointer;font-weight:normal;">Requires Third-Party Service Connection</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuration Settings Schema Section -->
+        <div style="border-top:1px solid var(--border);padding-top:12px;">
+          <div class="field">
+            <label>Default Configuration Settings Schema (JSON)</label>
+            <textarea id="modSettingsSchema" style="font-family:monospace;font-size:11px;min-height:90px;white-space:pre;overflow-x:auto;">${mod.defaultSettingsSchema || '{}'}</textarea>
+          </div>
+        </div>
+      </div>
+    `,
+    onPrimary: async () => {
+      const name = document.getElementById('modSettingsName').value;
+      const description = document.getElementById('modSettingsDesc').value;
+      const category = document.getElementById('modSettingsCategory').value;
+      const icon = document.getElementById('modSettingsIcon').value || 'package';
+      const status = document.getElementById('modSettingsStatus').value;
+      const displayOrder = parseInt(document.getElementById('modSettingsOrder').value, 10) || 0;
+      const dependencies = document.getElementById('modSettingsDependencies').value;
+      
+      const isAddOn = document.getElementById('modSettingsAddOn').checked;
+      const supportsUsageBilling = document.getElementById('modSettingsUsageBilling').checked;
+      const supportsProviderModes = document.getElementById('modSettingsProviderModes').checked;
+      const isPublicFacing = document.getElementById('modSettingsPublicFacing').checked;
+      const hasDashboardPages = document.getElementById('modSettingsDashboardPages').checked;
+      const hasMobileFeatures = document.getElementById('modSettingsMobileFeatures').checked;
+      const requiresThirdParty = document.getElementById('modSettingsThirdParty').checked;
+      
+      const defaultSettingsSchema = document.getElementById('modSettingsSchema').value;
+
+      try {
+        JSON.parse(dependencies);
+      } catch (e) {
+        showToast('Dependencies must be a valid JSON array (e.g. ["website-cms"])', 'danger');
+        return;
+      }
+      try {
+        JSON.parse(defaultSettingsSchema);
+      } catch (e) {
+        showToast('Default settings schema must be a valid JSON object string', 'danger');
+        return;
+      }
+
+      try {
+        await apiFetch(`/api/super-admin/modules/${mod.key}`, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            name, description, category, icon, status, displayOrder, dependencies,
+            isAddOn, supportsUsageBilling, supportsProviderModes, isPublicFacing,
+            hasDashboardPages, hasMobileFeatures, requiresThirdParty, defaultSettingsSchema
+          })
+        });
+        showToast('Module settings updated successfully!', 'success');
+        closeModal();
+        fetchModules();
+      } catch (e) {
+        showToast('Failed to update module settings', 'danger');
+      }
+    }
+  });
+}
+
+async function fetchPlans() {
+  try {
+    const res = await apiFetch('/api/super-admin/plans');
+    if (!res.data) return;
+    globalPlans = res.data;
+    document.getElementById('plansTableBody').innerHTML = globalPlans.map(p=>`<tr>
+      <td><strong>${p.name}</strong></td><td><code>${p.slug}</code></td><td>$${p.basePrice}/${p.billingInterval}</td>
+      <td>${p.includedMembers?.toLocaleString()} users</td><td>${p.includedStorageGb} GB</td><td>${p.includedSms?.toLocaleString()}</td>
+      <td style="text-transform:capitalize">${p.billingInterval}</td><td><button class="small-btn" onclick="openPlanModal('${p.id}')">${ic('edit-3')}Edit</button></td>
+    </tr>`).join('');
+    const sel = document.getElementById('onboardPlan');
+    if(sel) sel.innerHTML = globalPlans.map(p=>`<option value="${p.id}">${p.name} ($${p.basePrice}/${p.billingInterval})</option>`).join('');
+    const dsel = document.getElementById('drawerBillingPlanSelect');
+    if(dsel) dsel.innerHTML = globalPlans.map(p=>`<option value="${p.id}">${p.name}</option>`).join('');
+    ri();
+  } catch(e){}
+}
+
+let planEditingId = null;
+function openPlanModal(planId=null) {
+  planEditingId = planId;
+  const plan = planId ? globalPlans.find(p=>p.id===planId) : null;
+  openModal({
+    title: planId ? 'Edit Plan Limits' : 'Create Pricing Plan',
+    subtitle: 'Define pricing, limits and billing interval.',
+    icon: 'badge-dollar-sign',
+    primaryText: planId ? 'Update Plan' : 'Create Plan',
+    body: `<div class="form-grid">
+      <div class="field"><label>Plan Name</label><input type="text" id="planName" value="${plan?.name||''}"></div>
+      <div class="field"><label>Monthly Price</label><input type="number" id="planPrice" value="${plan?.basePrice||49}"></div>
+      <div class="field"><label>Billing Interval</label><select id="planInterval"><option value="month" ${plan?.billingInterval==='month'?'selected':''}>Monthly</option><option value="year" ${plan?.billingInterval==='year'?'selected':''}>Annual</option></select></div>
+      <div class="field"><label>Members Limit</label><input type="number" id="planMembers" value="${plan?.includedMembers||1000}"></div>
+      <div class="field"><label>Storage (GB)</label><input type="number" id="planStorage" value="${plan?.includedStorageGb||50}"></div>
+      <div class="field"><label>SMS Limit</label><input type="number" id="planSms" value="${plan?.includedSms||250}"></div>
+    </div>`,
+    onPrimary: savePlanForm
+  });
+}
+async function savePlanForm() {
+  const body = { name:document.getElementById('planName').value, basePrice:document.getElementById('planPrice').value, billingInterval:document.getElementById('planInterval').value, includedMembers:document.getElementById('planMembers').value, includedStorageGb:document.getElementById('planStorage').value, includedSms:document.getElementById('planSms').value };
+  if(!body.name) return;
+  try {
+    if(planEditingId) await apiFetch(`/api/super-admin/plans/${planEditingId}`,{method:'PATCH',body:JSON.stringify(body)});
+    else await apiFetch('/api/super-admin/plans',{method:'POST',body:JSON.stringify(body)});
+    showToast(planEditingId?'Plan updated!':'Plan created!','success'); closeModal(); fetchPlans();
+  } catch(e){}
+}
+
+async function fetchSubscriptions() {
+  try {
+    const res = await apiFetch('/api/super-admin/subscriptions');
+    if(!res.data) return;
+    const tbody = document.getElementById('subscriptionsTableBody');
+    if(res.data.length===0){ tbody.innerHTML='<tr><td colspan="6"><div class="empty-state"><h3>No subscriptions</h3></div></td></tr>'; }
+    else { tbody.innerHTML = res.data.map(s=>`<tr><td><strong>${s.tenant?.name||'Unknown'}</strong></td><td>${s.plan?.name||'—'}</td><td>${badge(s.status)}</td><td>${fmtDate(s.currentPeriodStart)}</td><td>${fmtDate(s.currentPeriodEnd)}</td><td>${s.trialEndsAt?fmtDate(s.trialEndsAt):'N/A'}</td></tr>`).join(''); }
+  } catch(e){}
+}
+
+async function fetchUsage() {
+  try {
+    const res = await apiFetch('/api/super-admin/usage');
+    if(!res.data) return;
+    const tbody = document.getElementById('usageTableBody');
+    if(res.data.length===0){ tbody.innerHTML='<tr><td colspan="5"><div class="empty-state"><h3>No usage data</h3></div></td></tr>'; }
+    else { tbody.innerHTML = res.data.map(u=>`<tr><td><strong>${u.tenant?.name||'Unknown'}</strong></td><td>${u.smsSent?.toLocaleString()}</td><td>${(u.storageUsedBytes/(1024*1024)).toFixed(1)}</td><td>${(u.bandwidthUsedBytes/(1024*1024)).toFixed(1)}</td><td>${u.aiTokensUsed?.toLocaleString()}</td></tr>`).join(''); }
+  } catch(e){}
+}
+
+async function fetchMarketplace() {
+  try {
+    const submissionsRes = await apiFetch('/api/super-admin/marketplace');
+    const submissions = submissionsRes.data || [];
+    
+    const developersRes = await apiFetch('/api/super-admin/marketplace/developers');
+    const developers = developersRes.data || [];
+
+    const securityRes = await apiFetch('/api/super-admin/marketplace/security-reviews');
+    const securityReviews = securityRes.data || [];
+
+    const auditsRes = await apiFetch('/api/super-admin/marketplace/audit-logs');
+    const auditLogs = auditsRes.data || [];
+
+    const assetsRes = await apiFetch('/api/super-admin/marketplace/assets');
+    const assets = assetsRes.data || [];
+
+    document.getElementById('kpiMarketplaceSubmissions').textContent = submissions.filter(s => s.status === 'pending').length;
+    document.getElementById('kpiMarketplaceDevelopers').textContent = developers.length;
+    document.getElementById('kpiMarketplaceSecurity').textContent = securityReviews.length;
+    document.getElementById('kpiMarketplaceSuspended').textContent = assets.filter(a => a.status === 'suspended').length;
+
+    const tbodySub = document.getElementById('marketplaceTableBody');
+    if (submissions.length === 0) {
+      tbodySub.innerHTML = '<tr><td colspan="8"><div class="empty-state"><h3>No submissions</h3></div></td></tr>';
+    } else {
+      tbodySub.innerHTML = submissions.map(s => `<tr>
+        <td><strong>${s.asset?.name || 'Unnamed'}</strong></td>
+        <td><code>v${s.version}</code></td>
+        <td><span style="text-transform: capitalize;" class="badge">${s.asset?.type || 'plugin'}</span></td>
+        <td>${s.asset?.pricingType === 'paid' ? '$' + s.asset?.price.toFixed(2) : 'Free'}</td>
+        <td>${s.asset?.developer?.companyName || 'N/A'}</td>
+        <td>${fmtDate(s.submittedAt)}</td>
+        <td>${badge(s.status)}</td>
+        <td>
+          ${s.status === 'pending'
+            ? `<div class="action-cell">
+                 <button class="small-btn" onclick="openReviewSubmissionModal('${s.id}', '${s.asset?.name.replace(/'/g, "\\'")}', '${s.version}', '${(s.changelog || 'No changelog').replace(/'/g, "\\'").replace(/\n/g, "<br>")}')">${ic('edit')} Review</button>
+               </div>`
+            : 'Reviewed'
+          }
+        </td>
+      </tr>`).join('');
+    }
+
+    const tbodyDev = document.getElementById('marketDevelopersTableBody');
+    if (developers.length === 0) {
+      tbodyDev.innerHTML = '<tr><td colspan="5"><div class="empty-state"><h3>No developers registered</h3></div></td></tr>';
+    } else {
+      tbodyDev.innerHTML = developers.map(d => `<tr>
+        <td><strong>${d.companyName || 'Unnamed Developer'}</strong></td>
+        <td>${d.website ? `<a href="${d.website}" target="_blank" style="color:var(--accent);">${d.website}</a>` : '—'}</td>
+        <td><code>${d.payoutEmail || '—'}</code></td>
+        <td>${badge(d.status)}</td>
+        <td>${fmtDate(d.createdAt)}</td>
+      </tr>`).join('');
+    }
+
+    const tbodySec = document.getElementById('marketSecurityTableBody');
+    if (securityReviews.length === 0) {
+      tbodySec.innerHTML = '<tr><td colspan="5"><div class="empty-state"><h3>No security reviews recorded</h3></div></td></tr>';
+    } else {
+      tbodySec.innerHTML = securityReviews.map(r => `<tr>
+        <td><strong>${r.asset?.name || 'Unnamed'}</strong><br><small style="color:var(--muted)">v${r.version?.version || '1.0.0'}</small></td>
+        <td>${badge(r.status)}</td>
+        <td>${r.reviewerId ? 'Platform Admin' : 'Automated Scan'}</td>
+        <td>${fmtDate(r.scannedAt)}</td>
+        <td>${r.notes || '—'}</td>
+      </tr>`).join('');
+    }
+
+    const tbodySusp = document.getElementById('marketSuspensionsTableBody');
+    if (assets.length === 0) {
+      tbodySusp.innerHTML = '<tr><td colspan="7"><div class="empty-state"><h3>No assets in catalog</h3></div></td></tr>';
+    } else {
+      tbodySusp.innerHTML = assets.map(a => `<tr>
+        <td><strong>${a.name}</strong><br><small style="color:var(--muted)">${a.description || ''}</small></td>
+        <td><span style="text-transform: capitalize;" class="badge">${a.type}</span></td>
+        <td>${a.pricingType === 'paid' ? '$' + a.price.toFixed(2) : 'Free'}</td>
+        <td>${a.developer?.companyName || 'N/A'}</td>
+        <td><code>v${a.version}</code></td>
+        <td>${badge(a.status)}</td>
+        <td>
+          <div class="action-cell">
+            ${a.status === 'suspended'
+              ? `<button class="small-btn" onclick="toggleAssetSuspension('${a.id}', 'approved')">${ic('check')} Unsuspend</button>`
+              : `<button class="small-btn" style="color:var(--danger);" onclick="toggleAssetSuspension('${a.id}', 'suspended')">${ic('alert-octagon')} Suspend</button>`
+            }
+          </div>
+        </td>
+      </tr>`).join('');
+    }
+
+    const tbodyAud = document.getElementById('marketAuditsTableBody');
+    if (auditLogs.length === 0) {
+      tbodyAud.innerHTML = '<tr><td colspan="7"><div class="empty-state"><h3>No marketplace audits found</h3></div></td></tr>';
+    } else {
+      tbodyAud.innerHTML = auditLogs.map(l => `<tr>
+        <td><strong>${l.tenant?.name || 'Unknown'}</strong><br><small style="color:var(--muted)">${l.tenant?.subdomain || ''}</small></td>
+        <td><code>${l.assetId}</code></td>
+        <td><code>v${l.version}</code></td>
+        <td><span class="badge info" style="text-transform: uppercase;">${l.action}</span></td>
+        <td>Staff User</td>
+        <td>${fmtDate(l.createdAt)}</td>
+        <td>${l.details || '—'}</td>
+      </tr>`).join('');
+    }
+
+    ri();
+  } catch (err) {
+    console.error('Fetch marketplace data error:', err);
+  }
+}
+
+function switchMarketSubView(subViewId, btn) {
+  const pageMarket = document.getElementById('page-marketplace');
+  if (!pageMarket) return;
+  pageMarket.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  pageMarket.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+  document.getElementById(`marketSubView-${subViewId}`).classList.add('active');
+  if (btn) btn.classList.add('active');
+  ri();
+}
+
+let activeReviewSubmissionId = null;
+function openReviewSubmissionModal(submissionId, assetName, version, changelog) {
+  activeReviewSubmissionId = submissionId;
+  openModal({
+    title: 'Review Submission',
+    subtitle: `${assetName} — version v${version}`,
+    icon: 'edit',
+    primaryText: 'Submit Decision',
+    body: `
+      <div class="field">
+        <label>Changelog</label>
+        <div style="padding: 10px; background: var(--surface-strong); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; max-height: 120px; overflow-y: auto;">
+          ${changelog}
+        </div>
+      </div>
+      <div class="field">
+        <label>Review Decision</label>
+        <select id="reviewDecisionSelect">
+          <option value="approved">Approve & Publish</option>
+          <option value="rejected">Reject Submission</option>
+          <option value="changes_requested">Request Changes</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Review Notes / Comments</label>
+        <textarea id="reviewNotesInput" placeholder="Write feedback for the developer..."></textarea>
+      </div>
+    `,
+    onPrimary: submitReviewDecision
+  });
+}
+
+async function submitReviewDecision() {
+  const decision = document.getElementById('reviewDecisionSelect').value;
+  const notes = document.getElementById('reviewNotesInput').value;
+  if (!decision) return;
+  try {
+    await apiFetch(`/api/super-admin/submissions/${activeReviewSubmissionId}/review`, {
+      method: 'POST',
+      body: JSON.stringify({ decision, notes })
+    });
+    showToast(`Submission review completed: ${decision}`, 'success');
+    closeModal();
+    fetchMarketplace();
+  } catch (err) {
+    showToast('Failed to submit review decision', 'danger');
+  }
+}
+
+async function openRecordSecurityModal() {
+  try {
+    const assetsRes = await apiFetch('/api/super-admin/marketplace/assets');
+    const assets = assetsRes.data || [];
+    
+    if (assets.length === 0) {
+      showToast('No approved assets available for audit', 'warning');
+      return;
+    }
+
+    const optionsHtml = assets.map(a => {
+      const versions = a.versions || [];
+      return versions.map(v => `<option value="${a.id}:${v.id}">${a.name} — v${v.version}</option>`).join('');
+    }).join('');
+
+    openModal({
+      title: 'Record Manual Security Audit',
+      subtitle: 'Enforce security compliance records for a version',
+      icon: 'shield-check',
+      primaryText: 'Save Scan Record',
+      body: `
+        <div class="field">
+          <label>Select Asset Version</label>
+          <select id="securityAssetVersionSelect">
+            ${optionsHtml}
+          </select>
+        </div>
+        <div class="field">
+          <label>Security Status</label>
+          <select id="securityStatusSelect">
+            <option value="passed">Passed (Safe)</option>
+            <option value="failed">Failed (Malicious/Broke)</option>
+            <option value="flagged">Flagged (Needs sandbox test)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Audit Notes</label>
+          <textarea id="securityNotesInput" placeholder="Enter findings, library version checks, dependencies flags..."></textarea>
+        </div>
+      `,
+      onPrimary: submitSecurityReview
+    });
+  } catch (err) {
+    showToast('Failed to load asset catalog', 'danger');
+  }
+}
+
+async function submitSecurityReview() {
+  const selection = document.getElementById('securityAssetVersionSelect').value;
+  const status = document.getElementById('securityStatusSelect').value;
+  const notes = document.getElementById('securityNotesInput').value;
+  if (!selection) return;
+
+  const [assetId, versionId] = selection.split(':');
+  try {
+    await apiFetch(`/api/super-admin/marketplace/assets/${assetId}/versions/${versionId}/security-review`, {
+      method: 'POST',
+      body: JSON.stringify({ status, notes })
+    });
+    showToast('Security audit scan recorded!', 'success');
+    closeModal();
+    fetchMarketplace();
+  } catch (err) {
+    showToast('Failed to save security review', 'danger');
+  }
+}
+
+async function toggleAssetSuspension(assetId, status) {
+  const confirmMsg = status === 'suspended'
+    ? 'Are you sure you want to SUSPEND this asset? This will disable it across all tenants.'
+    : 'Are you sure you want to UNSUSPEND this asset?';
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    await apiFetch(`/api/super-admin/marketplace/assets/${assetId}/suspend`, {
+      method: 'POST',
+      body: JSON.stringify({ status })
+    });
+    showToast(`Asset status updated: ${status}`, 'success');
+    fetchMarketplace();
+  } catch (err) {
+    showToast('Failed to update asset status', 'danger');
+  }
+}
+
+window.switchMarketSubView = switchMarketSubView;
+window.openReviewSubmissionModal = openReviewSubmissionModal;
+window.submitReviewDecision = submitReviewDecision;
+window.openRecordSecurityModal = openRecordSecurityModal;
+window.submitSecurityReview = submitSecurityReview;
+window.toggleAssetSuspension = toggleAssetSuspension;
+
+
+async function fetchThemes() {
+  try {
+    const res = await apiFetch('/api/super-admin/themes');
+    if(!res.data) return;
+    document.getElementById('themesTableBody').innerHTML = res.data.map(t=>`<tr><td><strong>${t.name}</strong></td><td><code>${t.slug}</code></td><td><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${t.accentColor};margin-right:4px;"></span>${t.accentColor}</td><td>Platform Preset</td></tr>`).join('');
+  } catch(e){}
+}
+
+async function fetchPlugins() {
+  try {
+    const res = await apiFetch('/api/super-admin/plugins');
+    if(!res.data) return;
+    document.getElementById('pluginsTableBody').innerHTML = res.data.map(p=>`<tr><td><strong>${p.name}</strong></td><td><code>${p.key}</code></td><td>${p.price>0?'$'+p.price.toFixed(2):'Free'}</td><td>${badge(p.status)}</td></tr>`).join('');
+  } catch(e){}
+}
+
+async function fetchIntegrations() {
+  try {
+    const res = await apiFetch('/api/super-admin/integrations');
+    if(!res.data) return;
+    document.getElementById('integrationsTableBody').innerHTML = res.data.map(i=>`<tr><td><strong>${i.name}</strong></td><td><code>${i.key}</code></td><td>${i.category?.name||'General'}</td></tr>`).join('');
+  } catch(e){}
+}
+
+async function fetchPlatformUsers() {
+  try {
+    const res = await apiFetch('/api/super-admin/platform-users');
+    if(!res.data) return;
+    document.getElementById('platformUsersTableBody').innerHTML = res.data.map(u=>`<tr><td><strong>${u.email}</strong></td><td>${u.platformRole?.name||'N/A'}</td><td>${badge(u.status)}</td><td>${fmtDate(u.createdAt)}</td></tr>`).join('');
+  } catch(e){}
+}
+
+function openPlatformUserModal() {
+  openModal({
+    title:'Invite Console Admin', subtitle:'Create a new platform team member.', icon:'shield-check', primaryText:'Invite User',
+    body:`<div class="form-grid">
+      <div class="field"><label>Email</label><input type="email" id="teamUserEmail" placeholder="agent@churchos.online"></div>
+      <div class="field"><label>Password</label><input type="password" id="teamUserPassword" value="Password123!"></div>
+    </div>`,
+    onPrimary: submitPlatformUserForm
+  });
+}
+async function submitPlatformUserForm() {
+  const email = document.getElementById('teamUserEmail').value;
+  const password = document.getElementById('teamUserPassword').value;
+  if(!email||!password) return;
+  try { await apiFetch('/api/super-admin/platform-users',{method:'POST',body:JSON.stringify({email,password})}); showToast(`Admin '${email}' created!`,'success'); closeModal(); fetchPlatformUsers(); } catch(e){}
+}
+
+async function fetchSupportTickets() {
+  try {
+    const res = await apiFetch('/api/super-admin/support');
+    if(!res.data) return;
+    const tbody = document.getElementById('supportTableBody');
+    if(res.data.length===0){ tbody.innerHTML='<tr><td colspan="7"><div class="empty-state"><h3>No tickets</h3></div></td></tr>'; }
+    else { tbody.innerHTML = res.data.map(t=>`<tr><td><strong>${t.subject}</strong></td><td>${t.tenant?.name||'Unknown'}</td><td><span style="text-transform:uppercase;font-weight:700;color:${t.priority==='high'?'var(--danger)':'var(--text)'};">${t.priority}</span></td><td>${t.category}</td><td>${badge(t.status)}</td><td>${fmtDate(t.createdAt)}</td><td><button class="small-btn" onclick="openSupportReplyModal('${t.id}')">${ic('message-square')}Reply</button></td></tr>`).join(''); }
+    ri();
+  } catch(e){}
+}
+
+let activeTicketId = null;
+function openSupportReplyModal(ticketId) {
+  activeTicketId = ticketId;
+  openModal({
+    title:'Reply to Ticket', subtitle:'Respond and update status.', icon:'life-buoy', primaryText:'Send Reply',
+    body:`<div class="field"><label>Response</label><textarea id="supportReplyMessage" placeholder="Write reply..."></textarea></div>
+    <div class="field"><label>Update Status</label><select id="supportStatusSelect"><option value="resolved">Resolved</option><option value="in_progress">In Progress</option><option value="closed">Closed</option></select></div>`,
+    onPrimary: submitSupportReply
+  });
+}
+async function submitSupportReply() {
+  const message = document.getElementById('supportReplyMessage').value;
+  const status = document.getElementById('supportStatusSelect').value;
+  if(!message) return;
+  try { await apiFetch(`/api/super-admin/support/${activeTicketId}/reply`,{method:'POST',body:JSON.stringify({replyMessage:message,status})}); showToast('Reply sent!','success'); closeModal(); fetchSupportTickets(); } catch(e){}
+}
+
+async function submitAnnouncement() {
+  const title = document.getElementById('announceTitle').value;
+  const content = document.getElementById('announceContent').value;
+  const type = document.getElementById('announceType').value;
+  const targetAudience = document.getElementById('announceAudience').value;
+  if(!title||!content){ showToast('Title and content required','warning'); return; }
+  try { await apiFetch('/api/super-admin/announcements',{method:'POST',body:JSON.stringify({title,content,type,targetAudience})}); showToast('Announcement broadcast!','success'); document.getElementById('announceTitle').value=''; document.getElementById('announceContent').value=''; } catch(e){}
+}
+
+async function fetchAuditLogs() {
+  try {
+    const res = await apiFetch('/api/super-admin/audit-logs');
+    if(!res.data) return;
+    document.getElementById('auditLogsTableBody').innerHTML = res.data.map(l=>`<tr><td><code>${l.actorEmail}</code></td><td>${l.actorRole}</td><td><code>${l.action}</code></td><td>${l.targetType}</td><td style="font-size:11px;color:var(--muted);">${l.targetId||'N/A'}</td><td>${new Date(l.createdAt).toLocaleString()}</td></tr>`).join('');
+  } catch(e){}
+}
+
+async function fetchSystemHealth() {
+  try {
+    const res = await apiFetch('/api/super-admin/system-health');
+    if(!res.data) return;
+    const d = res.data;
+    const items = [
+      {name:'Database',status:d.database,icon:'database'},
+      {name:'API Engine',status:d.api,icon:'activity'},
+      {name:'Job Queue',status:d.queue,icon:'workflow'},
+      {name:'Stripe Billing',status:d.providers?.stripe||'healthy',icon:'credit-card'},
+      {name:'Resend Email',status:d.providers?.resend||'healthy',icon:'mail'},
+      {name:'Cloudinary CDN',status:d.providers?.cloudinary||'healthy',icon:'hard-drive'}
+    ];
+    document.getElementById('healthGrid').innerHTML = items.map(h=>`
+      <article class="card health-card">
+        <div class="health-top"><h3>${ic(h.icon)} ${h.name}</h3>${badge(h.status)}</div>
+        <div class="metric-row"><span>Status</span><strong>${h.status}</strong></div>
+      </article>
+    `).join('');
+    ri();
+  } catch(e){}
+}
+
+async function fetchPlatformSettings() {
+  try {
+    const res = await apiFetch('/api/super-admin/settings');
+    if(!res.data) return;
+    const s = res.data;
+    document.getElementById('platformNameInput').value = s.platformName||'';
+    document.getElementById('platformTrialDaysInput').value = s.defaultTrialDays||14;
+    document.getElementById('platformSignupInput').checked = s.signupEnabled;
+  } catch(e){}
+}
+async function savePlatformSettings() {
+  try {
+    const platformName = document.getElementById('platformNameInput').value;
+    const defaultTrialDays = Number(document.getElementById('platformTrialDaysInput').value);
+    const signupEnabled = document.getElementById('platformSignupInput').checked;
+    await apiFetch('/api/super-admin/settings',{method:'PATCH',body:JSON.stringify({platformName,defaultTrialDays,signupEnabled})});
+    showToast('Settings saved!','success');
+  } catch(e){}
+}
+function setAccentFromSettings(hex) {
+  const map = {'#f97316':'orange','#2563eb':'blue','#7c3aed':'purple','#16a34a':'green','#dc2626':'red','#db2777':'pink','#475569':'gray'};
+  document.documentElement.dataset.accent = map[hex] || 'orange';
+  drawCharts();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TENANT DRAWER
+   ═══════════════════════════════════════════════════════════════ */
+async function openDrawer(tenantId) {
+  selectedTenantId = tenantId;
+  document.getElementById('tenantDrawer').classList.add('show');
+  document.getElementById('drawerBackdrop').classList.add('show');
+  try {
+    const res = await apiFetch(`/api/super-admin/tenants/${tenantId}`);
+    if(!res.data) return;
+    const t = res.data;
+    document.getElementById('drawerTenantName').textContent = t.name;
+    document.getElementById('drawerTenantSubdomain').textContent = `${t.subdomain}.churchos.online`;
+    document.getElementById('drawerDetailId').textContent = t.id;
+    const sp = document.getElementById('drawerDetailStatus');
+    sp.textContent = t.status; sp.className = `badge ${badgeClass(t.status)}`;
+    document.getElementById('drawerDetailCreated').textContent = new Date(t.createdAt).toLocaleString();
+    document.getElementById('drawerDetailLocation').textContent = t.city && t.country ? `${t.city}, ${t.country}` : '—';
+    document.getElementById('drawerDetailOnboarding').textContent = t.onboardingStatus || 'pending';
+    document.getElementById('drawerDetailTrial').textContent = t.trialEndsAt ? new Date(t.trialEndsAt).toLocaleDateString() : 'No trial configuration';
+    document.getElementById('drawerSuspendBtn').textContent = t.status==='suspended'?'Activate':'Suspend';
+    renderDrawerModules(t.tenantModules||[]);
+    renderDrawerUsers(t.users||[]);
+    renderDrawerDomains(t.tenantDomains||[]);
+    if(t.subscription) document.getElementById('drawerBillingPlanSelect').value = t.subscription.planId;
+    // Reset to overview tab
+    document.querySelectorAll('#drawerTabs .tab-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+    document.querySelectorAll('[id^="dtab-"]').forEach((p,i)=>p.classList.toggle('active',i===0));
+    ri();
+  } catch(e){}
+}
+function closeDrawer() {
+  document.getElementById('tenantDrawer').classList.remove('show');
+  document.getElementById('drawerBackdrop').classList.remove('show');
+  selectedTenantId = null;
+}
+function renderDrawerModules(entitlements) {
+  const container = document.getElementById('drawerModulesContainer');
+  const entKeys = entitlements.map(e=>e.moduleKey);
+  container.innerHTML = globalModules.map(mod=>{
+    const ent = entitlements.find(e=>e.moduleKey===mod.key);
+    const status = ent?ent.status:'inactive';
+    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid var(--border);border-radius:12px;margin-bottom:6px;background:var(--surface);">
+      <div><strong style="font-size:13px;">${mod.name}</strong><div style="font-size:11px;color:var(--muted);">${mod.category}</div></div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <select class="drawer-mod-status" data-key="${mod.key}" style="background-color:var(--surface-strong);color:var(--text);border:1px solid var(--border);font-size:11px;padding:4px 6px;border-radius:8px;">
+          <option value="active" ${status==='active'?'selected':''}>Active</option>
+          <option value="preview" ${status==='preview'?'selected':''}>Preview</option>
+          <option value="suspended" ${status==='suspended'?'selected':''}>Suspended</option>
+          <option value="inactive" ${status==='inactive'?'selected':''}>Disabled</option>
+        </select>
+      </div>
+    </div>`;
+  }).join('');
+}
+async function saveTenantEntitlements() {
+  if(!selectedTenantId) return;
+  const selects = document.querySelectorAll('.drawer-mod-status');
+  const promises = [];
+  selects.forEach(sel=>{ promises.push(apiFetch(`/api/super-admin/tenants/${selectedTenantId}/modules`,{method:'PATCH',body:JSON.stringify({moduleKey:sel.dataset.key,status:sel.value,billingRule:'free'})})); });
+  await Promise.all(promises);
+  showToast('Entitlements updated!','success');
+  openDrawer(selectedTenantId);
+}
+function renderDrawerUsers(users) {
+  const tbody = document.getElementById('drawerUsersBody');
+  if(!users||users.length===0){ tbody.innerHTML='<tr><td colspan="3" style="color:var(--muted);text-align:center;">No users found</td></tr>'; }
+  else { tbody.innerHTML = users.map(u=>`<tr><td><code>${u.email}</code></td><td>${u.member?`${u.member.firstName} ${u.member.lastName}`:'N/A'}</td><td>${badge(u.status||'active')}</td></tr>`).join(''); }
+}
+function renderDrawerDomains(domains) {
+  const tbody = document.getElementById('drawerDomainsBody');
+  if(!domains||domains.length===0){ tbody.innerHTML='<tr><td colspan="4" style="color:var(--muted);text-align:center;">No domains</td></tr>'; }
+  else { tbody.innerHTML = domains.map(d=>`<tr><td><code>${d.domain}</code></td><td>${d.isPrimary?'Primary':'Alias'}</td><td>${badge(d.status)}</td><td><button class="small-btn" onclick="verifyDomain('${d.id}')">Verify</button></td></tr>`).join(''); }
+}
+async function actionSuspendTenant() {
+  if(!selectedTenantId) return;
+  const t = globalTenants.find(i=>i.id===selectedTenantId);
+  const next = t?.status==='suspended'?'active':'suspended';
+  const c = prompt(`Type 'CONFIRM' to change status to '${next}':`);
+  if(c!=='CONFIRM'){ showToast('Action cancelled','warning'); return; }
+  try { await apiFetch(`/api/super-admin/tenants/${selectedTenantId}`,{method:'PATCH',body:JSON.stringify({status:next})}); showToast(`Tenant ${next}`,'success'); closeDrawer(); fetchTenants(); } catch(e){}
+}
+async function actionArchiveTenant() {
+  if(!selectedTenantId) return;
+  const c = prompt("Type 'DELETE' to archive:");
+  if(c!=='DELETE'){ showToast('Cancelled','warning'); return; }
+  try { await apiFetch(`/api/super-admin/tenants/${selectedTenantId}`,{method:'DELETE'}); showToast('Tenant archived!','success'); closeDrawer(); fetchTenants(); } catch(e){}
+}
+async function saveTenantPlanOverride() {
+  const planId = document.getElementById('drawerBillingPlanSelect').value;
+  if(!selectedTenantId||!planId) return;
+  try { await apiFetch(`/api/super-admin/tenants/${selectedTenantId}/subscription`,{method:'PATCH',body:JSON.stringify({planId})}); showToast('Plan override saved!','success'); openDrawer(selectedTenantId); } catch(e){}
+}
+async function extendTrial(days) {
+  if(!selectedTenantId) return;
+  try {
+    const res = await apiFetch(`/api/super-admin/tenants/${selectedTenantId}/extend-trial`, {
+      method: 'POST',
+      body: JSON.stringify({ days })
+    });
+    if (res.data) {
+      showToast(`Trial extended by ${days} days!`, 'success');
+      openDrawer(selectedTenantId);
+      fetchTenants();
+    }
+  } catch(e) {
+    showToast('Failed to extend trial', 'error');
+  }
+}
+window.extendTrial = extendTrial;
+
+/* ═══════════════════════════════════════════════════════════════
+   PRO MODAL SYSTEM
+   ═══════════════════════════════════════════════════════════════ */
+function openModal({title='Modal',subtitle='',icon='layers-3',primaryText='Save',body='',onPrimary=null}={}) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalSubtitle').textContent = subtitle;
+  document.getElementById('modalIcon').innerHTML = ic(icon);
+  document.getElementById('modalBody').innerHTML = body;
+  document.getElementById('modalPrimaryBtn').innerHTML = `${ic('check')}<span>${primaryText}</span>`;
+  activeModalAction = onPrimary;
+  document.getElementById('modalBackdrop').classList.add('show');
+  document.getElementById('appModal').classList.add('show');
+  ri();
+}
+function closeModal() {
+  document.getElementById('modalBackdrop').classList.remove('show');
+  document.getElementById('appModal').classList.remove('show');
+  activeModalAction = null;
+}
+function handleModalPrimary() { if(activeModalAction) activeModalAction(); }
+
+/* ═══════════════════════════════════════════════════════════════
+   CANVAS CHARTS
+   ═══════════════════════════════════════════════════════════════ */
+function drawCharts() {
+  const canvas = document.getElementById('tenantGrowthChart');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+  const w = rect.width, h = rect.height;
+  ctx.clearRect(0, 0, w, h);
+
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+  const data = [12, 18, 22, 31, 38, 44];
+  const max = Math.max(...data) * 1.2;
+  const padL = 40, padR = 20, padT = 20, padB = 40;
+  const chartW = w - padL - padR, chartH = h - padT - padB;
+
+  // Grid lines
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--gridline').trim() || 'rgba(128,128,128,.1)';
+  ctx.lineWidth = 1;
+  for(let i=0;i<5;i++){
+    const y = padT + (chartH/4)*i;
+    ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(w-padR,y); ctx.stroke();
+  }
+
+  // Area fill
+  const pts = data.map((v,i)=>({ x: padL + (chartW/(data.length-1))*i, y: padT + chartH - (v/max)*chartH }));
+  const grad = ctx.createLinearGradient(0, padT, 0, h-padB);
+  grad.addColorStop(0, accent+'44');
+  grad.addColorStop(1, accent+'00');
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, h-padB);
+  pts.forEach(p=>ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length-1].x, h-padB);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  pts.forEach((p,i)=>i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+  ctx.strokeStyle = accent;
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  // Dots
+  pts.forEach(p=>{
+    ctx.beginPath(); ctx.arc(p.x,p.y,4,0,Math.PI*2);
+    ctx.fillStyle = accent; ctx.fill();
+    ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--surface-strong').trim();
+    ctx.lineWidth = 2; ctx.stroke();
+  });
+
+  // Labels
+  ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--muted').trim();
+  ctx.font = '11px Inter, sans-serif';
+  ctx.textAlign = 'center';
+  const months = ['Jan','Feb','Mar','Apr','May','Jun'];
+  pts.forEach((p,i)=>ctx.fillText(months[i],p.x,h-padB+18));
+  ctx.textAlign = 'right';
+  for(let i=0;i<5;i++){
+    const val = Math.round(max - (max/4)*i);
+    ctx.fillText(val, padL-8, padT+(chartH/4)*i+4);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL SEARCH
+   ═══════════════════════════════════════════════════════════════ */
+function handleSearch() {
+  const q = document.getElementById('globalSearch').value.toLowerCase().trim();
+  const el = document.getElementById('searchResults');
+  if(!q){ el.classList.remove('show'); return; }
+  const tenantMatches = globalTenants.filter(t=>t.name?.toLowerCase().includes(q)||t.subdomain?.toLowerCase().includes(q));
+  const moduleMatches = globalModules.filter(m=>m.name?.toLowerCase().includes(q)||m.key?.toLowerCase().includes(q));
+  if(!tenantMatches.length && !moduleMatches.length){
+    el.innerHTML = '<div class="result-group"><h4>No results</h4></div>';
+    el.classList.add('show'); return;
+  }
+  let html = '';
+  if(tenantMatches.length) html += `<div class="result-group"><h4>Churches</h4>${tenantMatches.slice(0,5).map(t=>`<button class="result-item" onclick="switchView('tenants');document.getElementById('searchResults').classList.remove('show');document.getElementById('globalSearch').value='';"><span>${t.name}</span><small>${t.status}</small></button>`).join('')}</div>`;
+  if(moduleMatches.length) html += `<div class="result-group"><h4>Modules</h4>${moduleMatches.slice(0,5).map(m=>`<button class="result-item" onclick="switchView('modules');document.getElementById('searchResults').classList.remove('show');document.getElementById('globalSearch').value='';"><span>${m.name}</span><small>${m.category}</small></button>`).join('')}</div>`;
+  el.innerHTML = html;
+  el.classList.add('show');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   THEME & UI CONTROLS
+   ═══════════════════════════════════════════════════════════════ */
+function initTheme() {
+  const saved = localStorage.getItem('churchos-user-theme-preference') || 'light';
+  document.documentElement.dataset.theme = saved;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INITIALIZATION
+   ═══════════════════════════════════════════════════════════════ */
+async function initializeConsole() {
+  await fetchPlans();
+  await fetchModules();
+  switchView('overview');
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  initTheme();
+  renderNav();
+  renderAllPages();
+  ri();
+  checkSession();
+
+  // Nav clicks
+  document.getElementById('navScroll').addEventListener('click', e=>{
+    const item = e.target.closest('.nav-item');
+    if(item && item.dataset.view) switchView(item.dataset.view);
+  });
+
+  // Sidebar collapse
+  document.getElementById('collapseBtn').addEventListener('click', ()=>{
+    const shell = document.getElementById('appShell');
+    shell.classList.toggle('collapsed');
+    ri();
+  });
+
+  // Mobile menu
+  document.getElementById('mobileMenu').addEventListener('click', ()=>{
+    document.getElementById('sidebar').classList.add('show');
+    document.getElementById('mobileBackdrop').classList.add('show');
+  });
+  document.getElementById('mobileBackdrop').addEventListener('click', ()=>{
+    document.getElementById('sidebar').classList.remove('show');
+    document.getElementById('mobileBackdrop').classList.remove('show');
+  });
+
+  // Theme toggle
+  document.getElementById('themeToggle').addEventListener('click', ()=>{
+    const r = document.documentElement;
+    r.dataset.theme = r.dataset.theme==='dark'?'light':'dark';
+    localStorage.setItem('churchos-user-theme-preference', r.dataset.theme);
+    const icon = document.querySelector('#themeToggle i');
+    if(icon) icon.setAttribute('data-lucide', r.dataset.theme==='dark'?'sun':'moon');
+    ri(); drawCharts();
+  });
+
+  // Accent picker
+  document.getElementById('accentToggle').addEventListener('click', ()=>{
+    document.getElementById('accentPopover').classList.toggle('show');
+  });
+  document.querySelectorAll('.swatch').forEach(s=>s.addEventListener('click', ()=>{
+    document.documentElement.dataset.accent = s.dataset.color;
+    document.getElementById('accentPopover').classList.remove('show');
+    drawCharts();
+    showToast(`Accent: ${s.dataset.color}`,'success');
+  }));
+
+  // Global search
+  document.getElementById('globalSearch').addEventListener('input', handleSearch);
+
+  // Drawer backdrop
+  document.getElementById('drawerBackdrop').addEventListener('click', closeDrawer);
+
+  // Drawer tabs
+  document.getElementById('drawerTabs')?.addEventListener('click', e=>{
+    const btn = e.target.closest('.tab-btn');
+    if(!btn) return;
+    document.querySelectorAll('#drawerTabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('[id^="dtab-"]').forEach(p=>p.classList.toggle('active', p.id===`dtab-${btn.dataset.dtab}`));
+  });
+
+  // Modal backdrop
+  document.getElementById('modalBackdrop').addEventListener('click', closeModal);
+
+  // Close on Escape
+  document.addEventListener('keydown', e=>{
+    if(e.key==='Escape'){ closeDrawer(); closeModal(); document.getElementById('searchResults').classList.remove('show'); document.getElementById('accentPopover').classList.remove('show'); }
+  });
+
+  // Resize charts
+  window.addEventListener('resize', drawCharts);
+
+  // Scroll Spy for Modules Catalog categories
+  window.addEventListener('scroll', () => {
+    if (currentActiveView !== 'modules') return;
+    const sections = document.querySelectorAll('#modulesCatalogGrid .category-section');
+    const navLinks = document.querySelectorAll('#modulesSidebarMenu .modules-menu-item');
+    let activeId = '';
+    
+    sections.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top <= 140) {
+        activeId = sec.id;
+      }
+    });
+    
+    navLinks.forEach(link => {
+      const isMatch = link.getAttribute('href') === `#${activeId}`;
+      link.classList.toggle('active', isMatch);
+    });
+  });
+});
+</script>
+</body>
+</html>

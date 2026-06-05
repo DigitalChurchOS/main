@@ -1,15 +1,22 @@
 {
   "name": "churchos",
+  "private": true,
   "version": "1.0.0",
-  "description": "This repository contains the planning and architecture documentation for Digital Church OS before main project development begins.",
+  "description": "ChurchOS unified Cloudflare-first SaaS monorepo.",
   "main": "index.js",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "build": "npx prisma generate && npx tsc && node scripts/build-cloudflare-assets.js",
-    "dev": "npx ts-node --files src/server.ts",
-    "db:migrate": "npx prisma migrate dev",
-    "db:seed": "npx ts-node src/seed.ts",
-    "db:reset": "npx prisma migrate reset --force",
-    "test": "npx jest --forceExit --detectOpenHandles"
+    "bootstrap": "npm install",
+    "build": "npm run build --workspaces --if-present",
+    "dev": "npm run dev --workspace=@churchos/api",
+    "preview": "node scripts/local-preview.js",
+    "db:migrate": "npm --workspace=@churchos/api run db:migrate",
+    "db:seed": "npm --workspace=@churchos/api run db:seed",
+    "db:reset": "npm --workspace=@churchos/api run db:reset",
+    "test": "npm run test --workspaces"
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Publish - Marketplace</title>
+  <style>body{font-family:Inter,system-ui;padding:28px}</style>
+</head>
+<body>
+  <h1>Publish Theme / Plugin</h1>
+  <p>This simple form posts to the marketplace backend to simulate a developer publishing a package.</p>
+  <form id="pub">
+    <label>Name: <input name="name"></label><br>
+    <label>Author: <input name="author"></label><br>
+    <label>Type: <select name="type"><option>theme</option><option>plugin</option></select></label><br>
+    <label>Description:<br><textarea name="description" rows="4" cols="40"></textarea></label><br>
+    <button>Publish</button>
+  </form>
+  <div id="out"></div>
+  <script>
+    document.getElementById('pub').addEventListener('submit', async (e)=>{
+      e.preventDefault(); const fd = new FormData(e.target); const body = Object.fromEntries(fd.entries());
+      const res = await fetch('http://localhost:9000/api/publish',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const data = await res.json(); document.getElementById('out').textContent = JSON.stringify(data);
+    });
+  </script>
+</body>
+</html>

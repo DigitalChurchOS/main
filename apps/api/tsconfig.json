@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "outDir": "./dist",
+    "strict": true,
+    "noImplicitAny": true,
+    "paths": {
+      "@churchos/db": ["packages/db/src/generated/prisma/client.d.ts"],
+      "@churchos/*": ["packages/*/src"],
+      "@prisma/client": ["packages/db/src/generated/prisma/client"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/tests"]
+}

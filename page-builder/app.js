@@ -537,7 +537,7 @@ export const App = () => {
             theme: themeMode,
             accent: brandAccent
         });
-        window.location.href = `/dashboard.html?${params.toString()}`;
+        window.location.href = `/admin.html?${params.toString()}`;
     };
     // Breadcrumbs path calculations
     const breadcrumbs = selectedElementId ? getBreadcrumbPath(elements, selectedElementId) : [];

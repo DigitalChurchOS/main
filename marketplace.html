@@ -1,0 +1,2711 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ChurchOS Extensions & Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --accent: #4f46e5;
+      --accent-strong: #4f46e5;
+      --accent-soft: rgba(79, 70, 229, 0.14);
+      --success: #16A34A;
+      --warning: #F97316;
+      --danger: #DC2626;
+      
+      /* Dark mode base values (Charcoal Grace) */
+      --bg: #111318;
+      --panel: #181B22;
+      --panel-2: #20242C;
+      --soft-surface: #252A33;
+      --line: #303642;
+      --text: #F4F6F8;
+      --muted: #A7AFBC;
+      --sidebar: #151820;
+      --topbar: rgba(21, 24, 32, 0.85);
+      
+      --shadow: 0 4px 24px rgba(0, 0, 0, 0.16);
+      --radius: 12px;
+      --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23A7AFBC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      --z-system-dialog: 99999;
+      color-scheme: dark;
+    }
+
+    body.light {
+      /* Light mode base values (Off-white Grace) */
+      --bg: #F7F8FA;
+      --panel: #FFFFFF;
+      --panel-2: #F1F3F6;
+      --soft-surface: #F1F3F6;
+      --line: #E3E6EA;
+      --text: #171A1F;
+      --muted: #68707D;
+      --sidebar: #FFFFFF;
+      --topbar: rgba(255, 255, 255, 0.85);
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%2368707D' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' viewBox='0 0 24 24'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      color-scheme: light;
+      background: var(--bg);
+    }
+
+    body.light .sidebar-column-a {
+      background: #F0F2F5;
+    }
+
+    body.light .sidebar-column-b {
+      background: #FFFFFF;
+    }
+
+    body.light .sidebar-a-btn.active {
+      color: var(--accent) !important;
+      background: #FFFFFF !important;
+      border-color: rgba(0, 0, 0, 0.05) !important;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
+    }
+
+    body.light .panel,
+    body.light .metric-card.panel,
+    body.light .metric,
+    body.light .module-card,
+    body.light .settings-card {
+      background: var(--panel);
+      box-shadow: none;
+    }
+
+    body.light input,
+    body.light select,
+    body.light textarea,
+    body.light .form-control {
+      background: rgba(255, 255, 255, 0.78);
+      border-color: rgba(15, 23, 42, 0.14);
+      color: var(--text);
+    }
+
+    body.light select.form-control {
+      background-image: var(--select-arrow) !important;
+    }
+
+    body.light .mini-table th {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    body.light .mini-table tbody tr:hover {
+      background: rgba(0, 0, 0, 0.01);
+    }
+
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.12), transparent 32%),
+        linear-gradient(315deg, rgba(16, 185, 129, 0.1), transparent 26%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    /* Core Styles matching ChurchOS Dashboard exactly */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+      flex-shrink: 0;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+    }
+    .btn.primary {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: white;
+    }
+    .btn.danger {
+      background: rgba(239, 68, 68, 0.15);
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+    .btn.danger:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+    .btn.btn-sm {
+      min-height: 32px;
+      padding: 0 10px;
+      font-size: 12px;
+    }
+    .btn.btn-xs {
+      min-height: 28px;
+      padding: 0 8px;
+      font-size: 11px;
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .form-control {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      transition: border 0.15s ease;
+      outline: none;
+    }
+    .form-control:focus {
+      border-color: var(--accent);
+    }
+    select.form-control {
+      appearance: none;
+      background-image: var(--select-arrow);
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+    textarea.form-control {
+      resize: vertical;
+    }
+
+    /* Refactored Sidebar CSS (Hostinger inspired dual-column) */
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 316px minmax(0, 1fr);
+    }
+    .sidebar-wrapper {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: grid;
+      grid-template-columns: 76px 240px;
+      z-index: 50;
+      border-right: 1px solid var(--line);
+    }
+    .sidebar-column-a {
+      background: #0C0E14;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 0;
+      border-right: 1px solid var(--line);
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .sidebar-column-a::-webkit-scrollbar { display: none; }
+    
+    .sidebar-a-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      background: var(--accent);
+      color: white;
+      display: grid;
+      place-items: center;
+      margin-bottom: 24px;
+      transition: transform 0.2s;
+    }
+    .sidebar-a-logo:hover { transform: scale(1.05); }
+    .sidebar-a-logo i, .sidebar-a-logo svg { width: 22px !important; height: 22px !important; }
+
+    .sidebar-a-nav {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .sidebar-a-btn {
+      position: relative;
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sidebar-a-btn:hover {
+      color: var(--text);
+      background: var(--soft-surface);
+    }
+    .sidebar-a-btn.active {
+      color: #FFFFFF !important;
+      background: var(--panel-2) !important;
+      border-color: color-mix(in srgb, var(--accent) 20%, transparent) !important;
+    }
+    .sidebar-a-btn.active::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 15%;
+      height: 70%;
+      width: 3px;
+      background: var(--accent);
+      border-radius: 0 4px 4px 0;
+    }
+    .sidebar-a-btn i, .sidebar-a-btn svg {
+      width: 20px !important;
+      height: 20px !important;
+      transition: transform 0.2s;
+    }
+    .sidebar-a-btn:hover i, .sidebar-a-btn:hover svg { transform: translateY(-1px); }
+    .sidebar-a-btn span {
+      font-size: 9px;
+      font-weight: 500;
+      text-transform: capitalize;
+      letter-spacing: 0.02em;
+    }
+
+    .sidebar-column-b {
+      background: #151820;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow-y: auto;
+      scrollbar-width: none;
+    }
+    .sidebar-column-b::-webkit-scrollbar { display: none; }
+    .sidebar-b-header {
+      padding: 20px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .website-selector {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .website-selector:hover {
+      background: var(--soft-surface);
+      border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+    .website-info { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .website-label { font-size: 9px; text-transform: uppercase; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; }
+    .website-name { font-size: 13px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .sidebar-b-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sidebar-b-item:hover {
+      background: var(--panel-2);
+      color: var(--text);
+    }
+    .sidebar-b-item.active {
+      background: var(--accent-soft);
+      color: var(--text);
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      width: 100%;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .section-head h2 {
+      margin: 0 0 4px;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .section-head p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .grid { display: grid; gap: 16px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .panel-header { margin-bottom: 16px; }
+    .panel-header h3 { margin: 0; font-size: 16px; font-weight: 700; }
+
+    .metric-card { display: flex; flex-direction: column; gap: 4px; }
+    .metric-card span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .metric-card strong { font-size: 28px; font-weight: 800; color: var(--text); }
+    .metric-card small { font-size: 12px; color: var(--muted); }
+
+    .mini-table { border-collapse: collapse; font-size: 13px; width: 100%; }
+    .mini-table th, .mini-table td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .mini-table th { font-weight: 700; color: var(--muted); background: rgba(255, 255, 255, 0.02); }
+    .mini-table tbody tr:hover { background: rgba(255, 255, 255, 0.01); }
+
+    .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+
+    .hidden { display: none !important; }
+
+    /* Modals & Dialogs */
+    .system-dialog-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      z-index: var(--z-system-dialog);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .system-dialog-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      width: fit-content;
+      min-width: 320px;
+      max-width: min(650px, calc(100% - 48px));
+      padding: 24px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-sizing: border-box;
+    }
+    .system-dialog-icon {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: grid; place-items: center;
+      margin-bottom: 16px;
+    }
+    .system-dialog-icon.success { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+    .system-dialog-icon.error, .system-dialog-icon.danger { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .system-dialog-icon.info { background: rgba(79, 70, 229, 0.15); color: var(--accent); }
+    .system-dialog-icon svg { width: 24px; height: 24px; }
+    .system-dialog-card h3 { margin: 0 0 8px; font-size: 18px; font-weight: 700; }
+    .system-dialog-card p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+    .system-dialog-footer { display: flex; justify-content: center; gap: 12px; width: 100%; margin-top: 20px; }
+
+    .toast {
+      position: fixed;
+      right: 22px; bottom: 22px;
+      z-index: 60;
+      max-width: 360px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--text);
+      box-shadow: var(--shadow);
+    }
+
+    /* Custom Toggles matching dashboard */
+    .toggle {
+      position: relative;
+      width: 44px; height: 24px;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .toggle::after {
+      content: '';
+      position: absolute;
+      left: 2px; top: 2px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--muted);
+      transition: all 0.2s;
+    }
+    .toggle.on { background: var(--accent); border-color: var(--accent); }
+    .toggle.on::after { left: 22px; background: white; }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; font-weight: 600; color: var(--muted); text-align: left; }
+    
+    input[type="checkbox"], input[type="radio"] {
+      width: 16px !important;
+      height: 16px !important;
+      min-height: 16px !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      border: none !important;
+      appearance: checkbox !important;
+      -webkit-appearance: checkbox !important;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Dual Column Application Shell -->
+  <div class="app-shell">
+    <div class="sidebar-wrapper">
+      
+      <!-- COLUMN A: Category Bar -->
+      <aside class="sidebar-column-a">
+        <div class="sidebar-a-logo" onclick="window.location.href='/admin.html'" style="cursor: pointer;" title="Back to Dashboard">
+          <i data-lucide="church"></i>
+        </div>
+        <div class="sidebar-a-nav">
+          <button class="sidebar-a-btn active" onclick="selectMarketCategory('plugin-engine')" id="catBtn-plugin-engine" title="Marketplace">
+            <i data-lucide="store"></i>
+            <span>Marketplace</span>
+          </button>
+          <button class="sidebar-a-btn" onclick="selectMarketCategory('developer')" id="catBtn-developer" title="Developer Portal">
+            <i data-lucide="code"></i>
+            <span>Portal</span>
+          </button>
+        </div>
+      </aside>
+
+      <!-- COLUMN B: Workspace / Sub-Nav Bar -->
+      <aside class="sidebar-column-b">
+        <div class="sidebar-b-header">
+          <div class="website-selector" onclick="window.location.href='/admin.html'">
+            <div class="website-info">
+              <span class="website-label">Church OS Context</span>
+              <strong class="website-name">Return Dashboard</strong>
+            </div>
+            <i data-lucide="arrow-left" style="width: 14px; height: 14px; color: var(--muted);"></i>
+          </div>
+        </div>
+        <div class="sidebar-b-content" style="padding: 16px; display: flex; flex-direction: column; gap: 4px;" id="sidebarTabsB">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </aside>
+    </div>
+
+    <!-- MAIN CONTENT VIEW PANEL -->
+    <main class="main-content">
+      
+      <!-- ========================================== -->
+      <!-- 1. DEVELOPER PORTAL TAB ELEMENTS           -->
+      <!-- ========================================== -->
+      
+      <!-- Developer: Overview -->
+      <div id="tabEl-overview" class="market-tab-content">
+        <div class="section-head">
+          <div>
+            <h2>Developer Marketplace Overview</h2>
+            <p>Ecosystem metrics, third-party software integrations, and platform revenue splits.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn primary btn-sm" onclick="openDeveloperRegistrationModal()"><i data-lucide="user-plus"></i>Register Developer</button>
+            <button class="btn btn-sm" onclick="openCreateListingModal()"><i data-lucide="plus-circle"></i>Create Listing</button>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; margin-top: 12px;">
+          <div class="metric-card panel">
+            <span>Store Listings</span>
+            <strong id="dmStatListingsCount">0</strong>
+            <small>Approved Plugins & Themes</small>
+          </div>
+          <div class="metric-card panel">
+            <span>Pending Reviews</span>
+            <strong id="dmStatSubmissionsCount">0</strong>
+            <small>Items in review queue</small>
+          </div>
+          <div class="metric-card panel">
+            <span>Active Sandboxes</span>
+            <strong id="dmStatSandboxCount">0</strong>
+            <small>Provisioned developer workspaces</small>
+          </div>
+          <div class="metric-card panel">
+            <span>Total Sales Volume</span>
+            <strong id="dmStatSalesVolume">$0.00</strong>
+            <small>Platform sales splits</small>
+          </div>
+        </div>
+
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px;">
+          <div class="panel">
+            <div class="panel-header" style="border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 15px;">
+              <h3>Financial Revenue Share Split</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Gross Platform Sales</span>
+                <strong id="dmOverviewSales">$0.00</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 10px; border-bottom: 1px solid var(--line);">
+                <span>Developer Share (70%)</span>
+                <strong style="color: #10b981;" id="dmOverviewDeveloperShare">$0.00</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>Platform Share (30%)</span>
+                <strong style="color: var(--accent);" id="dmOverviewPlatformShare">$0.00</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header">
+              <h3>Quick Actions</h3>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              <button class="btn btn-sm w-full" style="justify-content: flex-start;" onclick="selectMarketTab('settings')">
+                <i data-lucide="sliders-horizontal"></i>Configure Settings
+              </button>
+              <button class="btn btn-sm w-full" style="justify-content: flex-start;" onclick="triggerSandboxProvisioning()">
+                <i data-lucide="terminal"></i>Provision Temporary Sandbox
+              </button>
+              <a href="https://churchos.dev/docs" target="_blank" class="btn btn-sm w-full" style="justify-content: flex-start; text-decoration: none;">
+                <i data-lucide="external-link"></i>View API Documentation
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Developer: Store Listings -->
+      <div id="tabEl-listings" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Marketplace Listings</h2>
+            <p>Browse themes, plugins, and functional code extensions currently available.</p>
+          </div>
+        </div>
+        <div class="panel" style="padding: 0; overflow: hidden; margin-top: 12px;">
+          <div style="padding: 16px; border-bottom: 1px solid var(--line); display: flex; gap: 12px; background: var(--panel);">
+            <input type="text" id="dmListingsSearch" class="form-control" placeholder="Search approved listings..." onkeyup="filterMarketplaceListings()" style="max-width: 320px;">
+            <select id="dmListingsFilterType" class="form-control" onchange="filterMarketplaceListings()" style="max-width: 160px;">
+              <option value="all">All Types</option>
+              <option value="plugin">Plugins</option>
+              <option value="theme">Themes</option>
+            </select>
+          </div>
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Asset Name</th>
+                <th>Type</th>
+                <th>Pricing</th>
+                <th>Price</th>
+                <th>Version</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dmListingsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Developer: Submissions Review Queue -->
+      <div id="tabEl-submissions" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Review Submissions Queue</h2>
+            <p>Review submitted plugins and themes for quality assurance and permissions clearance.</p>
+          </div>
+        </div>
+        <div class="panel" style="padding: 0; overflow: hidden; margin-top: 12px;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Asset</th>
+                <th>Version</th>
+                <th>Changelog</th>
+                <th>Submitted</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dmSubmissionsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Developer: Payouts -->
+      <div id="tabEl-payouts" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Developer Payouts & Revenue Splits</h2>
+            <p>Monitor transaction revenue share payouts splits across premium extension installations.</p>
+          </div>
+        </div>
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 16px; margin-top: 12px;">
+          <div class="panel" style="padding: 0; overflow: hidden;">
+            <div style="padding: 16px; border-bottom: 1px solid var(--line);">
+              <h3>Recent Sales Transactions</h3>
+            </div>
+            <table class="mini-table">
+              <thead>
+                <tr>
+                  <th>Church Tenant</th>
+                  <th>Asset Purchased</th>
+                  <th>Amount Paid</th>
+                  <th>Dev Share</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="dmPayoutsTransactionsBody"></tbody>
+            </table>
+          </div>
+          <div class="panel" style="display: flex; flex-direction: column; gap: 16px;">
+            <h3>Stripe Connect Integration</h3>
+            <div class="badge" style="background:rgba(16, 185, 129, 0.15); color:var(--success); padding: 12px; border-radius: 6px; display: flex; align-items: center; gap: 8px; text-transform: none;">
+              <i data-lucide="check-circle" style="color: #10b981;"></i>
+              <span>Stripe Payments Connected</span>
+            </div>
+            <p style="font-size: 13px; color: var(--muted);">Platform automatically triggers Stripe transfers using payout-email details on a monthly rolling schedule.</p>
+            <button class="btn primary btn-block btn-sm" onclick="alert('Stripe Connect Gateway dashboard loaded successfully.')"><i data-lucide="external-link"></i>Stripe Dashboard</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Developer: Sandbox Testing -->
+      <div id="tabEl-sandbox" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Sandbox Testing Workspaces</h2>
+            <p>Provision and manage isolated, temporary church workspaces for testing integrations.</p>
+          </div>
+          <button class="btn primary btn-sm" onclick="triggerSandboxProvisioning()"><i data-lucide="plus"></i>Provision Sandbox</button>
+        </div>
+        <div class="panel" style="padding: 0; overflow: hidden; margin-top: 12px;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Developer Profile</th>
+                <th>Workspace Domain</th>
+                <th>Expiry Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dmSandboxTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Developer: Module Settings -->
+      <div id="tabEl-settings" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Marketplace Module Settings</h2>
+            <p>Enable features, adjust platform billing plan splits, and choose payout modes.</p>
+          </div>
+        </div>
+        <div class="panel" style="max-width: 640px; margin-top: 12px;">
+          <form id="dmSettingsForm" onsubmit="saveDeveloperMarketplaceSettings(event)" style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="field" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+              <div>
+                <label for="dmSettingsEnabled" style="font-weight: 600;">Enable Module Ecosystem</label>
+                <span style="font-size: 12px; color: var(--muted); display: block; margin-top: 4px;">Allows approved developers to register and submit plugins.</span>
+              </div>
+              <input type="checkbox" id="dmSettingsEnabled" checked>
+            </div>
+
+            <div class="field" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+              <div>
+                <label for="dmSettingsThirdParty" style="font-weight: 600;">Allow Third-Party Registrations</label>
+                <span style="font-size: 12px; color: var(--muted); display: block; margin-top: 4px;">Permits external software engineers to register developer profiles.</span>
+              </div>
+              <input type="checkbox" id="dmSettingsThirdParty" checked>
+            </div>
+
+            <div class="field" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+              <div>
+                <label for="dmSettingsRequireReview" style="font-weight: 600;">Enforce Approval Reviews</label>
+                <span style="font-size: 12px; color: var(--muted); display: block; margin-top: 4px;">Requires all new assets to pass administrative quality check.</span>
+              </div>
+              <input type="checkbox" id="dmSettingsRequireReview" checked>
+            </div>
+
+            <div class="field" style="border-bottom: 1px solid var(--line); padding-bottom: 12px;">
+              <label for="dmSettingsSplit" style="font-weight: 600; display: block; margin-bottom: 6px;">Platform Revenue Share Split (%)</label>
+              <span style="font-size: 12px; color: var(--muted); display: block; margin-bottom: 10px;">The percentage kept by the platform gateway from gross paid sales.</span>
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <input type="range" id="dmSettingsSplit" min="0" max="100" step="5" value="30" oninput="document.getElementById('dmSettingsSplitValue').textContent = this.value + '%'" style="flex: 1;">
+                <span id="dmSettingsSplitValue" style="font-weight: 600; min-width: 40px; text-align: right;">30%</span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="dmSettingsPayoutMode" style="font-weight: 600; display: block; margin-bottom: 6px;">Developer Payout Billing Tier</label>
+              <select id="dmSettingsPayoutMode" class="form-control">
+                <option value="stripe_connect">Stripe Connect Automatic Payouts</option>
+                <option value="manual">Manual Bank Wire Payouts</option>
+              </select>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
+              <button type="submit" class="btn primary btn-sm"><i data-lucide="check"></i>Save Settings</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Developer: Audit Logs -->
+      <div id="tabEl-logs" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Developer Marketplace Activity Logs</h2>
+            <p>Historical audit trails of listings creation, submissions review, sandboxes, and settings tweaks.</p>
+          </div>
+        </div>
+        <div class="panel" style="padding:0; overflow:hidden; margin-top: 12px;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="dmLogsList"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- 2. THEME ENGINE TAB ELEMENTS               -->
+      <!-- ========================================== -->
+
+      <!-- Theme: Overview -->
+      <div id="tabEl-te-overview" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Styling Overview</h2>
+            <p>Consolidated template setups, active church styles, and design framework settings.</p>
+          </div>
+        </div>
+        <div id="teOverviewMetrics" class="grid" style="grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 12px;"></div>
+        
+        <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 20px; margin-top: 20px;">
+          <div class="panel">
+            <h3 style="margin-top:0; font-weight:700;">Design Context Summary</h3>
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+              <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:8px;">
+                <span class="muted">Active Staged Theme:</span>
+                <strong id="teActiveWebsiteSummary">Loading...</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between;">
+                <span class="muted">Template Engine:</span>
+                <strong style="color:var(--success);">Online & Active</strong>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <h3 style="margin-top:0; font-weight:700;">System Overrides</h3>
+            <div id="tePublishingSummary" style="display:flex; flex-direction:column; gap:10px; margin-top:16px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme: Install Themes -->
+      <div id="tabEl-te-install" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Installed Themes</h2>
+            <p>Active and configured theme containers scoped to your church workspace.</p>
+          </div>
+        </div>
+        <div id="teInstalledThemesList" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; margin-top:12px;"></div>
+
+        <div class="section-head" style="margin-top: 32px;">
+          <div>
+            <h2>Free Platform Templates</h2>
+            <p>Baseline layouts and design frames that can be downloaded instantly.</p>
+          </div>
+        </div>
+        <div id="teMarketplaceThemesList" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap:16px; margin-top:12px;"></div>
+      </div>
+
+      <!-- Theme: Customize Colors -->
+      <div id="tabEl-te-colors" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Customize Color Variables</h2>
+            <p>Define dynamic HSL colors accents to apply directly to public website pages.</p>
+          </div>
+        </div>
+        <div class="panel" style="max-width: 600px; margin-top: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="field" style="display:flex; flex-direction:row; align-items:center; gap:20px;">
+              <div style="flex:1;">
+                <strong>Primary Accent Color</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Core primary color used in buttons, navigation, and badges.</p>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="color" id="tePrimaryColorPicker" style="width:36px; height:36px; border:none; padding:0; background:transparent; cursor:pointer;" />
+                <input type="text" id="tePrimaryColorInput" class="form-control" style="width:100px; text-align:center; font-weight:700;" />
+              </div>
+            </div>
+
+            <div class="field" style="display:flex; flex-direction:row; align-items:center; gap:20px;">
+              <div style="flex:1;">
+                <strong>Secondary Slate Color</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Used in alternate surfaces, borders, and footer backgrounds.</p>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="color" id="teSecondaryColorPicker" style="width:36px; height:36px; border:none; padding:0; background:transparent; cursor:pointer;" />
+                <input type="text" id="teSecondaryColorInput" class="form-control" style="width:100px; text-align:center; font-weight:700;" />
+              </div>
+            </div>
+
+            <div class="field" style="display:flex; flex-direction:row; align-items:center; gap:20px;">
+              <div style="flex:1;">
+                <strong>Highlighter Accent</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Highlight banners, alerts, and focal items.</p>
+              </div>
+              <div style="display:flex; gap:10px; align-items:center;">
+                <input type="color" id="teAccentColorPicker" style="width:36px; height:36px; border:none; padding:0; background:transparent; cursor:pointer;" />
+                <input type="text" id="teAccentColorInput" class="form-control" style="width:100px; text-align:center; font-weight:700;" />
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; border-top:1px solid var(--line); padding-top:16px;">
+              <button class="btn btn-sm" onclick="previewThemeStyling()"><i data-lucide="eye"></i>Stage Live Preview</button>
+              <button class="btn primary btn-sm" onclick="saveThemeStyling()"><i data-lucide="save"></i>Save Changes</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme: Typography -->
+      <div id="tabEl-te-typography" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Font Families & Sizes</h2>
+            <p>Customize the typography systems across your church templates.</p>
+          </div>
+        </div>
+        <div class="panel" style="max-width: 600px; margin-top: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="field">
+              <label for="teHeadingFontSelect">Headings & Titles Font</label>
+              <select id="teHeadingFontSelect" class="form-control">
+                <option value="Outfit">Outfit (Dynamic Rounded Modern)</option>
+                <option value="Inter">Inter (Clean Neutral Neo-grotesque)</option>
+                <option value="Playfair Display">Playfair Display (Elegant Classic Serif)</option>
+                <option value="Montserrat">Montserrat (Classic Geometric Sans)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="teBodyFontSelect">Body Text Font</label>
+              <select id="teBodyFontSelect" class="form-control">
+                <option value="Inter">Inter (Clean Neutral Neo-grotesque)</option>
+                <option value="Outfit">Outfit (Dynamic Rounded Modern)</option>
+                <option value="Georgia">Georgia (Warm High-legibility Serif)</option>
+                <option value="Roboto">Roboto (Clean Mechanical Sans)</option>
+              </select>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; border-top:1px solid var(--line); padding-top:16px;">
+              <button class="btn primary btn-sm" onclick="saveThemeStyling()"><i data-lucide="save"></i>Save Typography</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme: Logo & Layouts -->
+      <div id="tabEl-te-layouts" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Logos & Template Layout styles</h2>
+            <p>Modify logos, nav headers styles, and responsive mobile templates.</p>
+          </div>
+        </div>
+        <div class="panel" style="max-width: 600px; margin-top: 12px;">
+          <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div class="field">
+              <label for="tePrimaryLogoInput">Primary Navbar Logo (URL)</label>
+              <input type="text" id="tePrimaryLogoInput" class="form-control" placeholder="https://images.unsplash.com/photo-..." />
+            </div>
+
+            <div class="field">
+              <label for="teSecondaryLogoInput">Alternate Light/Footer Logo (URL)</label>
+              <input type="text" id="teSecondaryLogoInput" class="form-control" placeholder="https://images.unsplash.com/photo-..." />
+            </div>
+
+            <div class="grid" style="grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="field">
+                <label for="teHeaderStyleSelect">Navbar Header Layout</label>
+                <select id="teHeaderStyleSelect" class="form-control">
+                  <option value="default">Left Logo, Right Navigation Links</option>
+                  <option value="centered">Centered Logo, Splitted Nav Links</option>
+                  <option value="minimal">Minimal Top Header bar</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="teFooterStyleSelect">Footer Column Layout</label>
+                <select id="teFooterStyleSelect" class="form-control">
+                  <option value="simple">Simple Copyright Bar</option>
+                  <option value="multi_column">Multi-column Categories & Socials</option>
+                  <option value="stacked">Pastoral Center Info Grid</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="teMobileLayoutSelect">Mobile Drawer Layout</label>
+              <select id="teMobileLayoutSelect" class="form-control">
+                <option value="stacked">Vertical Stacked Links</option>
+                <option value="bottom_nav">Native App Bottom Bar Layout</option>
+              </select>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; border-top:1px solid var(--line); padding-top:16px;">
+              <button class="btn primary btn-sm" onclick="saveThemeStyling()"><i data-lucide="save"></i>Save Layout</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme: Templates -->
+      <div id="tabEl-te-templates" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Block & Page Templates Registry</h2>
+            <p>Explore built-in, reusable page layouts and custom templates.</p>
+          </div>
+        </div>
+        <div class="grid" style="grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 12px;">
+          <div class="panel">
+            <h3 style="margin-top:0; font-weight:700; margin-bottom:12px;">Reusable Section Blocks</h3>
+            <div id="teSectionTemplatesList" style="display:flex; flex-direction:column; gap:10px;"></div>
+          </div>
+          <div class="panel">
+            <h3 style="margin-top:0; font-weight:700; margin-bottom:12px;">Layout Page Templates</h3>
+            <div id="tePageTemplatesList" style="display:flex; flex-direction:column; gap:10px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme: Custom CSS -->
+      <div id="tabEl-te-css" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Custom Stylesheets (CSS)</h2>
+            <p>Write raw CSS rules to override public church website layouts directly.</p>
+          </div>
+        </div>
+        <div class="panel" style="margin-top: 12px;">
+          <div class="field">
+            <label for="teCustomCssTextarea">Custom CSS Declarations</label>
+            <textarea id="teCustomCssTextarea" class="form-control" style="height:320px; font-family:monospace; font-size:13px; background:#0B0E14;" placeholder="/* Add custom stylesheet overrides here */&#10;body {&#10;  font-feature-settings: 'cv02', 'cv03', 'cv04';&#10;}"></textarea>
+          </div>
+          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; border-top:1px solid var(--line); padding-top:16px;">
+            <button class="btn primary btn-sm" onclick="saveThemeStyling()"><i data-lucide="save"></i>Compile CSS</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme: Settings -->
+      <div id="tabEl-te-settings" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Theme Module Settings</h2>
+            <p>Toggle features, adjust platform billing limits, and payout splits.</p>
+          </div>
+        </div>
+        <div class="panel" style="max-width: 600px; margin-top: 12px;">
+          <form onsubmit="event.preventDefault(); saveThemeEngineSettings();" style="display:flex; flex-direction:column; gap:16px;">
+            <div class="field" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:12px;">
+              <div>
+                <strong>Enable Theme Customization</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Allows church operators to customize design colors and typography.</p>
+              </div>
+              <input type="checkbox" id="teSettingsEnabled" checked />
+            </div>
+
+            <div class="field" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:12px;">
+              <div>
+                <strong>Allow Third-Party Themes</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Enables downloading external themes via the developer marketplace.</p>
+              </div>
+              <input type="checkbox" id="teSettingsMarketplace" checked />
+            </div>
+
+            <div class="field" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:12px;">
+              <div>
+                <strong>Allow Raw Custom CSS</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Enables operators to write custom stylesheets.</p>
+              </div>
+              <input type="checkbox" id="teSettingsCustomCss" checked />
+            </div>
+
+            <div class="field" style="display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:12px;">
+              <div>
+                <strong>Enforce Active Entitlement Checks</strong>
+                <p class="muted" style="margin:2px 0 0 0; font-size:12px;">Restricts public page views if billing subscriptions lapse.</p>
+              </div>
+              <input type="checkbox" id="teSettingsPublishGate" checked />
+            </div>
+
+            <div class="grid" style="grid-template-columns:1fr 1fr; gap:16px;">
+              <div class="field">
+                <label for="teSettingsBillingPlan">Billing Tier Pricing Split</label>
+                <select id="teSettingsBillingPlan" class="form-control">
+                  <option value="free">Free Tier Split Plan</option>
+                  <option value="basic">Basic Paid Split</option>
+                  <option value="pro">Pro Scale Plan</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="teSettingsProviderMode">Gateway Stripe Payout Billing</label>
+                <select id="teSettingsProviderMode" class="form-control">
+                  <option value="bring_your_own">Bring Your Own Stripe (BYO)</option>
+                  <option value="automatic">Automatic Central Stripe Splits</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px; border-top:1px solid var(--line); padding-top:16px;">
+              <button class="btn primary btn-sm" type="submit"><i data-lucide="save"></i>Save Configuration</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Theme: Audit Logs -->
+      <div id="tabEl-te-logs" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Theme Module Activity Logs</h2>
+            <p>Chronological audit logs of theme installations, customizations, and activations.</p>
+          </div>
+        </div>
+        <div class="panel" style="padding:0; overflow:hidden; margin-top: 12px;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Action</th>
+                <th>Details</th>
+                <th>Timestamp</th>
+              </tr>
+            </thead>
+            <tbody id="teLogsList"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- 3. PLUGIN ENGINE TAB ELEMENTS              -->
+      <!-- ========================================== -->
+
+      <!-- Plugin: Platform Registry -->
+      <div id="tabEl-pe-registry" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Platform Registry</h2>
+            <p>Browse, install, and update platform-approved extensions to expand your church's features.</p>
+          </div>
+        </div>
+        <div id="pluginRegistryList" class="grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin-top: 12px;"></div>
+      </div>
+
+      <!-- Plugin: Active Extensions -->
+      <div id="tabEl-pe-installed" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Active Extension Hub</h2>
+            <p>Manage sandbox permissions, toggles, and config schemas for active extension bundles.</p>
+          </div>
+        </div>
+        <div class="panel" style="padding: 0; overflow: hidden; margin-top: 12px;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Extension</th>
+                <th>Version</th>
+                <th>Status</th>
+                <th>Sandbox Scopes</th>
+                <th>Settings</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pluginInstalledList"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Plugin: Event Webhooks -->
+      <div id="tabEl-pe-webhooks" class="market-tab-content hidden">
+        <div class="section-head">
+          <div>
+            <h2>Event Webhooks</h2>
+            <p>Enable secure events callbacks to sync third-party church applications automatically.</p>
+          </div>
+          <button class="btn primary btn-sm" onclick="openRegisterWebhookModal()"><i data-lucide="plus"></i>Register Webhook</button>
+        </div>
+        <div class="panel" style="padding: 0; overflow: hidden; margin-top: 12px;">
+          <table class="mini-table">
+            <thead>
+              <tr>
+                <th>Plugin</th>
+                <th>Trigger Event</th>
+                <th>Target URL</th>
+                <th>Webhook status</th>
+                <th>Registered</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="pluginWebhooksList"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Toast system -->
+  <div id="toast" class="toast hidden"></div>
+
+  <!-- Webhook Modal Dialog -->
+  <div id="pluginRegisterWebhookModal" class="system-dialog-overlay hidden">
+    <div class="system-dialog-card">
+      <div class="system-dialog-icon info"><i data-lucide="webhook"></i></div>
+      <h3 style="margin:0 0 16px 0;">Register Event Webhook</h3>
+      <div style="width:100%; display:flex; flex-direction:column; gap:16px; text-align:left;">
+        <div class="field">
+          <label>Extension Scope</label>
+          <select id="webhookPluginSelect" class="form-control"></select>
+        </div>
+        <div class="field">
+          <label>Trigger Event</label>
+          <select id="webhookTriggerSelect" class="form-control">
+            <option value="member.created">member.created (A new church member profile is created)</option>
+            <option value="donation.received">donation.received (A donation payment completes)</option>
+            <option value="event.registered">event.registered (A registration is created)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Target Callback URL</label>
+          <input type="url" id="webhookTargetUrlInput" placeholder="https://api.yourdomain.com/webhook" class="form-control" required />
+        </div>
+      </div>
+      <div class="system-dialog-footer">
+        <button class="btn secondary btn-sm" onclick="closePluginModal('pluginRegisterWebhookModal')">Cancel</button>
+        <button class="btn primary btn-sm" onclick="registerPluginWebhook()"><i data-lucide="plus"></i>Register</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Permissions Config Dialog -->
+  <div id="pluginPermissionsModal" class="system-dialog-overlay hidden">
+    <div class="system-dialog-card">
+      <div class="system-dialog-icon info"><i data-lucide="shield-check"></i></div>
+      <h3 id="pluginPermissionsModalTitle">Sandbox Scopes</h3>
+      <div id="pluginPermissionsList" style="width:100%; display:flex; flex-direction:column; gap:12px; text-align:left; margin:16px 0;"></div>
+      <div class="system-dialog-footer">
+        <button class="btn secondary btn-sm" onclick="closePluginModal('pluginPermissionsModal')">Cancel</button>
+        <button class="btn primary btn-sm" id="savePluginPermissionsBtn"><i data-lucide="check"></i>Save Permissions</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Config Dialog -->
+  <div id="pluginSettingsModal" class="system-dialog-overlay hidden">
+    <div class="system-dialog-card">
+      <div class="system-dialog-icon info"><i data-lucide="sliders"></i></div>
+      <h3 id="pluginSettingsModalTitle">Extension Settings</h3>
+      <div id="pluginSettingsFormContainer" style="width:100%; display:flex; flex-direction:column; gap:16px; text-align:left; margin:16px 0;"></div>
+      <div class="system-dialog-footer">
+        <button class="btn secondary btn-sm" onclick="closePluginModal('pluginSettingsModal')">Cancel</button>
+        <button class="btn primary btn-sm" id="savePluginSettingsBtn"><i data-lucide="check"></i>Save Configuration</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- JAVASCRIPT GLOBAL LOGIC                                                   -->
+  <!-- ========================================================================= -->
+  <script>
+    // Authentic state containers
+    const marketState = {
+      activeCategory: 'plugin-engine',
+      activeTab: 'pe-registry',
+      tenantInfo: null
+    };
+
+    const categories = {
+      'plugin-engine': {
+        name: 'Marketplace',
+        tabs: [
+          { key: 'pe-registry', name: 'Platform Registry', icon: 'layout-grid' },
+          { key: 'pe-installed', name: 'Active Extensions', icon: 'package-check' },
+          { key: 'pe-webhooks', name: 'Event Webhooks', icon: 'webhook' }
+        ]
+      },
+
+      'developer': {
+        name: 'Developer Portal',
+        tabs: [
+          { key: 'overview', name: 'Overview', icon: 'layout-dashboard' },
+          { key: 'listings', name: 'Store Listings', icon: 'shopping-bag' },
+          { key: 'submissions', name: 'Review Queue', icon: 'package-search' },
+          { key: 'payouts', name: 'Payouts split', icon: 'wallet' },
+          { key: 'sandbox', name: 'Sandbox testing', icon: 'terminal' },
+          { key: 'settings', name: 'Module Settings', icon: 'settings-2' },
+          { key: 'logs', name: 'Audit Logs', icon: 'scroll' }
+        ]
+      }
+    };
+
+    // Shared Utility wrappers
+    function formatCurrency(val) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(val || 0);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.add('hidden'), 2600);
+    }
+
+    function parseMaybeJson(val, fallback = []) {
+      if (!val) return fallback;
+      if (typeof val !== 'string') return val;
+      try {
+        return JSON.parse(val);
+      } catch (e) {
+        return fallback;
+      }
+    }
+
+    async function cmsApiRequest(method, path, body = null) {
+      const tenantId = localStorage.getItem('churchos.tenantId') || 'demo-church-local';
+      const token = localStorage.getItem('churchos.token') || 'local-preview-token';
+      
+      const options = {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-tenant-id': tenantId,
+          'Authorization': `Bearer ${token}`
+        }
+      };
+      if (body) options.body = JSON.stringify(body);
+
+      try {
+        const res = await fetch(path, options);
+        const data = await res.json();
+        return { ok: res.ok, status: res.status, data };
+      } catch (err) {
+        console.error('Request failed:', err);
+        return { ok: false, status: 500, data: { error: 'Network communication failure' } };
+      }
+    }
+
+    // =========================================================================
+    // Sidebar Category & Tab switching
+    // =========================================================================
+    window.selectMarketCategory = function(catKey) {
+      marketState.activeCategory = catKey;
+      
+      // Update Column A active buttons
+      document.querySelectorAll('.sidebar-a-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `catBtn-${catKey}`);
+      });
+
+      // Render Column B tabs
+      const tabsContainer = document.getElementById('sidebarTabsB');
+      if (tabsContainer) {
+        const cat = categories[catKey];
+        tabsContainer.innerHTML = `
+          <div style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px; padding-left: 8px;">
+            ${cat.name}
+          </div>
+          ${cat.tabs.map(t => `
+            <button class="sidebar-b-item" id="tabBtn-${t.key}" onclick="selectMarketTab('${t.key}')">
+              <i data-lucide="${t.icon}" style="width: 16px; height: 16px;"></i>
+              <span>${t.name}</span>
+            </button>
+          `).join('')}
+        `;
+      }
+
+      // Automatically select the first tab of the category
+      const firstTab = categories[catKey].tabs[0].key;
+      selectMarketTab(firstTab);
+    };
+
+    window.selectMarketTab = function(tabKey) {
+      marketState.activeTab = tabKey;
+
+      // Update Column B active tabs
+      document.querySelectorAll('.sidebar-b-item').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tabBtn-${tabKey}`);
+      });
+
+      // Hide all tabs
+      document.querySelectorAll('.market-tab-content').forEach(tab => {
+        tab.classList.add('hidden');
+      });
+
+      // Show the active tab
+      const activeTabEl = document.getElementById(`tabEl-${tabKey}`);
+      if (activeTabEl) {
+        activeTabEl.classList.remove('hidden');
+      }
+
+      // Trigger load bootstrap logic if needed
+      if (tabKey === 'overview' || tabKey === 'listings' || tabKey === 'submissions' || tabKey === 'payouts' || tabKey === 'sandbox' || tabKey === 'settings' || tabKey === 'logs') {
+        bootstrapDeveloperMarketplace();
+      } else if (tabKey.startsWith('te-')) {
+        themeEngineState.activeTab = tabKey.replace('te-', '');
+        bootstrapThemeEngine();
+      } else if (tabKey.startsWith('pe-')) {
+        const peTab = tabKey.replace('pe-', '');
+        pluginState.activeTab = peTab;
+        bootstrapPlugins();
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+    };
+
+    // =========================================================================
+    // DEVELOPER PORTAL LOGIC
+    // =========================================================================
+    const developerMarketplaceState = {
+      activeTab: 'overview',
+      overview: null,
+      settings: null,
+      reports: [],
+      listenersBound: false
+    };
+
+    async function bootstrapDeveloperMarketplace() {
+      const [overviewRes, settingsRes, auditLogsRes] = await Promise.all([
+        cmsApiRequest('GET', '/api/marketplace/developer/overview'),
+        cmsApiRequest('GET', '/api/marketplace/developer/settings'),
+        cmsApiRequest('GET', '/api/marketplace/developer/logs')
+      ]);
+
+      if (overviewRes && overviewRes.ok && overviewRes.data) {
+        developerMarketplaceState.overview = overviewRes.data;
+        updateDeveloperMarketplaceOverview();
+      }
+
+      if (settingsRes && settingsRes.ok && settingsRes.data) {
+        developerMarketplaceState.settings = settingsRes.data;
+        populateDeveloperMarketplaceSettingsForm();
+      }
+
+      if (auditLogsRes && auditLogsRes.ok && auditLogsRes.data) {
+        renderDeveloperMarketplaceAuditLogs(auditLogsRes.data);
+      }
+
+      // Fetch dynamic catalog listings and reviews
+      if (marketState.activeTab === 'listings') {
+        const listingsRes = await cmsApiRequest('GET', '/api/marketplace/assets');
+        if (listingsRes && listingsRes.ok) {
+          renderMarketplaceListingsTable(listingsRes.data);
+        }
+      } else if (marketState.activeTab === 'submissions') {
+        const queueRes = await cmsApiRequest('GET', '/api/marketplace/submissions');
+        if (queueRes && queueRes.ok) {
+          renderSubmissionsTable(queueRes.data);
+        }
+      } else if (marketState.activeTab === 'payouts') {
+        const payoutsRes = await cmsApiRequest('GET', '/api/marketplace/developer/payouts');
+        if (payoutsRes && payoutsRes.ok) {
+          renderPayouts(payoutsRes.data);
+        }
+      } else if (marketState.activeTab === 'sandbox') {
+        const sandboxRes = await cmsApiRequest('GET', '/api/marketplace/developer/sandbox');
+        if (sandboxRes && sandboxRes.ok) {
+          renderSandboxWorkspaces(sandboxRes.data);
+        }
+      }
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function updateDeveloperMarketplaceOverview() {
+      const ov = developerMarketplaceState.overview || {};
+      const counts = ov.counts || {};
+      const sales = ov.sales || {};
+
+      document.getElementById('dmStatListingsCount').textContent = counts.listings || 0;
+      document.getElementById('dmStatSubmissionsCount').textContent = counts.submissions || 0;
+      document.getElementById('dmStatSandboxCount').textContent = counts.sandboxWorkspaces || 0;
+      document.getElementById('dmStatSalesVolume').textContent = formatCurrency(sales.totalSalesVolume);
+
+      document.getElementById('dmOverviewSales').textContent = formatCurrency(sales.totalSalesVolume);
+      document.getElementById('dmOverviewDeveloperShare').textContent = formatCurrency(sales.totalDeveloperShare);
+      document.getElementById('dmOverviewPlatformShare').textContent = formatCurrency(sales.totalPlatformShare);
+    }
+
+    function populateDeveloperMarketplaceSettingsForm() {
+      const settings = developerMarketplaceState.settings || {};
+      const enabledCheckbox = document.getElementById('dmSettingsEnabled');
+      const thirdPartyCheckbox = document.getElementById('dmSettingsThirdParty');
+      const requireReviewCheckbox = document.getElementById('dmSettingsRequireReview');
+      const splitSlider = document.getElementById('dmSettingsSplit');
+      const payoutSelect = document.getElementById('dmSettingsPayoutMode');
+
+      if (enabledCheckbox) enabledCheckbox.checked = settings.enabled !== false;
+      if (thirdPartyCheckbox) thirdPartyCheckbox.checked = settings.allowThirdPartyDevelopers !== false;
+      if (requireReviewCheckbox) requireReviewCheckbox.checked = settings.enforceApprovalReview !== false;
+      if (splitSlider) {
+        splitSlider.value = settings.platformRevenueSharePercentage ?? 30;
+        document.getElementById('dmSettingsSplitValue').textContent = splitSlider.value + '%';
+      }
+      if (payoutSelect) payoutSelect.value = settings.payoutBillingMode || 'stripe_connect';
+    }
+
+    async function saveDeveloperMarketplaceSettings(e) {
+      e.preventDefault();
+      const payload = {
+        enabled: document.getElementById('dmSettingsEnabled').checked,
+        allowThirdPartyDevelopers: document.getElementById('dmSettingsThirdParty').checked,
+        enforceApprovalReview: document.getElementById('dmSettingsRequireReview').checked,
+        platformRevenueSharePercentage: Number(document.getElementById('dmSettingsSplit').value),
+        payoutBillingMode: document.getElementById('dmSettingsPayoutMode').value
+      };
+
+      showToast('Saving marketplace settings...');
+      const res = await cmsApiRequest('PATCH', '/api/marketplace/developer/settings', payload);
+      if (res && res.ok) {
+        showToast('Settings saved successfully!');
+        developerMarketplaceState.settings = res.data;
+      } else {
+        alert(res?.data?.error || 'Failed to save settings overrides');
+      }
+    }
+
+    // Modal Triggers
+    window.openDeveloperRegistrationModal = async function() {
+      const company = prompt("Enter Company/Developer Name:");
+      if (!company) return;
+      const website = prompt("Enter Developer Website Portfolio URL:", "https://");
+      if (!website) return;
+      const payoutEmail = prompt("Enter Payout Stripe-connected Email:");
+      if (!payoutEmail) return;
+
+      showToast("Registering developer account...");
+      const res = await cmsApiRequest('POST', '/api/marketplace/developer/register', {
+        companyName: company,
+        website,
+        payoutEmail
+      });
+
+      if (res && res.ok) {
+        showToast("Developer account registered successfully!");
+        bootstrapDeveloperMarketplace();
+      } else {
+        alert(res?.data?.error || "Registration failed. Already registered?");
+      }
+    };
+
+    window.openCreateListingModal = async function() {
+      const name = prompt("Asset Name:");
+      if (!name) return;
+      const type = prompt("Type (plugin or theme):", "plugin");
+      if (type !== 'plugin' && type !== 'theme') {
+        alert('Invalid asset type');
+        return;
+      }
+      const description = prompt("Short Description:");
+      const pricing = prompt("Pricing type (free or paid):", "free");
+      const price = pricing === 'paid' ? Number(prompt("Price per month ($):", "15.00")) : 0;
+
+      showToast("Creating listing draft...");
+      const res = await cmsApiRequest('POST', '/api/marketplace/assets', {
+        name,
+        type,
+        description,
+        pricingType: pricing,
+        price,
+        assetConfig: type === 'plugin' ? { requiredPermissions: ['member.read'] } : { font: 'Outfit' }
+      });
+
+      if (res && res.ok) {
+        showToast(`Draft listing created! Submitting version 1.0.0 for review...`);
+        const submitRes = await cmsApiRequest('POST', `/api/marketplace/assets/${res.data.id}/submit`, {
+          version: '1.0.0',
+          changelog: 'Initial version release'
+        });
+        if (submitRes && submitRes.ok) {
+          showToast('Version 1.0.0 successfully submitted to review queue!');
+        }
+        bootstrapDeveloperMarketplace();
+      } else {
+        alert(res?.data?.error || "Failed to create store listing");
+      }
+    };
+
+    window.triggerSandboxProvisioning = async function() {
+      showToast("Provisioning isolated sandbox workspace...");
+      const res = await cmsApiRequest('POST', '/api/marketplace/developer/sandbox');
+      if (res && res.ok) {
+        showToast(`Sandbox tenant '${res.data.tenant.subdomain}' provisioned! Expires in 24 hours.`);
+        bootstrapDeveloperMarketplace();
+      } else {
+        alert(res?.data?.error || "Sandbox provisioning failed.");
+      }
+    };
+
+    function renderMarketplaceListingsTable(listings) {
+      const tbody = document.getElementById('dmListingsTableBody');
+      if (!tbody) return;
+
+      if (!listings || listings.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="muted" style="text-align:center; padding:24px;">No approved listings found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = listings.map(asset => `
+        <tr class="listing-row" data-type="${asset.type}" data-name="${asset.name.toLowerCase()}">
+          <td style="font-weight:600; padding:14px 18px;">${escapeHtml(asset.name)}</td>
+          <td style="padding:14px 18px; text-transform:capitalize;">${escapeHtml(asset.type)}</td>
+          <td style="padding:14px 18px; text-transform:capitalize;">${escapeHtml(asset.pricingType)}</td>
+          <td style="padding:14px 18px;">${formatCurrency(asset.price)}</td>
+          <td style="padding:14px 18px;">v${escapeHtml(asset.version)}</td>
+          <td style="padding:14px 18px;"><span class="badge" style="background:var(--success); color:#111827;">${escapeHtml(asset.status)}</span></td>
+          <td style="padding:14px 18px;">
+            <button class="btn btn-xs secondary" onclick="alert('Feedback Ratings: ${asset.averageRating} Stars out of ${asset.totalFeedback || 0} reviews.')">Stats</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.filterMarketplaceListings = function() {
+      const query = document.getElementById('dmListingsSearch').value.toLowerCase().trim();
+      const type = document.getElementById('dmListingsFilterType').value;
+
+      document.querySelectorAll('.listing-row').forEach(row => {
+        const rowType = row.dataset.type;
+        const name = row.dataset.name;
+        const matchesType = type === 'all' || rowType === type;
+        const matchesQuery = !query || name.includes(query);
+        row.classList.toggle('hidden', !matchesType || !matchesQuery);
+      });
+    };
+
+    function renderSubmissionsTable(subs) {
+      const tbody = document.getElementById('dmSubmissionsTableBody');
+      if (!tbody) return;
+
+      if (!subs || subs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">No submitted assets in review queue</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = subs.map(sub => `
+        <tr>
+          <td style="font-weight:600; padding:14px 18px;">
+            ${escapeHtml(sub.asset?.name)}
+            <code style="font-size:11px; font-weight:normal; color:var(--muted);">(${sub.asset?.type})</code>
+          </td>
+          <td style="padding:14px 18px;">v${escapeHtml(sub.version)}</td>
+          <td style="padding:14px 18px; font-size:12px;">${escapeHtml(sub.changelog)}</td>
+          <td style="padding:14px 18px;" class="muted">${new Date(sub.createdAt).toLocaleString()}</td>
+          <td style="padding:14px 18px;"><span class="badge" style="background:var(--warning); color:#fff;">${escapeHtml(sub.status)}</span></td>
+          <td style="padding:14px 18px;">
+            <button class="btn btn-xs primary" onclick="reviewSubmission('${sub.id}', 'approved')">Approve</button>
+            <button class="btn btn-xs danger" onclick="reviewSubmission('${sub.id}', 'rejected')">Reject</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    window.reviewSubmission = async function(subId, decision) {
+      const notes = prompt(`Enter review notes for ${decision}:`, "Meets all criteria");
+      if (notes === null) return;
+
+      showToast(`Submitting review decision...`);
+      const res = await cmsApiRequest('POST', `/api/marketplace/submissions/${subId}/review`, {
+        decision,
+        notes
+      });
+
+      if (res && res.ok) {
+        showToast(`Review submitted! Asset is now ${decision}.`);
+        bootstrapDeveloperMarketplace();
+      } else {
+        alert(res?.data?.error || "Review submission failed");
+      }
+    };
+
+    function renderPayouts(data) {
+      const tbody = document.getElementById('dmPayoutsTransactionsBody');
+      if (!tbody) return;
+
+      const purchases = data.purchases || [];
+      if (purchases.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center; padding:24px;">No payouts sales recorded</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = purchases.map(p => `
+        <tr>
+          <td style="padding:14px 18px;">${escapeHtml(p.tenantId)}</td>
+          <td style="padding:14px 18px; font-weight:600;">${escapeHtml(p.asset?.name)}</td>
+          <td style="padding:14px 18px;">${formatCurrency(p.amountPaid)}</td>
+          <td style="padding:14px 18px; color:#10b981; font-weight:700;">${formatCurrency(p.developerShare)}</td>
+          <td style="padding:14px 18px;" class="muted">${new Date(p.createdAt).toLocaleDateString()}</td>
+        </tr>
+      `).join('');
+    }
+
+    function renderSandboxWorkspaces(sandboxes) {
+      const tbody = document.getElementById('dmSandboxTableBody');
+      if (!tbody) return;
+
+      if (!sandboxes || sandboxes.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="muted" style="text-align:center; padding:24px;">No active sandboxes provisioned</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = sandboxes.map(sb => {
+        const expiry = new Date(sb.expiresAt);
+        const expired = expiry < new Date();
+        return `
+          <tr>
+            <td style="padding:14px 18px;">${escapeHtml(sb.developer?.companyName)}</td>
+            <td style="padding:14px 18px; font-weight:700; color:var(--accent);"><code>${escapeHtml(sb.tenant?.subdomain)}.churchos.com</code></td>
+            <td style="padding:14px 18px; color:${expired ? 'var(--danger)' : 'var(--text)'};">${expiry.toLocaleString()}</td>
+            <td style="padding:14px 18px;"><span class="badge" style="background:${expired ? 'var(--danger)' : 'var(--success)'}; color:#111827;">${expired ? 'Expired' : 'Active'}</span></td>
+            <td style="padding:14px 18px;">
+              <button class="btn btn-xs secondary" onclick="alert('Redirecting to sandbox tenant dashboard...')">Dashboard</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderDeveloperMarketplaceAuditLogs(logs) {
+      const tbody = document.getElementById('dmLogsList');
+      if (!tbody) return;
+
+      if (!logs || logs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="muted" style="text-align:center; padding:24px;">No audit trails found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = logs.map(log => `
+        <tr>
+          <td style="font-weight:600; padding:14px 18px;">${escapeHtml(log.userId || 'System')}</td>
+          <td style="padding:14px 18px;"><code style="color:var(--accent); font-weight:700;">${escapeHtml(log.actionType)}</code></td>
+          <td style="padding:14px 18px; font-size:12px; max-width:320px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(log.details)}">${escapeHtml(log.details)}</td>
+          <td style="padding:14px 18px;" class="muted">${new Date(log.createdAt).toLocaleString()}</td>
+        </tr>
+      `).join('');
+    }
+
+
+    // =========================================================================
+    // THEME ENGINE LOGIC
+    // =========================================================================
+    const cmsState = {
+      activeWebsiteId: '',
+      websites: []
+    };
+
+    const themeEngineState = {
+      activeTab: 'overview',
+      overview: null,
+      themes: [],
+      activeThemeId: '',
+      sections: [],
+      pageTemplates: [],
+      activities: [],
+      settings: {},
+      marketplaceThemes: [
+        { id: 'm-theme-1', name: 'Neon Youth Style', description: 'Vibrant gradients and bold typography for youth ministries.', pricingType: 'free', price: 0 },
+        { id: 'm-theme-2', name: 'Traditional Hymnal', description: 'Classic serif fonts and clean layout styles for traditional services.', pricingType: 'free', price: 0 },
+        { id: 'm-theme-3', name: 'Modern Dynamic', description: 'Sleek dark overlays and custom blocks for fast-growing media ministries.', pricingType: 'free', price: 0 }
+      ]
+    };
+
+    async function bootstrapThemeEngine() {
+      // Fetch website contexts if missing
+      if (cmsState.websites.length === 0) {
+        const webRes = await cmsApiRequest('GET', '/api/cms/websites');
+        if (webRes && webRes.ok && webRes.data) {
+          cmsState.websites = webRes.data || [];
+          cmsState.activeWebsiteId = cmsState.websites[0]?.id || '';
+        }
+      }
+
+      const [overviewRes, themesRes, sectionsRes, pageTemplatesRes, reportsRes, settingsRes] = await Promise.all([
+        cmsApiRequest('GET', '/api/theme-engine/overview'),
+        cmsApiRequest('GET', '/api/theme-engine/themes'),
+        cmsApiRequest('GET', '/api/theme-engine/sections'),
+        cmsApiRequest('GET', '/api/theme-engine/page-templates'),
+        cmsApiRequest('GET', '/api/theme-engine/reports'),
+        cmsApiRequest('GET', '/api/theme-engine/settings')
+      ]);
+
+      if (overviewRes && overviewRes.ok && overviewRes.data) {
+        themeEngineState.overview = overviewRes.data;
+      }
+      if (themesRes && themesRes.ok && themesRes.data) {
+        themeEngineState.themes = themesRes.data || [];
+      }
+      if (sectionsRes && sectionsRes.ok && sectionsRes.data) {
+        themeEngineState.sections = sectionsRes.data || [];
+      }
+      if (pageTemplatesRes && pageTemplatesRes.ok && pageTemplatesRes.data) {
+        themeEngineState.pageTemplates = pageTemplatesRes.data || [];
+      }
+      if (reportsRes && reportsRes.ok && reportsRes.data) {
+        themeEngineState.activities = reportsRes.data || [];
+      }
+      if (settingsRes && settingsRes.ok && settingsRes.data) {
+        themeEngineState.settings = settingsRes.data || {};
+      }
+
+      // Identify active theme
+      const currentWebsiteId = cmsState.activeWebsiteId || (cmsState.websites && cmsState.websites[0]?.id);
+      let activeTheme = null;
+      if (currentWebsiteId) {
+        const activeWebObj = cmsState.websites?.find(w => w.id === currentWebsiteId);
+        if (activeWebObj && activeWebObj.themeId) {
+          themeEngineState.activeThemeId = activeWebObj.themeId;
+          activeTheme = themeEngineState.themes.find(t => t.id === themeEngineState.activeThemeId);
+        }
+      }
+      if (!activeTheme && themeEngineState.themes.length > 0) {
+        activeTheme = themeEngineState.themes[0];
+        themeEngineState.activeThemeId = activeTheme.id;
+      }
+
+      // Populate Inputs in UI if active theme found
+      if (activeTheme) {
+        let settings = {};
+        try {
+          settings = typeof activeTheme.settings === 'string' ? JSON.parse(activeTheme.settings) : (activeTheme.settings || {});
+        } catch (e) { settings = {}; }
+
+        const colors = settings.colors || {};
+        const fonts = settings.fonts || {};
+        const logos = settings.logos || {};
+        const layout = settings.layout || {};
+        const customCss = settings.customCss || '';
+
+        syncColorInput('tePrimary', colors.primary || '#0055ff');
+        syncColorInput('teSecondary', colors.secondary || '#ffffff');
+        syncColorInput('teAccent', colors.accent || '#ff9900');
+
+        const headingSelect = document.getElementById('teHeadingFontSelect');
+        if (headingSelect) headingSelect.value = fonts.heading || 'Inter';
+
+        const bodySelect = document.getElementById('teBodyFontSelect');
+        if (bodySelect) bodySelect.value = fonts.body || 'Inter';
+
+        const primaryLogo = document.getElementById('tePrimaryLogoInput');
+        if (primaryLogo) primaryLogo.value = logos.primaryUrl || '';
+
+        const secondaryLogo = document.getElementById('teSecondaryLogoInput');
+        if (secondaryLogo) secondaryLogo.value = logos.secondaryUrl || '';
+
+        const headerStyle = document.getElementById('teHeaderStyleSelect');
+        if (headerStyle) headerStyle.value = layout.headerStyle || 'default';
+
+        const footerStyle = document.getElementById('teFooterStyleSelect');
+        if (footerStyle) footerStyle.value = layout.footerStyle || 'simple';
+
+        const mobileLayout = document.getElementById('teMobileLayoutSelect');
+        if (mobileLayout) mobileLayout.value = layout.mobileLayout || 'stacked';
+
+        const cssTextarea = document.getElementById('teCustomCssTextarea');
+        if (cssTextarea) cssTextarea.value = customCss || '';
+      }
+
+      bindThemeEngineColorPickers();
+      renderThemeEngineOverview();
+      renderThemeEngineInstalledThemes();
+      renderThemeEngineMarketplaceThemes();
+      renderThemeEngineTemplates();
+      populateThemeEngineSettingsControls();
+      renderThemeEngineLogsTable();
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function syncColorInput(prefix, value) {
+      const picker = document.getElementById(`${prefix}ColorPicker`);
+      const input = document.getElementById(`${prefix}ColorInput`);
+      if (picker) picker.value = value;
+      if (input) input.value = value;
+    }
+
+    function bindThemeEngineColorPickers() {
+      ['tePrimary', 'teSecondary', 'teAccent'].forEach(prefix => {
+        const picker = document.getElementById(`${prefix}ColorPicker`);
+        const input = document.getElementById(`${prefix}ColorInput`);
+        if (picker && input) {
+          picker.removeEventListener('input', handleTeColorSync);
+          picker.addEventListener('input', handleTeColorSync);
+          input.removeEventListener('change', handleTeColorInputSync);
+          input.addEventListener('change', handleTeColorInputSync);
+        }
+      });
+    }
+
+    function handleTeColorSync(e) {
+      const inputId = e.currentTarget.id.replace('Picker', 'Input');
+      const input = document.getElementById(inputId);
+      if (input) input.value = e.currentTarget.value;
+    }
+
+    function handleTeColorInputSync(e) {
+      const pickerId = e.currentTarget.id.replace('Input', 'Picker');
+      const picker = document.getElementById(pickerId);
+      if (picker && /^#[0-9A-F]{6}$/i.test(e.currentTarget.value)) {
+        picker.value = e.currentTarget.value;
+      }
+    }
+
+    function getThemeEngineConfig() {
+      try {
+        return typeof themeEngineState.settings.configJson === 'string'
+          ? JSON.parse(themeEngineState.settings.configJson || '{}')
+          : (themeEngineState.settings.configJson || {});
+      } catch { return {}; }
+    }
+
+    function renderThemeEngineOverview() {
+      const metrics = document.getElementById('teOverviewMetrics');
+      const activeSummary = document.getElementById('teActiveWebsiteSummary');
+      const publishingSummary = document.getElementById('tePublishingSummary');
+      const overview = themeEngineState.overview || {};
+      const counts = overview.counts || {};
+      const config = getThemeEngineConfig();
+
+      if (metrics) {
+        const metricItems = [
+          ['palette', 'Themes', counts.installedThemes || themeEngineState.themes.length || 0, 'Installed themes'],
+          ['globe-2', 'Websites', counts.websites || (cmsState.websites?.length || 0), 'Websites Contexts'],
+          ['blocks', 'Sections', counts.sectionTemplates || themeEngineState.sections.length || 0, 'Available Blocks'],
+          ['layout-template', 'Pages', counts.pageTemplates || themeEngineState.pageTemplates.length || 0, 'Page Templates']
+        ];
+        metrics.innerHTML = metricItems.map(([icon, label, value, note]) => `
+          <div class="panel">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge" style="background:var(--accent-soft); color:var(--accent); font-size:10px;">${escapeHtml(label)}</span>
+              <i data-lucide="${icon}" style="width:16px; height:16px; color:var(--muted);"></i>
+            </div>
+            <div style="font-size:24px; font-weight:800; margin-top:8px;">${value}</div>
+            <p style="margin:4px 0 0 0; font-size:11px; color:var(--muted);">${escapeHtml(note)}</p>
+          </div>
+        `).join('');
+      }
+
+      if (activeSummary) {
+        const active = overview.activeWebsite;
+        activeSummary.textContent = active ? `${active.title} (${active.themeName || 'Selected style'})` : 'No active context';
+      }
+
+      if (publishingSummary) {
+        const flags = [
+          ['check-circle-2', 'Styling Module', themeEngineState.settings.enabled !== false ? 'Enabled' : 'Disabled'],
+          ['store', 'Marketplace Store Download', config.allowMarketplaceThemes !== false ? 'Allowed' : 'Enforced Off'],
+          ['code', 'Raw Override Stylesheets', config.allowCustomCss !== false ? 'Available' : 'Restricted'],
+          ['lock-keyhole', 'Public View Gate', config.publicPublishingRequiresActiveEntitlement !== false ? 'Entitlement Lock' : 'Open Access']
+        ];
+        publishingSummary.innerHTML = flags.map(([icon, label, value]) => `
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding-bottom:8px; font-size:13px;">
+            <span style="display:flex; align-items:center; gap:8px;"><i data-lucide="${icon}" style="width:14px; height:14px; color:var(--muted);"></i>${escapeHtml(label)}</span>
+            <strong>${escapeHtml(value)}</strong>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderThemeEngineInstalledThemes() {
+      const container = document.getElementById('teInstalledThemesList');
+      if (!container) return;
+
+      if (themeEngineState.themes.length === 0) {
+        container.innerHTML = `<div class="panel muted" style="grid-column:1/-1; text-align:center; padding:24px;">No themes installed yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = themeEngineState.themes.map(theme => {
+        const isActive = theme.id === themeEngineState.activeThemeId;
+        const btnClass = isActive ? 'btn primary' : 'btn secondary';
+        const btnLabel = isActive ? 'Active Theme' : 'Activate';
+        const actionClick = isActive ? `onclick="showToast('Theme is already active')"` : `onclick="activateThemeEngineTheme('${theme.id}', '${escapeHtml(theme.name)}')"`;
+
+        return `
+          <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; border:${isActive ? '2px solid var(--accent)' : '1px solid var(--line)'}">
+            <div>
+              <h4 style="margin:0 0 8px 0; font-weight:700;">${escapeHtml(theme.name)}</h4>
+              <p style="margin:0 0 16px 0; font-size:12px; color:var(--muted);">Church template scoped to your tenant database.</p>
+            </div>
+            <div style="display:flex; justify-content:space-between; gap:10px; margin-top:auto; border-top:1px solid var(--line); padding-top:12px;">
+              <button class="${btnClass} btn-sm" ${actionClick}>${btnLabel}</button>
+              <button class="btn secondary btn-sm" onclick="selectTeThemeToCustomize('${theme.id}')"><i data-lucide="sliders"></i>Tweak</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.selectTeThemeToCustomize = function(id) {
+      themeEngineState.activeThemeId = id;
+      showToast("Tweak theme selected. Reloading customization sliders...");
+      bootstrapThemeEngine();
+    };
+
+    function renderThemeEngineMarketplaceThemes() {
+      const container = document.getElementById('teMarketplaceThemesList');
+      if (!container) return;
+
+      container.innerHTML = themeEngineState.marketplaceThemes.map(asset => {
+        const isInstalled = themeEngineState.themes.some(t => t.name === asset.name);
+        const actionBtn = isInstalled 
+          ? `<button class="btn secondary btn-sm" disabled style="opacity:0.6;">Installed</button>`
+          : `<button class="btn primary btn-sm" onclick="installMarketplaceTheme('${asset.name}')">Install Free</button>`;
+
+        return `
+          <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <h4 style="margin:0 0 8px 0; font-weight:700;">${escapeHtml(asset.name)}</h4>
+              <p style="margin:0 0 16px 0; font-size:12px; color:var(--muted);">${escapeHtml(asset.description)}</p>
+            </div>
+            <div style="display:flex; justify-content:flex-end; margin-top:auto; border-top:1px solid var(--line); padding-top:12px;">
+              ${actionBtn}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.installMarketplaceTheme = async function(themeName) {
+      showToast(`Downloading theme layout templates...`);
+      const marketplaceRes = await cmsApiRequest('GET', '/api/marketplace/assets');
+      let assetId = '';
+      if (marketplaceRes && marketplaceRes.ok && marketplaceRes.data) {
+        const found = marketplaceRes.data.find(a => a.name === themeName && a.type === 'theme');
+        if (found) assetId = found.id;
+      }
+
+      const installRes = await fetch('/api/theme-engine/themes/install', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-tenant-id': localStorage.getItem('churchos.tenantId') || 'demo-church-local',
+          'Authorization': `Bearer ${localStorage.getItem('churchos.token') || 'local-preview-token'}`
+        },
+        body: JSON.stringify({ assetId: assetId || 'fallback-neon-youth' })
+      });
+
+      if (installRes.ok) {
+        showToast(`Theme '${themeName}' installed successfully!`);
+        bootstrapThemeEngine();
+      } else {
+        const localThemeRes = await cmsApiRequest('POST', '/api/cms/themes', {
+          name: themeName,
+          settings: {
+            colors: { primary: '#4f46e5', secondary: '#1e293b', accent: '#f59e0b' },
+            fonts: { heading: 'Outfit', body: 'Inter' }
+          }
+        });
+        if (localThemeRes && localThemeRes.ok) {
+          showToast(`Theme '${themeName}' installed locally!`);
+          bootstrapThemeEngine();
+        } else {
+          alert('Failed to install theme');
+        }
+      }
+    };
+
+    window.activateThemeEngineTheme = async function(themeId, name) {
+      const currentWebsiteId = cmsState.activeWebsiteId || (cmsState.websites && cmsState.websites[0]?.id);
+      if (!currentWebsiteId) {
+        alert('Please define a Website Context in your CMS page before activating themes.');
+        return;
+      }
+      showToast(`Activating theme '${name}'...`);
+      const res = await cmsApiRequest('POST', `/api/theme-engine/themes/${themeId}/activate`, { websiteId: currentWebsiteId });
+      if (res && res.ok) {
+        showToast(`Active website theme changed to '${name}'`);
+        themeEngineState.activeThemeId = themeId;
+        bootstrapThemeEngine();
+      } else {
+        alert(res?.data?.error || 'Failed to activate selected theme template');
+      }
+    };
+
+    window.saveThemeStyling = async function() {
+      if (!themeEngineState.activeThemeId) {
+        alert('Select a theme to customize first.');
+        return;
+      }
+
+      const payload = {
+        colors: {
+          primary: document.getElementById('tePrimaryColorInput').value,
+          secondary: document.getElementById('teSecondaryColorInput').value,
+          accent: document.getElementById('teAccentColorInput').value
+        },
+        fonts: {
+          heading: document.getElementById('teHeadingFontSelect').value,
+          body: document.getElementById('teBodyFontSelect').value
+        },
+        logos: {
+          primaryUrl: document.getElementById('tePrimaryLogoInput').value.trim(),
+          secondaryUrl: document.getElementById('teSecondaryLogoInput').value.trim()
+        },
+        layout: {
+          headerStyle: document.getElementById('teHeaderStyleSelect').value,
+          footerStyle: document.getElementById('teFooterStyleSelect').value,
+          mobileLayout: document.getElementById('teMobileLayoutSelect').value
+        },
+        customCss: document.getElementById('teCustomCssTextarea').value
+      };
+
+      showToast("Saving custom theme styles...");
+      const res = await cmsApiRequest('PATCH', `/api/theme-engine/themes/${themeEngineState.activeThemeId}/customize`, payload);
+      if (res && res.ok) {
+        showToast('Theme design customizations saved successfully!');
+        bootstrapThemeEngine();
+      } else {
+        alert(res?.data?.error || 'Failed to save theme customizations');
+      }
+    };
+
+    window.previewThemeStyling = async function() {
+      if (!themeEngineState.activeThemeId) {
+        alert('Select a theme to preview.');
+        return;
+      }
+      const accent = document.getElementById('teAccentColorInput').value;
+      showToast("Compiling staging theme styles...");
+      const res = await cmsApiRequest('POST', `/api/theme-engine/themes/${themeEngineState.activeThemeId}/preview/customize`, {
+        colors: {
+          primary: document.getElementById('tePrimaryColorInput').value,
+          secondary: document.getElementById('teSecondaryColorInput').value,
+          accent
+        }
+      });
+      if (res && res.ok) {
+        showToast('Staging design compiled! Preview applied locally.');
+        document.documentElement.style.setProperty('--accent', accent);
+      } else {
+        alert(res?.data?.error || 'Failed to compile staging preview');
+      }
+    };
+
+    window.saveThemeEngineSettings = async function() {
+      const config = getThemeEngineConfig();
+      const payload = {
+        enabled: !!document.getElementById('teSettingsEnabled')?.checked,
+        billingPlan: document.getElementById('teSettingsBillingPlan')?.value || 'free',
+        providerMode: document.getElementById('teSettingsProviderMode')?.value || 'bring_your_own',
+        configJson: {
+          ...config,
+          allowMarketplaceThemes: !!document.getElementById('teSettingsMarketplace')?.checked,
+          allowCustomCss: !!document.getElementById('teSettingsCustomCss')?.checked,
+          publicPublishingRequiresActiveEntitlement: !!document.getElementById('teSettingsPublishGate')?.checked
+        }
+      };
+
+      showToast("Saving Styling configurations...");
+      const res = await cmsApiRequest('PATCH', '/api/theme-engine/settings', payload);
+      if (res && res.ok) {
+        themeEngineState.settings = res.data || {};
+        showToast('Styling settings saved successfully!');
+        bootstrapThemeEngine();
+      } else {
+        alert(res?.data?.error || 'Failed to save Styling settings');
+      }
+    };
+
+    function renderThemeEngineTemplates() {
+      const sectionsEl = document.getElementById('teSectionTemplatesList');
+      const pagesEl = document.getElementById('tePageTemplatesList');
+
+      const renderList = (items) => {
+        if (!items || !items.length) {
+          return `<div class="muted" style="font-size:12px; padding:10px 0;">No templates registered yet.</div>`;
+        }
+        return items.map(item => `
+          <div style="border:1px solid var(--line); border-radius:8px; padding:10px; background:var(--panel-2);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <strong style="font-size:13px;">${escapeHtml(item.name || item.key)}</strong>
+              <span class="badge" style="background:var(--accent-soft); color:var(--accent); font-size:10px;">${escapeHtml(item.key)}</span>
+            </div>
+          </div>
+        `).join('');
+      };
+      if (sectionsEl) sectionsEl.innerHTML = renderList(themeEngineState.sections);
+      if (pagesEl) pagesEl.innerHTML = renderList(themeEngineState.pageTemplates);
+    }
+
+    function populateThemeEngineSettingsControls() {
+      const config = getThemeEngineConfig();
+      const enabled = document.getElementById('teSettingsEnabled');
+      const marketplace = document.getElementById('teSettingsMarketplace');
+      const customCss = document.getElementById('teSettingsCustomCss');
+      const publishGate = document.getElementById('teSettingsPublishGate');
+      const billingPlan = document.getElementById('teSettingsBillingPlan');
+      const providerMode = document.getElementById('teSettingsProviderMode');
+
+      if (enabled) enabled.checked = themeEngineState.settings.enabled !== false;
+      if (marketplace) marketplace.checked = config.allowMarketplaceThemes !== false;
+      if (customCss) customCss.checked = config.allowCustomCss !== false;
+      if (publishGate) publishGate.checked = config.publicPublishingRequiresActiveEntitlement !== false;
+      if (billingPlan) billingPlan.value = themeEngineState.settings.billingPlan || 'free';
+      if (providerMode) providerMode.value = themeEngineState.settings.providerMode || 'bring_your_own';
+    }
+
+    function renderThemeEngineLogsTable() {
+      const tbody = document.getElementById('teLogsList');
+      if (!tbody) return;
+
+      if (themeEngineState.activities.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="muted" style="text-align:center; padding:24px;">No theme activity logs logged yet</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = themeEngineState.activities.map(log => {
+        let details = '';
+        try {
+          const meta = typeof log.metadataJson === 'string' ? JSON.parse(log.metadataJson) : log.metadataJson;
+          details = meta ? JSON.stringify(meta) : '';
+        } catch { details = log.metadataJson || ''; }
+
+        return `
+          <tr>
+            <td style="font-weight:600; padding:14px 18px;">${escapeHtml(log.userId || 'System')}</td>
+            <td style="padding:14px 18px;"><code style="font-size:12px; color:var(--accent); font-weight:600;">${escapeHtml(log.actionType)}</code></td>
+            <td style="padding:14px 18px; font-size:13px; max-width:300px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(details)}">${escapeHtml(details)}</td>
+            <td style="padding:14px 18px; font-size:13px;" class="muted">${escapeHtml(log.createdAt.replace('T', ' ').substring(0, 19))}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // =========================================================================
+    // PLUGIN ENGINE LOGIC
+    // =========================================================================
+    const pluginState = {
+      activeTab: 'registry',
+      definitions: [],
+      installed: [],
+      webhooks: [],
+      selectedPluginId: '',
+      selectedWebhookId: ''
+    };
+
+    window.switchPluginTab = function(tabId) {
+      pluginState.activeTab = tabId;
+      if (tabId === 'registry') {
+        renderPluginRegistry();
+      } else if (tabId === 'installed') {
+        renderPluginInstalled();
+      } else if (tabId === 'webhooks') {
+        renderPluginWebhooks();
+      }
+    };
+
+    async function bootstrapPlugins() {
+      const [defsRes, instRes, whsRes] = await Promise.all([
+        cmsApiRequest('GET', '/api/plugins/definitions'),
+        cmsApiRequest('GET', '/api/plugins/installed'),
+        cmsApiRequest('GET', '/api/plugins/webhooks')
+      ]);
+
+      if (defsRes && defsRes.ok && defsRes.data) {
+        pluginState.definitions = defsRes.data;
+      }
+      if (instRes && instRes.ok && instRes.data) {
+        pluginState.installed = instRes.data;
+      }
+      if (whsRes && whsRes.ok && whsRes.data) {
+        pluginState.webhooks = whsRes.data;
+      }
+
+      window.switchPluginTab(pluginState.activeTab);
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function renderPluginRegistry() {
+      const container = document.getElementById('pluginRegistryList');
+      if (!container) return;
+
+      if (pluginState.definitions.length === 0) {
+        container.innerHTML = `<div class="muted" style="grid-column:1/-1; text-align:center; padding:40px;">No platform approved extensions available.</div>`;
+        return;
+      }
+
+      const PLATFORM_OS_VERSION = '1.0.0';
+
+      container.innerHTML = pluginState.definitions.map(def => {
+        const isInstalled = pluginState.installed.some(inst => inst.pluginId === def.id);
+        const isIncompatible = def.requiredOsVersion > PLATFORM_OS_VERSION;
+
+        let actionButton = '';
+        if (isInstalled) {
+          actionButton = `
+            <button class="btn secondary btn-sm w-full" onclick="uninstallPluginClick('${def.id}')">
+              <i data-lucide="trash-2"></i>Uninstall Extension
+            </button>
+          `;
+        } else if (isIncompatible) {
+          actionButton = `
+            <button class="btn secondary btn-sm w-full" disabled style="cursor:not-allowed;" title="Requires OS v${def.requiredOsVersion}">
+              Incompatible
+            </button>
+          `;
+        } else {
+          actionButton = `
+            <button class="btn primary btn-sm w-full" onclick="installPluginClick('${def.id}')">
+              <i data-lucide="download"></i>Install Plugin
+            </button>
+          `;
+        }
+
+        const priceText = def.price === 0 ? 'Free' : `$${def.price.toFixed(2)}/mo`;
+        const requiredPerms = parseMaybeJson(def.requiredPermissions, []);
+
+        return `
+          <div class="panel" style="display:flex; flex-direction:column; justify-content:space-between; height:100%; min-height:220px; gap:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:start;">
+              <div>
+                <h3 style="margin:0; font-size:16px;">${escapeHtml(def.name)}</h3>
+                <span class="muted" style="font-size:11px;">v${escapeHtml(def.version)}</span>
+              </div>
+              <span class="badge" style="background:var(--accent-soft); color:var(--accent); font-weight:700;">${priceText}</span>
+            </div>
+            
+            <p style="flex:1; margin:0; font-size:13px; color:var(--muted);">${escapeHtml(def.description || 'No description provided.')}</p>
+
+            ${requiredPerms.length > 0 ? `
+              <div style="font-size:11px; background:var(--panel-2); padding:6px 10px; border-radius:6px; margin:4px 0;">
+                <strong style="display:block; margin-bottom:2px;">Requested Scopes:</strong>
+                <span class="muted">${requiredPerms.join(', ')}</span>
+              </div>
+            ` : ''}
+
+            <div style="margin-top:auto; padding-top:12px; border-top:1px solid var(--line);">
+              ${actionButton}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderPluginInstalled() {
+      const tbody = document.getElementById('pluginInstalledList');
+      if (!tbody) return;
+
+      if (pluginState.installed.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">No active plugins installed. Visit the Registry to install extensions.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = pluginState.installed.map(inst => {
+        const def = inst.plugin;
+        const requiredPerms = parseMaybeJson(def.requiredPermissions, []);
+        const grantedPerms = parseMaybeJson(inst.grantedPermissions, []);
+        const statusClass = inst.status === 'active' ? 'success' : inst.status === 'pending' ? 'warning' : 'danger';
+
+        return `
+          <tr>
+            <td style="padding:14px 18px;">
+              <strong style="display:block;">${escapeHtml(def.name)}</strong>
+              <span class="muted" style="font-size:11px;">ID: ${escapeHtml(inst.pluginId)}</span>
+            </td>
+            <td style="padding:14px 18px; font-size:13px;" class="muted">v${escapeHtml(def.version)}</td>
+            <td style="padding:14px 18px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="toggle ${inst.status === 'active' ? 'on' : ''}" 
+                        onclick="togglePluginStatus('${inst.pluginId}', '${inst.status}')"
+                        aria-label="Toggle extension status"></button>
+                <span class="badge" style="background:rgba(255,255,255,0.02); border:1px solid var(--line); font-size:10px;">${escapeHtml(inst.status)}</span>
+              </div>
+            </td>
+            <td style="padding:14px 18px; font-size:13px;">
+              <span class="muted">${grantedPerms.length} of ${requiredPerms.length} granted</span>
+            </td>
+            <td style="padding:14px 18px;">
+              <button class="btn secondary btn-sm" onclick="openConfigureSettingsClick('${inst.pluginId}')">
+                <i data-lucide="sliders"></i>Configure
+              </button>
+            </td>
+            <td style="padding:14px 18px;">
+              <div style="display:flex; gap:8px;">
+                <button class="btn secondary btn-sm" onclick="openConfigurePermissionsClick('${inst.pluginId}')" title="Configure Sandbox Permissions">
+                  <i data-lucide="shield-check"></i>Permissions
+                </button>
+                <button class="btn danger btn-sm" onclick="uninstallPluginClick('${inst.pluginId}')" title="Uninstall extension">
+                  <i data-lucide="trash-2"></i>Uninstall
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderPluginWebhooks() {
+      const tbody = document.getElementById('pluginWebhooksList');
+      if (!tbody) return;
+
+      if (pluginState.webhooks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">No event webhooks registered. Click "Register Webhook" to create one.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = pluginState.webhooks.map(wh => {
+        const pluginDef = wh.plugin?.plugin;
+        const pluginName = pluginDef ? pluginDef.name : wh.plugin?.pluginId || 'Unknown Plugin';
+
+        return `
+          <tr>
+            <td style="padding:14px 18px;"><strong>${escapeHtml(pluginName)}</strong></td>
+            <td style="padding:14px 18px;"><code style="font-size:12px; background:var(--panel-2); padding:2px 6px; border-radius:4px;">${escapeHtml(wh.eventTrigger)}</code></td>
+            <td style="padding:14px 18px; font-family:monospace; font-size:13px; max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${escapeHtml(wh.targetUrl)}">${escapeHtml(wh.targetUrl)}</td>
+            <td style="padding:14px 18px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button class="toggle ${wh.isActive ? 'on' : ''}" 
+                        onclick="toggleWebhookStatus('${wh.id}', ${wh.isActive})"
+                        aria-label="Toggle webhook status"></button>
+                <span class="badge" style="background:rgba(255,255,255,0.02); font-size:10px;">${wh.isActive ? 'Active' : 'Disabled'}</span>
+              </div>
+            </td>
+            <td style="padding:14px 18px; font-size:13px;" class="muted">${new Date(wh.createdAt).toLocaleDateString()}</td>
+            <td style="padding:14px 18px;">
+              <button class="btn danger btn-sm" onclick="deleteWebhookClick('${wh.id}')">
+                <i data-lucide="trash-2"></i>Delete
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    window.installPluginClick = async function(pluginId) {
+      showToast('Installing extension...');
+      const res = await cmsApiRequest('POST', '/api/plugins/install', { pluginId });
+      if (res && res.ok) {
+        showToast('Extension installed successfully! Switch tab to activate scopes.');
+        bootstrapPlugins();
+        selectMarketTab('pe-installed');
+      } else {
+        alert(res?.data?.error || 'Installation failed');
+      }
+    };
+
+    window.uninstallPluginClick = async function(pluginId) {
+      if (!confirm('Are you sure you want to uninstall this extension? All configuration will be lost.')) return;
+      showToast('Uninstalling extension...');
+      const res = await cmsApiRequest('POST', '/api/plugins/uninstall', { pluginId });
+      if (res && res.ok) {
+        showToast('Extension uninstalled successfully');
+        bootstrapPlugins();
+      } else {
+        alert(res?.data?.error || 'Uninstallation failed');
+      }
+    };
+
+    window.togglePluginStatus = async function(pluginId, currentStatus) {
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      showToast('Toggling extension status...');
+      const res = await cmsApiRequest('PATCH', `/api/plugins/${pluginId}/status`, { status: newStatus });
+      if (res && res.ok) {
+        showToast(`Extension is now ${newStatus}`);
+        bootstrapPlugins();
+      } else {
+        alert(res?.data?.error || 'Failed to toggle status');
+      }
+    };
+
+    window.openConfigurePermissionsClick = function(pluginId) {
+      const inst = pluginState.installed.find(i => i.pluginId === pluginId);
+      if (!inst) return;
+      const def = inst.plugin;
+      const required = parseMaybeJson(def.requiredPermissions, []);
+      const granted = parseMaybeJson(inst.grantedPermissions, []);
+
+      document.getElementById('pluginPermissionsModalTitle').innerText = `${def.name} Sandbox Scopes`;
+
+      const listContainer = document.getElementById('pluginPermissionsList');
+      if (required.length === 0) {
+        listContainer.innerHTML = `<p class="muted">This extension does not request sandbox scopes.</p>`;
+      } else {
+        listContainer.innerHTML = required.map(perm => `
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input type="checkbox" id="perm_chk_${perm}" value="${perm}" ${granted.includes(perm) ? 'checked' : ''} style="width:16px; height:16px;" />
+            <label for="perm_chk_${perm}" style="cursor:pointer; font-size:12px; text-align:left;">
+              <code>${escapeHtml(perm)}</code>
+            </label>
+          </div>
+        `).join('');
+      }
+
+      const saveBtn = document.getElementById('savePluginPermissionsBtn');
+      saveBtn.onclick = async function() {
+        const checkboxes = listContainer.querySelectorAll('input[type="checkbox"]');
+        const selected = [];
+        checkboxes.forEach((cb) => {
+          if (cb.checked) selected.push(cb.value);
+        });
+
+        showToast("Saving sandbox scopes...");
+        const res = await cmsApiRequest('PUT', `/api/plugins/${pluginId}/permissions`, { permissions: selected });
+        if (res && res.ok) {
+          showToast('Sandbox scopes configured successfully!');
+          closePluginModal('pluginPermissionsModal');
+          bootstrapPlugins();
+        } else {
+          alert(res?.data?.error || 'Failed to update permissions');
+        }
+      };
+
+      document.getElementById('pluginPermissionsModal').classList.remove('hidden');
+    };
+
+    window.openConfigureSettingsClick = function(pluginId) {
+      const inst = pluginState.installed.find(i => i.pluginId === pluginId);
+      if (!inst) return;
+      const def = inst.plugin;
+      let settingsObj = {};
+      try {
+        settingsObj = JSON.parse(inst.settings || '{}');
+      } catch (e) { settingsObj = {}; }
+
+      document.getElementById('pluginSettingsModalTitle').innerText = `${def.name} Settings`;
+
+      const formContainer = document.getElementById('pluginSettingsFormContainer');
+      if (pluginId === 'whatsapp-helper') {
+        formContainer.innerHTML = `
+          <div class="field">
+            <label>WhatsApp Instance ID</label>
+            <input type="text" id="setting_wa_instanceId" value="${escapeHtml(settingsObj.instanceId || '')}" class="form-control" placeholder="whatsapp-instance-xyz" />
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; margin-top:10px;">
+            <input type="checkbox" id="setting_wa_autoWelcome" ${settingsObj.autoWelcome ? 'checked' : ''} style="width:16px; height:16px;" />
+            <label for="setting_wa_autoWelcome" style="cursor:pointer; font-size:12px; text-align:left;">Auto-send welcome notifications</label>
+          </div>
+        `;
+      } else {
+        formContainer.innerHTML = `
+          <div class="field">
+            <label>Configuration Payload (JSON)</label>
+            <textarea id="setting_generic_json" class="form-control" style="height:150px; font-family:monospace; font-size:12px;">${JSON.stringify(settingsObj, null, 2)}</textarea>
+          </div>
+        `;
+      }
+
+      const saveBtn = document.getElementById('savePluginSettingsBtn');
+      saveBtn.onclick = async function() {
+        let updatedSettings = {};
+        if (pluginId === 'whatsapp-helper') {
+          updatedSettings = {
+            instanceId: document.getElementById('setting_wa_instanceId').value.trim(),
+            autoWelcome: document.getElementById('setting_wa_autoWelcome').checked
+          };
+        } else {
+          const rawJson = document.getElementById('setting_generic_json').value.trim();
+          try {
+            updatedSettings = JSON.parse(rawJson || '{}');
+          } catch (err) {
+            alert('Invalid settings JSON format');
+            return;
+          }
+        }
+
+        showToast("Saving custom configurations...");
+        const res = await cmsApiRequest('PUT', `/api/plugins/${pluginId}/settings`, { settings: updatedSettings });
+        if (res && res.ok) {
+          showToast('Settings saved successfully!');
+          closePluginModal('pluginSettingsModal');
+          bootstrapPlugins();
+        } else {
+          alert(res?.data?.error || 'Failed to save settings');
+        }
+      };
+
+      document.getElementById('pluginSettingsModal').classList.remove('hidden');
+    };
+
+    window.openRegisterWebhookModal = function() {
+      const select = document.getElementById('webhookPluginSelect');
+      if (!select) return;
+
+      if (pluginState.installed.length === 0) {
+        alert('You must install at least one extension to register webhooks.');
+        return;
+      }
+
+      select.innerHTML = pluginState.installed.map(inst => `
+        <option value="${escapeHtml(inst.pluginId)}">${escapeHtml(inst.plugin.name)}</option>
+      `).join('');
+
+      document.getElementById('webhookTargetUrlInput').value = '';
+      document.getElementById('pluginRegisterWebhookModal').classList.remove('hidden');
+    };
+
+    window.registerPluginWebhook = async function() {
+      const pluginId = document.getElementById('webhookPluginSelect').value;
+      const eventTrigger = document.getElementById('webhookTriggerSelect').value;
+      const targetUrl = document.getElementById('webhookTargetUrlInput').value.trim();
+
+      if (!pluginId || !eventTrigger || !targetUrl) {
+        alert('All fields are required to register a webhook');
+        return;
+      }
+
+      showToast("Registering secure webhook...");
+      const res = await cmsApiRequest('POST', `/api/plugins/${pluginId}/webhooks`, { eventTrigger, targetUrl });
+      if (res && res.ok) {
+        showToast('Webhook registered successfully!');
+        closePluginModal('pluginRegisterWebhookModal');
+        bootstrapPlugins();
+      } else {
+        alert(res?.data?.error || 'Failed to register webhook');
+      }
+    };
+
+    window.toggleWebhookStatus = async function(webhookId, currentStatus) {
+      const newStatus = !currentStatus;
+      showToast("Toggling webhook status...");
+      const res = await cmsApiRequest('PATCH', `/api/plugins/webhooks/${webhookId}`, { isActive: newStatus });
+      if (res && res.ok) {
+        showToast(`Webhook toggled successfully!`);
+        bootstrapPlugins();
+      } else {
+        alert(res?.data?.error || 'Failed to toggle webhook status');
+      }
+    };
+
+    window.deleteWebhookClick = async function(webhookId) {
+      if (!confirm('Are you sure you want to delete this event webhook?')) return;
+      showToast("Deleting webhook...");
+      const res = await cmsApiRequest('DELETE', `/api/plugins/webhooks/${webhookId}`);
+      if (res && res.ok) {
+        showToast('Webhook deleted successfully!');
+        bootstrapPlugins();
+      } else {
+        alert(res?.data?.error || 'Failed to delete webhook');
+      }
+    };
+
+    window.closePluginModal = function(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    };
+
+    // =========================================================================
+    // Theme & Accent Color Syncing
+    // =========================================================================
+    function hexToRgba(hex, alpha) {
+      const value = hex.replace('#', '');
+      const bigint = parseInt(value, 16);
+      const r = (bigint >> 16) & 255;
+      const g = (bigint >> 8) & 255;
+      const b = bigint & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    function applyChurchOSTheme() {
+      const STORAGE_KEY = 'churchos.unifiedDashboard.v1';
+      let themeMode = 'dark';
+      let themeAccent = '#4f46e5';
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.theme) {
+            themeMode = parsed.theme.mode || 'dark';
+            themeAccent = parsed.theme.accent || '#4f46e5';
+          }
+        }
+      } catch (e) {
+        console.warn('Failed to load shared theme presets:', e);
+      }
+      document.body.classList.toggle('light', themeMode === 'light');
+      document.documentElement.style.setProperty('--accent', themeAccent);
+      document.documentElement.style.setProperty('--accent-strong', themeAccent);
+      document.documentElement.style.setProperty('--accent-soft', hexToRgba(themeAccent, 0.14));
+    }
+
+    // Call immediately to avoid flash of incorrect theme
+    applyChurchOSTheme();
+
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'churchos.unifiedDashboard.v1') {
+        applyChurchOSTheme();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyChurchOSTheme();
+      // Trigger default active category rendering
+      selectMarketCategory('plugin-engine');
+    });
+  </script>
+</body>
+</html>

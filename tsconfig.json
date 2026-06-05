@@ -1,18 +1,26 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",
     "target": "es2022",
     "module": "commonjs",
     "lib": ["es2022"],
-    "strict": true,
+    "strict": false,
     "esModuleInterop": true,
+    "rootDir": ".",
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
-    "rootDir": "./src",
+    "baseUrl": ".",
+    "paths": {
+      "@churchos/*": ["packages/*/src"],
+      "@prisma/client": ["packages/db/src/generated/prisma/client"]
+    },
+    "ignoreDeprecations": "6.0",
+    "noImplicitAny": false,
     "declaration": true,
     "sourceMap": true,
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*"],
+  "include": ["apps/**/*", "packages/**/*"],
   "exclude": ["node_modules", "dist"]
 }

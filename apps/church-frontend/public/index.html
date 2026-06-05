@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Christ Embassy Next - ChurchOS Frontend</title>
+  <!-- Google Fonts: Outfit (headings) & Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      /* Charcoal Grace Dark Theme (Default) */
+      --bg: #0b0d12;
+      --surface: #151820;
+      --surface-raised: #1e222b;
+      --border: #222630;
+      --text: #f4f6f8;
+      --muted: #8a94a6;
+      --shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+      --radius: 12px;
+      
+      --accent: #6366f1; /* Modern Indigo */
+      --accent-hover: #4f46e5;
+      --accent-soft: rgba(99, 102, 241, 0.12);
+      
+      --success: #10b981;
+      --success-soft: rgba(16, 185, 129, 0.12);
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      
+      color-scheme: dark;
+    }
+
+    body.light {
+      /* Off-white Light Theme */
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --surface-raised: #f1f5f9;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --muted: #64748b;
+      --shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      
+      --accent: #4f46e5;
+      --accent-hover: #3730a3;
+      --accent-soft: rgba(79, 70, 229, 0.1);
+      
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    h1, h2, h3, h4, .font-title {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+    }
+
+    /* Header Styling */
+    header {
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 1rem;
+    }
+
+    .brand-text span {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    nav.nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      color: var(--text);
+      background-color: var(--accent-soft);
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      background-color: var(--surface-raised);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background-color: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-strong);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--surface-raised);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background-color: var(--accent-soft);
+    }
+
+    /* Main Content Wrapper */
+    main.main-content {
+      flex-grow: 1;
+      padding: 40px 0;
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* View: Home page styles */
+    .hero-banner {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(15, 24, 40, 0.4) 100%), var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 64px 48px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 32px;
+      align-items: center;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      background: var(--accent);
+      filter: blur(150px);
+      opacity: 0.15;
+      right: -50px;
+      top: -50px;
+      pointer-events: none;
+    }
+
+    .hero-content h1 {
+      font-size: 2.8rem;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      background: linear-gradient(to right, var(--text), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-content p {
+      font-size: 1.1rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+      max-width: 580px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+    }
+
+    .hero-graphic {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .live-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--danger);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--danger);
+      border-radius: 50%;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      50% { opacity: 1; }
+      100% { opacity: 0.4; }
+    }
+
+    /* Info Grid */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .info-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .info-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .info-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background-color: var(--accent-soft);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .info-card h3 {
+      font-size: 1.25rem;
+    }
+
+    .info-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      flex-grow: 1;
+    }
+
+    /* Grid layout */
+    .section-title {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+
+    .section-subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+    }
+
+    /* Sermon grid and cards */
+    .sermon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    .sermon-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .sermon-card:hover {
+      border-color: var(--accent);
+      transform: scale(1.01);
+      box-shadow: var(--shadow);
+    }
+
+    .sermon-cover {
+      height: 160px;
+      background-color: var(--surface-raised);
+      position: relative;
+      overflow: hidden;
+      background-size: cover;
+      background-position: center;
+    }
+
+    .sermon-play-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(11, 13, 18, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .sermon-card:hover .sermon-play-overlay {
+      opacity: 1;
+    }
+
+    .play-btn-circle {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+
+    .sermon-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-grow: 1;
+    }
+
+    .sermon-meta {
+      font-size: 0.75rem;
+      color: var(--muted);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .sermon-title {
+      font-size: 1.1rem;
+      line-height: 1.4;
+      flex-grow: 1;
+    }
+
+    .sermon-speaker {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Giving Widget */
+    .giving-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .input-group label {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .input-group input, .input-group select, .input-group textarea {
+      padding: 12px 16px;
+      background-color: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .amount-presets {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .preset-btn {
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background-color: var(--surface-raised);
+      color: var(--text);
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+
+    .preset-btn:hover, .preset-btn.active {
+      border-color: var(--accent);
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    /* Engagement layout split */
+    .split-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 32px;
+    }
+
+    /* Prayer Requests and Testimonies Walls */
+    .feed-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .feed-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .feed-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .feed-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .feed-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .feed-username {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .feed-date {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .feed-content {
+      font-size: 0.9rem;
+      color: var(--text);
+    }
+
+    .feed-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+
+    .feed-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .feed-action-btn:hover {
+      color: var(--accent);
+    }
+
+    /* Group Cell fellowship finder list */
+    .cell-search-bar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .cell-search-bar input {
+      flex-grow: 1;
+      padding: 12px 16px;
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      outline: none;
+    }
+
+    .cell-search-bar input:focus {
+      border-color: var(--accent);
+    }
+
+    .cell-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .cell-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .cell-card h3 {
+      font-size: 1.15rem;
+    }
+
+    .cell-card-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .cell-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* LMS course card */
+    .course-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .course-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s;
+    }
+
+    .course-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .course-cover {
+      height: 120px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+      padding: 20px;
+      color: white;
+      display: flex;
+      align-items: flex-end;
+    }
+
+    .course-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex-grow: 1;
+    }
+
+    .course-lessons {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .course-title {
+      font-size: 1.1rem;
+      line-height: 1.3;
+      flex-grow: 1;
+    }
+
+    /* Modals */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(11, 13, 18, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      transform: translateY(20px);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-backdrop.active .modal-card {
+      transform: translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-size: 1.3rem;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    /* Member Area dashboard style */
+    .member-profile-panel {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 32px;
+    }
+
+    .member-sidebar {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+    }
+
+    .member-avatar-lg {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: white;
+      font-size: 2rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .member-details h3 {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .member-details span {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .member-nav {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .member-nav-btn {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 8px;
+      text-align: left;
+      font-size: 0.88rem;
+      font-weight: 500;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .member-nav-btn:hover, .member-nav-btn.active {
+      background-color: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .member-tab-content {
+      display: none;
+    }
+
+    .member-tab-content.active {
+      display: block;
+    }
+
+    .member-main-content {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      min-height: 400px;
+    }
+
+    /* Footer */
+    footer {
+      background-color: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 40px 0;
+      margin-top: 40px;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    /* Toasts */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 2000;
+    }
+
+    .toast {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      padding: 16px 24px;
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateX(120%);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      font-size: 0.88rem;
+    }
+
+    .toast.active {
+      transform: translateX(0);
+    }
+
+    .toast-success {
+      border-left-color: var(--success);
+    }
+
+    .toast-danger {
+      border-left-color: var(--danger);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="#" onclick="switchView('home'); return false;" class="brand">
+        <div class="brand-logo">C</div>
+        <div class="brand-text">
+          <strong>Christ Embassy</strong>
+          <span>Next Church Campus</span>
+        </div>
+      </a>
+      
+      <nav class="nav-links">
+        <button class="nav-btn active" onclick="switchView('home')">Home</button>
+        <button class="nav-btn" onclick="switchView('sermons')">Sermons</button>
+        <button class="nav-btn" onclick="switchView('giving')">Give</button>
+        <button class="nav-btn" onclick="switchView('community')">Community</button>
+        <button class="nav-btn" onclick="switchView('discipleship')">Discipleship</button>
+        <button class="nav-btn" onclick="switchView('get-involved')">Get Involved</button>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+          <i data-lucide="sun" id="themeIcon"></i>
+        </button>
+        <button class="btn btn-secondary" onclick="openLoginModal()" id="loginBtn">Member Login</button>
+        <button class="btn btn-outline" onclick="window.location.href='/live/demo'" style="background: var(--accent-soft); border-color: var(--accent); color: var(--accent)">
+          <div class="live-dot" style="margin-right: 4px;"></div> Watch Live
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="main-content container">
+    
+    <!-- SECTION: HOME -->
+    <section id="view-home" class="view-section active">
+      <div class="hero-banner">
+        <div class="hero-content">
+          <div class="live-indicator" style="margin-bottom: 12px;">
+            <div class="live-dot"></div> Live Stream Available
+          </div>
+          <h1>Welcome to Christ Embassy Next</h1>
+          <p>Experience a Spirit-filled digital-first church community built for worship, growth, prayer, media sharing, giving, and outreach.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" onclick="window.location.href='/live/demo'">Watch Sunday Service</button>
+            <button class="btn btn-secondary" onclick="switchView('get-involved')">Join Us Today</button>
+          </div>
+        </div>
+        <div class="hero-graphic">
+          <div style="font-weight: 700; font-size: 1.1rem; margin-bottom: 8px;">Weekly Rythms</div>
+          <div class="sermon-meta">
+            <i data-lucide="calendar" style="width: 14px; height: 14px"></i>
+            <span>Sundays at 9:00 AM & 11:30 AM</span>
+          </div>
+          <div class="sermon-meta">
+            <i data-lucide="map-pin" style="width: 14px; height: 14px"></i>
+            <span>Next Campus, Victory Avenue / Online</span>
+          </div>
+          <hr style="border: 0; border-top: 1px solid var(--border); margin: 8px 0;">
+          <div style="font-size: 0.88rem; color: var(--muted)">Join our midweek Bible study this Wednesday at 7:00 PM online or at our home cells.</div>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="icon-box"><i data-lucide="video"></i></div>
+            <h3>Watch Online</h3>
+          </div>
+          <p>Can't make it physically? Connect with us via our high-definition interactive livestream screen with notes, live chats, and direct prayer lines.</p>
+          <button class="btn btn-secondary" onclick="window.location.href='/live/demo'" style="width: 100%">Watch Live Stream</button>
+        </div>
+        
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="icon-box"><i data-lucide="users"></i></div>
+            <h3>Community Cells</h3>
+          </div>
+          <p>Get connected to a small home fellowship cell near you. Share testimonies, study the word, and find care and support within a warm family.</p>
+          <button class="btn btn-secondary" onclick="switchView('community')" style="width: 100%">Find a Cell Group</button>
+        </div>
+
+        <div class="info-card">
+          <div class="info-card-header">
+            <div class="icon-box"><i data-lucide="heart-handshake"></i></div>
+            <h3>Sow Seed</h3>
+          </div>
+          <p>Support our global missions, local community outreaches, and building expansion projects safely and securely using Pesapal or Flutterwave.</p>
+          <button class="btn btn-secondary" onclick="switchView('giving')" style="width: 100%">Give Seed / Tithe</button>
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
+        <div>
+          <h2 class="section-title">Latest sermons & teachings</h2>
+          <p class="section-subtitle">Catch up on recent Sunday replays, series, and scriptures.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="switchView('sermons')" style="margin-bottom: 24px">Browse Library</button>
+      </div>
+
+      <div class="sermon-grid" id="homeSermonGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- SECTION: SERMONS -->
+    <section id="view-sermons" class="view-section">
+      <h2 class="section-title">Teaching Library & Sermons</h2>
+      <p class="section-subtitle">Browse through the series, speakers, and topics to feed your faith.</p>
+      
+      <div class="sermon-grid" id="mainSermonGrid">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- SECTION: GIVING -->
+    <section id="view-giving" class="view-section">
+      <h2 class="section-title" style="text-align: center; margin-bottom: 8px;">Kingdom Seeds & Offerings</h2>
+      <p class="section-subtitle" style="text-align: center; margin-bottom: 32px;">Every seed sown expands our reach and establishes lives in grace.</p>
+      
+      <div class="giving-container">
+        <form id="givingForm" onsubmit="handleGivingSubmit(event)">
+          <div class="input-group">
+            <label>Amount (USD)</label>
+            <input type="number" id="givingAmount" value="50" min="1" required>
+          </div>
+          <div class="amount-presets">
+            <button type="button" class="preset-btn" onclick="setPresetAmount(10)">$10</button>
+            <button type="button" class="preset-btn" onclick="setPresetAmount(25)">$25</button>
+            <button type="button" class="preset-btn active" onclick="setPresetAmount(50)">$50</button>
+            <button type="button" class="preset-btn" onclick="setPresetAmount(100)">$100</button>
+          </div>
+          <div class="input-group">
+            <label>Offering Category</label>
+            <select id="givingCategory">
+              <option value="Tithes & Offerings">Tithes & General Offerings</option>
+              <option value="Global Missions">Global Missions Campaign</option>
+              <option value="Building Fund">Next Campus Building Fund</option>
+              <option value="Partnership">InnerCity Missions partnership</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Payment Gateway</label>
+            <select id="givingGateway">
+              <option value="Flutterwave">Flutterwave Gateway (Mobile Money / Cards)</option>
+              <option value="Pesapal">Pesapal Secure (East Africa Money)</option>
+              <option value="Yo! Payments">Yo! Payments (Uganda Mobile Money)</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label>Giver Full Name</label>
+            <input type="text" id="givingName" placeholder="E.g., Brother Barnabas" required>
+          </div>
+          <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="givingEmail" placeholder="you@example.com" required>
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px;">Proceed to Secure Checkout</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- SECTION: COMMUNITY / CELL FINDER -->
+    <section id="view-community" class="view-section">
+      <div class="split-layout">
+        <div>
+          <h2 class="section-title">Home Cell Fellowship Finder</h2>
+          <p class="section-subtitle">Find a fellowship family that meets near you or online weekly.</p>
+          
+          <div class="cell-search-bar">
+            <input type="text" id="cellSearchInput" oninput="filterCells()" placeholder="Search by area, leader name or day...">
+            <button class="btn btn-primary"><i data-lucide="search"></i></button>
+          </div>
+
+          <div class="cell-grid" id="cellContainer">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+        
+        <div>
+          <h2 class="section-title">Prayer & Testimonies</h2>
+          <p class="section-subtitle">Submit requests or rejoice with testimonies.</p>
+          
+          <div class="hero-graphic" style="margin-bottom: 24px;">
+            <div style="font-weight: 700; margin-bottom: 12px;">Submit Request / Testimony</div>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+              <button class="btn btn-secondary btn-primary" id="togglePrayerFormBtn" onclick="toggleFormType('prayer')" style="flex: 1; font-size: 0.8rem">Prayer Request</button>
+              <button class="btn btn-secondary" id="toggleTestimonyFormBtn" onclick="toggleFormType('testimony')" style="flex: 1; font-size: 0.8rem">Share Testimony</button>
+            </div>
+            
+            <!-- Dynamic Form -->
+            <form id="engagementForm" onsubmit="handleEngagementSubmit(event)">
+              <input type="hidden" id="formType" value="prayer">
+              <div class="input-group" style="margin-bottom: 12px;">
+                <label>Your Name</label>
+                <input type="text" id="engageName" placeholder="Leave anonymous if preferred">
+              </div>
+              <div class="input-group" style="margin-bottom: 12px;">
+                <label id="engageTitleLabel">Request Title</label>
+                <input type="text" id="engageTitle" placeholder="E.g., Family Healing" required>
+              </div>
+              <div class="input-group" style="margin-bottom: 12px;">
+                <label id="engageTextLabel">Prayer Request Details</label>
+                <textarea id="engageText" rows="3" placeholder="Describe details..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%">Submit to Church Admin</button>
+            </form>
+          </div>
+
+          <div class="feed-list" id="prayerWall">
+            <!-- Dynamic feed -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION: DISCIPLESHIP (LMS) -->
+    <section id="view-discipleship" class="view-section">
+      <h2 class="section-title">Foundation & Discipleship School</h2>
+      <p class="section-subtitle">Enroll in structural spiritual training courses to establish your walk in Christ.</p>
+      
+      <div class="course-grid" id="courseContainer">
+        <!-- Dynamic courses -->
+      </div>
+    </section>
+
+    <!-- SECTION: GET INVOLVED (FORMS) -->
+    <section id="view-get-involved" class="view-section">
+      <h2 class="section-title" style="text-align: center; margin-bottom: 8px;">Step Into Your Next Phase</h2>
+      <p class="section-subtitle" style="text-align: center; margin-bottom: 40px;">Select a pathway to connect, serve, or declare your faith.</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+        
+        <!-- Salvation Form -->
+        <div class="hero-graphic">
+          <div class="icon-box" style="margin-bottom: 8px;"><i data-lucide="award"></i></div>
+          <h3 style="font-size: 1.25rem;">Salvation Decision</h3>
+          <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 16px;">If you gave your life to Christ today, let us know! We have free resources and follow-up mentors to help you start your journey.</p>
+          <form id="salvationForm" onsubmit="handleSalvationSubmit(event)">
+            <div class="input-group" style="margin-bottom: 12px;">
+              <input type="text" id="salvationName" placeholder="Full Name" required>
+            </div>
+            <div class="input-group" style="margin-bottom: 12px;">
+              <input type="email" id="salvationEmail" placeholder="Email Address" required>
+            </div>
+            <div class="input-group" style="margin-bottom: 16px;">
+              <input type="text" id="salvationPhone" placeholder="Phone Number" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%">I made a decision today!</button>
+          </form>
+        </div>
+
+        <!-- Volunteer Form -->
+        <div class="hero-graphic">
+          <div class="icon-box" style="margin-bottom: 8px;"><i data-lucide="smile"></i></div>
+          <h3 style="font-size: 1.25rem;">Volunteer to Serve</h3>
+          <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 16px;">Join a ministry team. Serve in media, ushering, kids ministry, worship team or outreach programs.</p>
+          <form id="volunteerForm" onsubmit="handleVolunteerSubmit(event)">
+            <div class="input-group" style="margin-bottom: 12px;">
+              <input type="text" id="volName" placeholder="Full Name" required>
+            </div>
+            <div class="input-group" style="margin-bottom: 12px;">
+              <select id="volTeam">
+                <option value="Media & Stream">Digital Media & Streaming</option>
+                <option value="Worship Choir">Worship & Creative Choir</option>
+                <option value="Ushers">Ushers & First Impressions</option>
+                <option value="Children">NextGen Kids Ministry</option>
+              </select>
+            </div>
+            <div class="input-group" style="margin-bottom: 16px;">
+              <input type="email" id="volEmail" placeholder="Email Address" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%">Submit Volunteer Form</button>
+          </form>
+        </div>
+
+        <!-- New Visitor Form -->
+        <div class="hero-graphic">
+          <div class="icon-box" style="margin-bottom: 8px;"><i data-lucide="home"></i></div>
+          <h3 style="font-size: 1.25rem;">New Visitor Connect</h3>
+          <p style="font-size: 0.85rem; color: var(--muted); margin-bottom: 16px;">Visiting us for the first time? We would love to send a small gift pack and help you feel right at home.</p>
+          <form id="visitorForm" onsubmit="handleVisitorSubmit(event)">
+            <div class="input-group" style="margin-bottom: 12px;">
+              <input type="text" id="visName" placeholder="Full Name" required>
+            </div>
+            <div class="input-group" style="margin-bottom: 12px;">
+              <input type="text" id="visSource" placeholder="How did you hear about us?" required>
+            </div>
+            <div class="input-group" style="margin-bottom: 16px;">
+              <input type="email" id="visEmail" placeholder="Email Address" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%">Plan My Visit</button>
+          </form>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION: MEMBER DASHBOARD -->
+    <section id="view-member" class="view-section">
+      <div class="member-profile-panel">
+        <aside class="member-sidebar">
+          <div class="member-avatar-lg" id="memberAvatar">M</div>
+          <div class="member-details">
+            <h3 id="memberNameText">Member Name</h3>
+            <span id="memberEmailText">member@example.com</span>
+          </div>
+          <div class="member-nav">
+            <button class="member-nav-btn active" onclick="switchMemberTab('member-home', this)">
+              <i data-lucide="layout"></i> Overview
+            </button>
+            <button class="member-nav-btn" onclick="switchMemberTab('member-giving', this)">
+              <i data-lucide="heart"></i> My Seed Records
+            </button>
+            <button class="member-nav-btn" onclick="switchMemberTab('member-courses', this)">
+              <i data-lucide="book-open"></i> Enrolled Courses
+            </button>
+            <button class="member-nav-btn" onclick="handleLogout()">
+              <i data-lucide="log-out"></i> Logout
+            </button>
+          </div>
+        </aside>
+        
+        <main class="member-main-content">
+          
+          <!-- TAB: Member Overview -->
+          <div id="tab-member-home" class="member-tab-content active">
+            <h3 style="margin-bottom: 16px; font-size: 1.4rem;">Grace & Peace, Member!</h3>
+            <p style="color: var(--muted); margin-bottom: 24px;">Welcome to your member portal. Here is a review of your activities in this campus.</p>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px;">
+              <div class="info-card" style="padding: 16px;">
+                <div style="font-size: 0.8rem; color: var(--muted)">Seeds Sown</div>
+                <div style="font-size: 1.8rem; font-weight: 700; margin-top: 4px;" id="totalGiftsValue">$0</div>
+              </div>
+              <div class="info-card" style="padding: 16px;">
+                <div style="font-size: 0.8rem; color: var(--muted)">Cell Fellowship</div>
+                <div style="font-size: 1.2rem; font-weight: 700; margin-top: 4px;">Pioneers Cell</div>
+              </div>
+              <div class="info-card" style="padding: 16px;">
+                <div style="font-size: 0.8rem; color: var(--muted)">Courses Completed</div>
+                <div style="font-size: 1.8rem; font-weight: 700; margin-top: 4px;">1 / 2</div>
+              </div>
+            </div>
+
+            <h4 style="margin-bottom: 12px;">Connected Cell Schedule</h4>
+            <div class="feed-card">
+              <div style="font-weight: 600;">Wednesday Cell Outline: Living as a Faithful Witness</div>
+              <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Wednesday at 6:30 PM • Host: Brother David</div>
+              <button class="btn btn-secondary" onclick="switchView('community')" style="align-self: flex-start; margin-top: 12px; font-size: 0.78rem">View Outline & Map</button>
+            </div>
+          </div>
+
+          <!-- TAB: Member Giving -->
+          <div id="tab-member-giving" class="member-tab-content">
+            <h3 style="margin-bottom: 16px; font-size: 1.4rem;">Sowing & Partnership History</h3>
+            <p style="color: var(--muted); margin-bottom: 20px;">Review tax receipts and details of your digital offerings.</p>
+            
+            <table style="width: 100%; border-collapse: collapse; text-align: left;" id="memberGiftsTable">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--border); color: var(--muted); font-size: 0.8rem;">
+                  <th style="padding: 12px 8px;">Date</th>
+                  <th style="padding: 12px 8px;">Category</th>
+                  <th style="padding: 12px 8px;">Gateway</th>
+                  <th style="padding: 12px 8px; text-align: right;">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="memberGiftsList">
+                <!-- Rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TAB: Member Courses -->
+          <div id="tab-member-courses" class="member-tab-content">
+            <h3 style="margin-bottom: 16px; font-size: 1.4rem;">Foundation & Leadership Courses</h3>
+            <p style="color: var(--muted); margin-bottom: 24px;">Access study materials and progress tracking dashboard.</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 16px;">
+              <div class="feed-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div>
+                    <div style="font-weight: 700; font-size: 1.1rem;">Believer's LoveWorld Foundation Class</div>
+                    <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Status: In Progress • 4 lessons complete</div>
+                  </div>
+                  <button class="btn btn-primary" style="font-size: 0.8rem">Resume Lesson</button>
+                </div>
+                <div style="height: 6px; background-color: var(--border); border-radius: 3px; margin-top: 16px; overflow: hidden;">
+                  <div style="width: 66%; height: 100%; background-color: var(--success)"></div>
+                </div>
+              </div>
+
+              <div class="feed-card">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                  <div>
+                    <div style="font-weight: 700; font-size: 1.1rem; color: var(--muted)">Cell Leaders Training Institute (CLTI)</div>
+                    <div style="font-size: 0.8rem; color: var(--muted); margin-top: 4px;">Status: Enrolled • Opens on module activation</div>
+                  </div>
+                  <button class="btn btn-secondary" style="font-size: 0.8rem" disabled>Enrolled</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </main>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Login Modal -->
+  <div class="modal-backdrop" id="loginModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Member Portal Login</h3>
+        <button class="modal-close" onclick="closeLoginModal()"><i data-lucide="x"></i></button>
+      </div>
+      <p style="color: var(--muted); font-size: 0.85rem;">Login to view your seeds history, cell group details, and course progress.</p>
+      
+      <form id="loginForm" onsubmit="handleLoginSubmit(event)">
+        <div class="input-group">
+          <label>Email Address</label>
+          <input type="email" id="loginEmail" value="partner@nextchurch.example" required>
+        </div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" value="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Giving / Checkout Processing Modal -->
+  <div class="modal-backdrop" id="checkoutModal">
+    <div class="modal-card" style="text-align: center; gap: 24px;">
+      <div style="display: flex; justify-content: center;">
+        <div class="icon-box" style="width: 60px; height: 60px; border-radius: 50%;" id="checkoutIcon">
+          <i data-lucide="loader-2" class="spin-icon" style="width: 32px; height: 32px"></i>
+        </div>
+      </div>
+      <div>
+        <h3 id="checkoutTitle">Connecting to Gateway...</h3>
+        <p id="checkoutMessage" style="color: var(--muted); margin-top: 8px; font-size: 0.88rem;">Contacting Flutterwave secure processors to tokenize offering.</p>
+      </div>
+      <div style="display: flex; gap: 12px; justify-content: center;" id="checkoutActions">
+        <button class="btn btn-secondary" onclick="closeCheckoutModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-inner">
+      <div>
+        <div style="font-weight: 700; color: var(--text)">Christ Embassy Next Church</div>
+        <div style="font-size: 0.78rem; margin-top: 4px;">Powered by the ChurchOS Platform monorepo system.</div>
+      </div>
+      
+      <div class="footer-links">
+        <a href="#" onclick="switchView('home'); return false;">Home</a>
+        <a href="#" onclick="switchView('sermons'); return false;">Sermons</a>
+        <a href="#" onclick="switchView('giving'); return false;">Give</a>
+        <a href="/church/docs.html">Documentation Docs</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // State arrays mimicking database tables
+    const staticSermons = [
+      { id: 'sermon-1', title: 'The Power of Divine Fellowship', speaker: 'Pastor Daniel Okafor', series: 'Walking in Faith', cover: 'https://images.unsplash.com/photo-1507692049790-de58290a4334?w=600&auto=format&fit=crop&q=80', date: 'June 03, 2026' },
+      { id: 'sermon-2', title: 'Walking in Bold Faith', speaker: 'Pastor Daniel Okafor', series: 'Walking in Faith', cover: 'https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=600&auto=format&fit=crop&q=80', date: 'May 31, 2026' },
+      { id: 'sermon-3', title: 'Redeemed by Grace and Power', speaker: 'Pastor Daniel Okafor', series: 'Grace Teachings', cover: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&auto=format&fit=crop&q=80', date: 'May 24, 2026' },
+      { id: 'sermon-4', title: 'Entering Into Your Destiny', speaker: 'Pastor Daniel Okafor', series: 'Grace Teachings', cover: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop&q=80', date: 'May 17, 2026' }
+    ];
+
+    const staticCells = [
+      { id: 'cell-1', name: 'Ephesus Pioneers Home Cell', leader: 'Sister Faith', location: 'Yaba Area, near Main bus stop', day: 'Wednesdays at 6:30 PM', mode: 'Offline' },
+      { id: 'cell-2', name: 'Alpha Super Cell Fellowship', leader: 'Brother David', location: 'Online Video Meet (Link available)', day: 'Wednesdays at 7:00 PM', mode: 'Online' },
+      { id: 'cell-3', name: 'Charis Young Professionals Cell', leader: 'Sister Rachel', location: 'Surulere Campus Annexe', day: 'Thursdays at 6:00 PM', mode: 'Hybrid' }
+    ];
+
+    const staticCourses = [
+      { id: 'course-1', title: 'Believer\'s LoveWorld Foundation Class', lessons: '6 Lessons • Core Theology', progress: 'In Progress' },
+      { id: 'course-2', title: 'Cell Leaders Training Institute (CLTI)', lessons: '8 Lessons • Leadership', progress: 'Not Enrolled' },
+      { id: 'course-3', title: 'Sowers & Partners Induction Course', lessons: '4 Lessons • Ministry Stewardship', progress: 'Not Enrolled' }
+    ];
+
+    // Reactive state
+    let currentUser = null;
+    let givingHistory = [
+      { date: '2026-06-01', category: 'Partnership', gateway: 'Flutterwave', amount: 150.00 },
+      { date: '2026-05-15', category: 'Tithes & Offerings', gateway: 'Yo! Payments', amount: 50.00 },
+      { date: '2026-05-01', category: 'Global Missions', gateway: 'Pesapal', amount: 200.00 }
+    ];
+
+    let cellFilters = { query: '' };
+    let prayerRequests = [
+      { id: 'p-1', name: 'Sister Sarah', title: 'Healing for Mother', text: 'Please pray for my mother who is undergoing surgery this Friday.', prayers: 12, date: '1 hour ago' },
+      { id: 'p-2', name: 'Brother Paul', title: 'Business Break-through', text: 'Praying for open doors and divine favor for my ongoing project contract bid.', prayers: 8, date: '3 hours ago' }
+    ];
+
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      
+      if(window.lucide) window.lucide.replace();
+      
+      // Animate entry
+      setTimeout(() => toast.classList.add('active'), 50);
+      
+      // Animate exit
+      setTimeout(() => {
+        toast.classList.remove('active');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    function switchView(viewId) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const targetSec = document.getElementById(`view-${viewId}`);
+      if (targetSec) {
+        targetSec.classList.add('active');
+      }
+      
+      // Match header navigation styling
+      const navBtn = Array.from(document.querySelectorAll('.nav-btn')).find(b => b.textContent.toLowerCase() === viewId.toLowerCase() || (viewId === 'home' && b.textContent.toLowerCase() === 'home'));
+      if (navBtn) {
+        navBtn.classList.add('active');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    const THEME_PREF_KEY = 'churchos-user-theme-preference';
+
+    function getAutoThemeMode() {
+      const hour = new Date().getHours();
+      const isNight = hour >= 18 || hour < 6;
+      const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (isNight || systemPrefersDark) {
+        return 'dark';
+      }
+      return 'light';
+    }
+
+    function applyUserTheme(theme) {
+      const icon = document.getElementById('themeIcon');
+      if (theme === 'light') {
+        document.body.classList.add('light');
+        if (icon) icon.setAttribute('data-lucide', 'moon');
+      } else {
+        document.body.classList.remove('light');
+        if (icon) icon.setAttribute('data-lucide', 'sun');
+      }
+      if (window.lucide) {
+        if (typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+        else window.lucide.replace();
+      }
+    }
+
+    function toggleTheme() {
+      const isLight = document.body.classList.contains('light');
+      const nextTheme = isLight ? 'dark' : 'light';
+      localStorage.setItem(THEME_PREF_KEY, nextTheme);
+      applyUserTheme(nextTheme);
+    }
+
+    function initThemeSystem() {
+      const saved = localStorage.getItem(THEME_PREF_KEY);
+      if (saved === 'light' || saved === 'dark') {
+        applyUserTheme(saved);
+      } else {
+        applyUserTheme(getAutoThemeMode());
+      }
+      
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+          if (!localStorage.getItem(THEME_PREF_KEY)) {
+            applyUserTheme(getAutoThemeMode());
+          }
+        });
+      }
+
+      setInterval(() => {
+        if (!localStorage.getItem(THEME_PREF_KEY)) {
+          applyUserTheme(getAutoThemeMode());
+        }
+      }, 60 * 60 * 1000);
+    }
+
+    // Modal helpers
+    function openLoginModal() {
+      const modal = document.getElementById('loginModal');
+      modal.classList.add('active');
+    }
+
+    function closeLoginModal() {
+      const modal = document.getElementById('loginModal');
+      modal.classList.remove('active');
+    }
+
+    function openCheckoutModal() {
+      document.getElementById('checkoutModal').classList.add('active');
+    }
+
+    function closeCheckoutModal() {
+      document.getElementById('checkoutModal').classList.remove('active');
+    }
+
+    // Preset Amount selections
+    function setPresetAmount(val) {
+      document.getElementById('givingAmount').value = val;
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        if (btn.textContent === `$${val}`) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+
+    // Render Sermons list
+    function renderSermons() {
+      const homeGrid = document.getElementById('homeSermonGrid');
+      const mainGrid = document.getElementById('mainSermonGrid');
+      
+      const renderCard = (sermon) => {
+        return `
+          <div class="sermon-card" onclick="window.location.href='/live/demo'">
+            <div class="sermon-cover" style="background-image: url('${sermon.cover}')">
+              <div class="sermon-play-overlay">
+                <div class="play-btn-circle"><i data-lucide="play"></i></div>
+              </div>
+            </div>
+            <div class="sermon-body">
+              <div class="sermon-meta">
+                <i data-lucide="tag" style="width: 12px; height: 12px"></i>
+                <span>${sermon.series}</span>
+                <span>•</span>
+                <span>${sermon.date}</span>
+              </div>
+              <h3 class="sermon-title">${sermon.title}</h3>
+              <div class="sermon-speaker">${sermon.speaker}</div>
+            </div>
+          </div>
+        `;
+      };
+
+      if (homeGrid) {
+        homeGrid.innerHTML = staticSermons.slice(0, 3).map(renderCard).join('');
+      }
+      if (mainGrid) {
+        mainGrid.innerHTML = staticSermons.map(renderCard).join('');
+      }
+      if(window.lucide) window.lucide.replace();
+    }
+
+    // Render Cell Groups list
+    function renderCells() {
+      const root = document.getElementById('cellContainer');
+      if (!root) return;
+
+      const q = document.getElementById('cellSearchInput').value.toLowerCase();
+      
+      const filtered = staticCells.filter(c => 
+        c.name.toLowerCase().includes(q) || 
+        c.leader.toLowerCase().includes(q) || 
+        c.location.toLowerCase().includes(q)
+      );
+
+      if (filtered.length === 0) {
+        root.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--muted); padding: 40px;">No cell groups found matching your search.</div>`;
+        return;
+      }
+
+      root.innerHTML = filtered.map(c => `
+        <div class="cell-card">
+          <h3>${c.name}</h3>
+          <div class="cell-card-meta">
+            <div class="cell-meta-item">
+              <i data-lucide="user" style="width: 14px; height: 14px"></i>
+              <span>Leader: ${c.leader}</span>
+            </div>
+            <div class="cell-meta-item">
+              <i data-lucide="map-pin" style="width: 14px; height: 14px"></i>
+              <span>${c.location}</span>
+            </div>
+            <div class="cell-meta-item">
+              <i data-lucide="clock" style="width: 14px; height: 14px"></i>
+              <span>${c.day}</span>
+            </div>
+          </div>
+          <div style="margin-top: auto; display: flex; gap: 8px; padding-top: 12px;">
+            <button class="btn btn-outline" style="flex: 1; font-size: 0.78rem" onclick="handleCellJoin('${c.name}')">Request Invite</button>
+            ${c.mode === 'Online' || c.mode === 'Hybrid' ? `<button class="btn btn-secondary" style="font-size: 0.78rem" onclick="window.open('#')">Join Online</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+      if(window.lucide) window.lucide.replace();
+    }
+
+    function filterCells() {
+      renderCells();
+    }
+
+    function handleCellJoin(cellName) {
+      showToast(`Join request sent to ${cellName} administrator.`, 'success');
+    }
+
+    // Toggle Prayer request/testimony form types
+    function toggleFormType(type) {
+      const flagInput = document.getElementById('formType');
+      const titleLabel = document.getElementById('engageTitleLabel');
+      const textLabel = document.getElementById('engageTextLabel');
+      const nameInput = document.getElementById('engageName');
+      
+      const prayBtn = document.getElementById('togglePrayerFormBtn');
+      const testBtn = document.getElementById('toggleTestimonyFormBtn');
+
+      flagInput.value = type;
+
+      if (type === 'prayer') {
+        prayBtn.classList.add('btn-primary');
+        prayBtn.classList.remove('btn-secondary');
+        testBtn.classList.add('btn-secondary');
+        testBtn.classList.remove('btn-primary');
+        
+        titleLabel.textContent = 'Request Title';
+        textLabel.textContent = 'Prayer Request Details';
+        document.getElementById('engageTitle').placeholder = 'E.g., Healing for Mother';
+        document.getElementById('engageText').placeholder = 'Describe details...';
+      } else {
+        prayBtn.classList.remove('btn-primary');
+        prayBtn.classList.add('btn-secondary');
+        testBtn.classList.remove('btn-secondary');
+        testBtn.classList.add('btn-primary');
+        
+        titleLabel.textContent = 'Testimony Headline';
+        textLabel.textContent = 'Testimony Story';
+        document.getElementById('engageTitle').placeholder = 'E.g., Promoted at Work!';
+        document.getElementById('engageText').placeholder = 'Share what God has done...';
+      }
+    }
+
+    // Render Prayer requests
+    function renderPrayerRequests() {
+      const root = document.getElementById('prayerWall');
+      if (!root) return;
+
+      root.innerHTML = prayerRequests.map(p => `
+        <div class="feed-card">
+          <div class="feed-card-header">
+            <div class="feed-user">
+              <div class="feed-avatar">${p.name.slice(0, 2).toUpperCase()}</div>
+              <div>
+                <div class="feed-username">${p.name}</div>
+                <div style="font-size: 0.7rem; color: var(--muted)">${p.title}</div>
+              </div>
+            </div>
+            <div class="feed-date">${p.date}</div>
+          </div>
+          <div class="feed-content">${p.text}</div>
+          <div class="feed-actions">
+            <button class="feed-action-btn" onclick="addPrayerHeart('${p.id}')">
+              <i data-lucide="heart" style="width: 14px; height: 14px"></i>
+              <span>Amen, I Prayed (${p.prayers})</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      if(window.lucide) window.lucide.replace();
+    }
+
+    function addPrayerHeart(id) {
+      const req = prayerRequests.find(p => p.id === id);
+      if (req) {
+        req.prayers++;
+        renderPrayerRequests();
+        showToast('Amen! Prayer count recorded.');
+      }
+    }
+
+    // Render LMS foundation courses
+    function renderCourses() {
+      const root = document.getElementById('courseContainer');
+      if (!root) return;
+
+      root.innerHTML = staticCourses.map(c => `
+        <div class="course-card">
+          <div class="course-cover">
+            <div>
+              <div style="text-transform: uppercase; font-size: 0.7rem; letter-spacing: 0.05em; font-weight: 700;">Blw Course</div>
+              <div style="font-size: 0.78rem; opacity: 0.8">${c.lessons}</div>
+            </div>
+          </div>
+          <div class="course-body">
+            <h3 class="course-title">${c.title}</h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px;">
+              <span class="sermon-meta">${c.progress}</span>
+              <button class="btn btn-outline" style="font-size: 0.78rem; padding: 6px 12px;" onclick="enrollInCourse('${c.id}')">
+                ${c.progress === 'In Progress' ? 'Resume' : 'Enroll'}
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      if(window.lucide) window.lucide.replace();
+    }
+
+    function enrollInCourse(id) {
+      const course = staticCourses.find(c => c.id === id);
+      if (course) {
+        if (course.progress !== 'In Progress') {
+          course.progress = 'In Progress';
+          renderCourses();
+          showToast(`Successfully enrolled in ${course.title}!`);
+        } else {
+          showToast(`Opening course launcher...`);
+        }
+      }
+    }
+
+    // Form Submissions
+    function handleGivingSubmit(event) {
+      event.preventDefault();
+      
+      const amount = document.getElementById('givingAmount').value;
+      const category = document.getElementById('givingCategory').value;
+      const gateway = document.getElementById('givingGateway').value;
+      const name = document.getElementById('givingName').value;
+      const email = document.getElementById('givingEmail').value;
+
+      openCheckoutModal();
+      
+      const title = document.getElementById('checkoutTitle');
+      const message = document.getElementById('checkoutMessage');
+      const actions = document.getElementById('checkoutActions');
+      const icon = document.getElementById('checkoutIcon');
+
+      title.textContent = `Connecting to ${gateway}...`;
+      message.textContent = `Redirecting to secure gateway to process $${amount} for ${category}...`;
+      icon.innerHTML = `<i data-lucide="loader-2" class="spin-icon" style="width: 32px; height: 32px; animation: spin 1s linear infinite;"></i>`;
+      actions.style.display = 'none';
+
+      // Simulate API callback
+      setTimeout(() => {
+        title.textContent = "Payment Completed Successfully";
+        message.textContent = `Thank you for sowing your seed of $${amount} towards "${category}". An official email receipt has been sent to ${email}.`;
+        icon.innerHTML = `<i data-lucide="check" style="width: 32px; height: 32px; color: var(--success)"></i>`;
+        icon.style.backgroundColor = 'var(--success-soft)';
+        icon.style.color = 'var(--success)';
+        actions.style.display = 'flex';
+        actions.innerHTML = `<button class="btn btn-primary" onclick="closeCheckoutModal()">Done</button>`;
+
+        // Add to user giving history if they logged in
+        givingHistory.unshift({
+          date: new Date().toISOString().split('T')[0],
+          category,
+          gateway,
+          amount: parseFloat(amount)
+        });
+        
+        renderMemberGiving();
+        showToast('Seed donation successfully processed!', 'success');
+      }, 2500);
+
+      if(window.lucide) window.lucide.replace();
+    }
+
+    function handleEngagementSubmit(event) {
+      event.preventDefault();
+      const type = document.getElementById('formType').value;
+      const name = document.getElementById('engageName').value || 'Anonymous Partner';
+      const title = document.getElementById('engageTitle').value;
+      const text = document.getElementById('engageText').value;
+
+      if (type === 'prayer') {
+        prayerRequests.unshift({
+          id: `p-${Date.now()}`,
+          name,
+          title,
+          text,
+          prayers: 0,
+          date: 'Just now'
+        });
+        renderPrayerRequests();
+        showToast('Your prayer request has been submitted to the intercessors.');
+      } else {
+        showToast('Thank you! Your testimony has been sent to our media board for moderation.');
+      }
+
+      document.getElementById('engagementForm').reset();
+    }
+
+    function handleSalvationSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('salvationName').value;
+      showToast(`Hallelujah! We rejoice with you, ${name}. A spiritual mentor will reach out to you shortly.`);
+      document.getElementById('salvationForm').reset();
+    }
+
+    function handleVolunteerSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('volName').value;
+      const team = document.getElementById('volTeam').value;
+      showToast(`Thank you, ${name}! Your request to serve on the "${team}" team has been received.`);
+      document.getElementById('volunteerForm').reset();
+    }
+
+    function handleVisitorSubmit(event) {
+      event.preventDefault();
+      const name = document.getElementById('visName').value;
+      showToast(`Welcome, ${name}! We have saved your visitor connect card. See you this Sunday!`);
+      document.getElementById('visitorForm').reset();
+    }
+
+    // Member Authentication simulation
+    function handleLoginSubmit(event) {
+      event.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      currentUser = {
+        name: 'Brother Barnabas',
+        email: email
+      };
+
+      closeLoginModal();
+      showToast(`Welcome back, ${currentUser.name}!`);
+      
+      // Update header
+      document.getElementById('loginBtn').textContent = 'My Dashboard';
+      document.getElementById('loginBtn').onclick = () => switchView('member');
+      document.getElementById('loginBtn').className = 'btn btn-primary';
+
+      // Update Member Tab fields
+      document.getElementById('memberNameText').textContent = currentUser.name;
+      document.getElementById('memberEmailText').textContent = currentUser.email;
+      document.getElementById('memberAvatar').textContent = currentUser.name.slice(8, 10).toUpperCase() || 'M';
+
+      renderMemberGiving();
+      switchView('member');
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      showToast('Logged out of member portal.');
+      
+      // Restore header
+      document.getElementById('loginBtn').textContent = 'Member Login';
+      document.getElementById('loginBtn').onclick = openLoginModal;
+      document.getElementById('loginBtn').className = 'btn btn-secondary';
+
+      switchView('home');
+    }
+
+    function renderMemberGiving() {
+      const list = document.getElementById('memberGiftsList');
+      const totalBox = document.getElementById('totalGiftsValue');
+      if (!list) return;
+
+      let total = 0;
+      list.innerHTML = givingHistory.map(g => {
+        total += g.amount;
+        return `
+          <tr style="border-bottom: 1px solid var(--border); font-size: 0.88rem">
+            <td style="padding: 12px 8px;">${g.date}</td>
+            <td style="padding: 12px 8px;">${g.category}</td>
+            <td style="padding: 12px 8px;">${g.gateway}</td>
+            <td style="padding: 12px 8px; text-align: right; font-weight: 600;">$${g.amount.toFixed(2)}</td>
+          </tr>
+        `;
+      }).join('');
+
+      if(totalBox) totalBox.textContent = `$${total.toFixed(2)}`;
+    }
+
+    function switchMemberTab(tabId, btn) {
+      document.querySelectorAll('.member-tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.member-nav-btn').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    async function fetchPlatformSettings() {
+      try {
+        const res = await fetch('/api/platform/settings');
+        const json = await res.json();
+        if (json.data) {
+          const settings = json.data;
+          document.documentElement.style.setProperty('--accent', settings.accentColor);
+          document.documentElement.style.setProperty('--accent-hover', settings.accentColor);
+          document.documentElement.style.setProperty('--accent-soft', settings.accentSoftColor);
+        }
+      } catch (err) {
+        console.error('Failed to load platform settings:', err);
+      }
+    }
+
+    // Initialization
+    function init() {
+      initThemeSystem();
+      fetchPlatformSettings();
+      renderSermons();
+      renderCells();
+      renderPrayerRequests();
+      renderCourses();
+      
+      if (window.lucide) {
+        if (typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+        else window.lucide.replace();
+      }
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

@@ -1,0 +1,1345 @@
+Below is a full UI plan for the **Digital Church OS public frontend development** based on the uploaded frontend plan. The spec requires a **theme-based public frontend**, not one hardcoded church website, with **Christo Theme** as the first default system theme. 
+
+# Digital Church OS Frontend UI
+
+## Theme-Based Public Website + Christo Theme + Theme Customizer
+
+## 1. Main UI Direction
+
+The UI should be built around **two connected experiences**:
+
+1. **Tenant Dashboard Website Builder UI**
+   Where church admins manage their public website, theme, pages, navigation, colors, sections, preview, and publishing.
+
+2. **Public Church Website UI — Christo Theme**
+   The actual website visitors and members see when they visit a church domain.
+
+The frontend must separate **content from presentation**, meaning CMS pages, sermons, events, giving, prayer, media, groups, campaigns, and other modules should render through theme-compatible templates instead of being locked to one design. 
+
+---
+
+# 2. Tenant Dashboard UI: Website & Theme Builder
+
+## Main Route
+
+```text
+/tenant/website
+```
+
+## Sidebar Group
+
+Add a sidebar group called:
+
+```text
+Website & Frontend
+```
+
+Use Lucide icons.
+
+Suggested menu:
+
+```text
+Website Overview        Globe2
+Pages                   FileText
+Navigation              Menu
+Theme Builder           Palette
+Sections                PanelsTopLeft
+Christo Theme           Sparkles
+Preview                 MonitorSmartphone
+Forms                   ClipboardList
+SEO                     Search
+Localization            Languages
+Media Display           Images
+Public Settings         SlidersHorizontal
+```
+
+---
+
+# 3. Website Overview Page UI
+
+## Route
+
+```text
+/tenant/website
+```
+
+## Layout
+
+Use the same clean dashboard style already developed for Digital Church OS:
+
+* soft light/dark mode
+* cardless top hero area
+* two-column layout
+* Lucide icons
+* soft gradients
+* modern pills
+* clean data panels
+* minimal borders
+* no heavy shadows
+
+## Top Section
+
+Left side:
+
+```text
+Website
+Build, customize, preview, and publish your church public website.
+```
+
+Actions:
+
+```text
+Preview Website
+Customize Theme
+Create Page
+```
+
+Right side:
+
+A live mini website preview mockup showing:
+
+* header
+* hero
+* service time strip
+* CTA button
+* mobile preview overlay
+
+## Status Cards
+
+Show:
+
+```text
+Active Theme: Christo Theme
+Website Status: Published
+Pages: 28
+Public Modules: 16 active
+Last Published: Today, 10:42 AM
+Custom Domain: Connected
+```
+
+## Main Dashboard Sections
+
+### Website Health
+
+Checklist:
+
+```text
+Logo uploaded
+Homepage configured
+Navigation menu created
+Service times added
+Giving page enabled
+Contact form connected
+SEO homepage title added
+Mobile preview checked
+Custom domain connected
+```
+
+### Public Module Visibility
+
+Grid of module cards:
+
+```text
+Livestream
+Giving
+Events
+Sermons
+Prayer
+Testimonies
+Groups
+Courses
+Store
+Campaigns
+Resources
+Salvation
+```
+
+Each module card should show:
+
+* status: Active / Hidden / Setup Required / Locked
+* public URL
+* preview button
+* settings button
+
+The module entitlement guard is important because public pages must only show modules that are enabled and publicly available for the tenant. 
+
+---
+
+# 4. Theme Builder UI
+
+## Route
+
+```text
+/tenant/website/theme-builder
+```
+
+This is the most important admin UI for the development.
+
+## Layout
+
+Use a **three-panel builder layout**:
+
+```text
+Left Panel: Theme Settings
+Center: Live Website Preview
+Right Panel: Section/Page Controls
+```
+
+## Top Bar
+
+```text
+Christo Theme
+Draft saved 2 minutes ago
+```
+
+Actions:
+
+```text
+Desktop
+Tablet
+Mobile
+Preview
+Discard
+Publish
+```
+
+Use icons:
+
+```text
+Monitor
+Tablet
+Smartphone
+Eye
+RotateCcw
+Send
+```
+
+## Left Panel: Global Theme Settings
+
+Tabs:
+
+```text
+Brand
+Colors
+Typography
+Header
+Footer
+Buttons
+Cards
+Sections
+Forms
+Advanced
+```
+
+The uploaded plan requires the customizer to support logo, favicon, accent color, typography, header layout, footer layout, button style, card style, section spacing, page width, custom CSS, social links, announcement bar, and default CTA button. 
+
+### Brand Tab
+
+Controls:
+
+```text
+Church Logo
+Dark Mode Logo
+Favicon
+Church Name Display
+Tagline
+Default Social Image
+```
+
+### Colors Tab
+
+Controls:
+
+```text
+Primary Accent
+Secondary Accent
+Background Style
+Surface Style
+Light Mode Preview
+Dark Mode Preview
+```
+
+Accent presets:
+
+```text
+Orange
+Blue
+Purple
+Green
+Red
+Pink
+Charcoal
+```
+
+### Typography Tab
+
+Controls:
+
+```text
+Heading Font
+Body Font
+Quote/Scripture Font
+Heading Weight
+Body Size
+Line Height
+```
+
+### Header Tab
+
+Header layout selector:
+
+```text
+Classic Centered Logo
+Left Logo + Right Navigation
+Transparent Hero Overlay
+Sticky Header
+Announcement Bar Header
+Mega Menu Header
+Minimal Landing Page Header
+Mobile Bottom Action Header
+```
+
+Header options:
+
+```text
+Show Giving Button
+Show Watch Live Button
+Show Member Login
+Show Language Switcher
+Show Dark Mode Toggle
+Sticky Header
+Transparent On Hero
+```
+
+### Footer Tab
+
+Footer layout selector:
+
+```text
+Simple Footer
+Four Column Footer
+Mega Footer
+Minimal Landing Page Footer
+Dark Premium Footer
+```
+
+Footer content:
+
+```text
+Church Description
+Service Times
+Address
+Phone
+Email
+Social Links
+Newsletter Signup
+App Download Links
+Privacy / Terms
+```
+
+---
+
+# 5. Center Preview UI
+
+The center of the builder should show the selected public page rendered in Christo Theme.
+
+Preview modes:
+
+```text
+Active Theme Preview
+Draft Theme Settings Preview
+Unpublished Page Preview
+New Theme Preview
+Mobile Preview
+Tablet Preview
+Desktop Preview
+Section Preview
+Template Preview
+```
+
+The uploaded plan specifically requires protected preview routes and safe preview behavior so unpublished content is not publicly exposed. 
+
+## Preview Frame
+
+Top mini browser bar:
+
+```text
+christembassy.platform.com
+```
+
+Inside the preview:
+
+* announcement bar
+* header
+* selected page
+* footer
+
+Use a subtle frame with rounded corners.
+
+---
+
+# 6. Right Panel: Page Sections
+
+The right panel controls the structure of the current page.
+
+Example for Homepage:
+
+```text
+Hero
+Service Times
+Welcome Message
+Featured Ministries
+Upcoming Events
+Livestream Preview
+Latest Sermons
+Giving CTA
+Prayer Request CTA
+Testimony Highlights
+Blog Highlights
+Group / Cell CTA
+Salvation CTA
+Newsletter Signup
+Location / Map
+Contact CTA
+```
+
+These match the required Christo Theme homepage sections from the development plan. 
+
+Each section row should have:
+
+```text
+Drag handle
+Section icon
+Section name
+Visibility toggle
+Edit button
+Duplicate button
+Delete button
+```
+
+Use Lucide icons:
+
+```text
+GripVertical
+Eye
+EyeOff
+Pencil
+Copy
+Trash2
+```
+
+---
+
+# 7. Christo Theme Public Website UI
+
+## Public Homepage Route
+
+```text
+/
+```
+
+## Homepage Structure
+
+### 1. Announcement Bar
+
+Small top strip:
+
+```text
+Join us this Sunday at 9:30 AM
+```
+
+Actions:
+
+```text
+Plan a Visit
+Watch Live
+```
+
+### 2. Header
+
+Desktop:
+
+```text
+Logo | Home | About | Ministries | Sermons | Events | Prayer | Giving | Contact | Watch Live | Give
+```
+
+Mobile:
+
+* hamburger menu
+* sticky bottom quick actions:
+
+```text
+Home
+Watch
+Give
+Prayer
+Menu
+```
+
+### 3. Hero Section
+
+Use a premium split layout.
+
+Left:
+
+```text
+Welcome to Christ Embassy Edmonton North
+Experience God’s love, worship, teaching, prayer, and community.
+```
+
+Buttons:
+
+```text
+Plan a Visit
+Watch Live
+```
+
+Small info cards:
+
+```text
+Sunday Service: 9:30 AM
+Wednesday Service: 7:00 PM
+```
+
+Right:
+
+Large church image/video block with soft rounded corners.
+
+Overlay cards:
+
+```text
+Live this Sunday
+Prayer begins in 2h 14m
+```
+
+### 4. Service Times Strip
+
+Horizontal cardless strip:
+
+```text
+Sunday Service
+9:30 AM
+
+Midweek Service
+Wednesday 7:00 PM
+
+Location
+View Directions
+```
+
+### 5. Welcome / Mission Section
+
+Two-column section:
+
+Left: warm church image
+Right:
+
+```text
+A church family built around worship, the Word, prayer, and love.
+```
+
+CTA:
+
+```text
+Learn About Us
+```
+
+### 6. Featured Ministries
+
+Grid:
+
+```text
+Children
+Youth
+Prayer
+Worship
+Cells
+Outreach
+```
+
+Each card:
+
+* Lucide icon
+* image optional
+* title
+* short description
+* “Learn more”
+
+### 7. Upcoming Events
+
+Modern event cards:
+
+```text
+Date block
+Event title
+Time
+Location
+Register button
+```
+
+### 8. Livestream Preview
+
+Large media section:
+
+```text
+Next Live Service
+Sunday, 9:30 AM
+```
+
+States:
+
+```text
+Countdown
+Live Now
+Replay Available
+Offline
+```
+
+Buttons:
+
+```text
+Watch Live
+Set Reminder
+Give During Service
+Submit Prayer Request
+```
+
+### 9. Latest Sermons
+
+Cards:
+
+```text
+Thumbnail
+Title
+Speaker
+Date
+Duration
+Watch / Listen
+```
+
+Filters:
+
+```text
+All
+Series
+Speakers
+Topics
+```
+
+### 10. Giving CTA
+
+Warm, clean section:
+
+```text
+Partner with the work of the ministry.
+Your giving helps support worship, outreach, discipleship, and community impact.
+```
+
+Buttons:
+
+```text
+Give Now
+View Giving Options
+```
+
+### 11. Prayer & Testimony Section
+
+Two-column:
+
+Left:
+
+```text
+Need Prayer?
+Submit a private or public prayer request.
+```
+
+Right:
+
+```text
+Testimonies
+See what God is doing in our church family.
+```
+
+Buttons:
+
+```text
+Submit Prayer Request
+View Testimonies
+```
+
+### 12. Groups / Cell CTA
+
+```text
+Find a group. Grow in fellowship.
+```
+
+CTA:
+
+```text
+Find a Cell Group
+```
+
+### 13. Salvation CTA
+
+```text
+Start your new life in Christ.
+```
+
+CTA:
+
+```text
+I want to receive salvation
+```
+
+### 14. Footer
+
+Four-column footer:
+
+```text
+Church Info
+Quick Links
+Ministries
+Connect
+```
+
+Include:
+
+* service times
+* address
+* phone/email
+* social links
+* newsletter
+* app links
+* privacy/terms
+
+---
+
+# 8. Public Page Templates
+
+The uploaded plan requires Christo Theme to support major page templates like home, about, ministries, blog, media, sermons, livestream, events, giving, prayer, testimony wall, groups, courses, salvation, search, member-only, password-protected, maintenance, and suspended pages. 
+
+## About Page
+
+Route:
+
+```text
+/about
+```
+
+UI sections:
+
+```text
+Hero
+Mission / Vision
+Our Story
+Beliefs
+Leadership Preview
+Service Times CTA
+```
+
+## Ministries Page
+
+Route:
+
+```text
+/ministries
+```
+
+UI:
+
+```text
+Hero
+Category Filters
+Ministry Grid
+Join a Ministry CTA
+```
+
+## Sermons Page
+
+Route:
+
+```text
+/sermons
+```
+
+UI:
+
+```text
+Featured Sermon Player
+Sermon Search
+Series Filter
+Speaker Filter
+Sermon Grid
+Audio / Video Toggle
+```
+
+## Livestream Page
+
+Route:
+
+```text
+/livestream
+```
+
+UI:
+
+```text
+Large Video Player
+Live Badge / Countdown
+Chat Panel
+Giving Button
+Prayer Request Button
+Salvation Button
+Bible Panel
+Notes Panel
+Audio Language Selector
+Replay State
+```
+
+## Giving Page
+
+Route:
+
+```text
+/giving
+```
+
+UI:
+
+```text
+Giving Hero
+Giving Category Cards
+Amount Selector
+Recurring Toggle
+Anonymous Giving Option
+Payment Widget
+QR Giving
+Confirmation Screen
+```
+
+## Events Page
+
+Route:
+
+```text
+/events
+```
+
+UI:
+
+```text
+Calendar/List Toggle
+Event Cards
+Filters
+Registration Modal
+Capacity Indicator
+QR Check-in Support
+```
+
+## Prayer Page
+
+Route:
+
+```text
+/prayer
+```
+
+UI:
+
+```text
+Active Prayer Sessions
+Prayer Request Form
+Public Prayer Wall
+I Prayed Action
+Testimony Highlights
+Prayer Media
+```
+
+## Testimonies Page
+
+Route:
+
+```text
+/testimonies
+```
+
+UI:
+
+```text
+Featured Testimony
+Testimony Wall
+Category Filters
+Text / Audio / Video Testimonies
+Submit Testimony CTA
+```
+
+## Courses Page
+
+Route:
+
+```text
+/courses
+```
+
+UI:
+
+```text
+Course Grid
+Course Detail
+Lesson Preview
+Enrollment CTA
+Member Progress UI
+Certificate CTA
+```
+
+---
+
+# 9. Member Portal UI
+
+## Route Group
+
+```text
+/member
+```
+
+Pages:
+
+```text
+/member/login
+/member/register
+/member/profile
+/member/giving
+/member/courses
+/member/groups
+/member/events
+/member/prayer
+/member/notifications
+```
+
+The development plan requires member-facing pages for profile, giving history, course progress, groups, event registrations, prayer, and notifications. 
+
+## Member Dashboard Layout
+
+Top:
+
+```text
+Welcome back, Sharon
+Here is your church activity and next steps.
+```
+
+Cards:
+
+```text
+My Giving
+My Courses
+My Groups
+My Events
+My Prayer Requests
+Saved Sermon Notes
+Notifications
+Invite Links
+```
+
+## Member Profile
+
+Sections:
+
+```text
+Personal Info
+Family / Household
+Church Membership
+Groups
+Giving History
+Event Registrations
+Course Progress
+Prayer Activity
+Notification Preferences
+```
+
+---
+
+# 10. Landing Page / Funnel UI
+
+Use a simpler layout without full navigation.
+
+Routes:
+
+```text
+/salvation
+/new-here
+/events/[slug]/register
+/campaigns/[slug]
+/invite/[memberSlug]
+/resources/[slug]/download
+```
+
+UI style:
+
+* minimal header
+* strong hero
+* one clear CTA
+* form on the right or below hero
+* trust section
+* confirmation screen
+
+Example Salvation Page:
+
+```text
+A New Life Begins Here
+Receive Christ, connect with a care leader, and start your discipleship journey.
+```
+
+Form:
+
+```text
+Name
+Phone
+Email
+I made this decision today
+I want someone to contact me
+Submit
+```
+
+---
+
+# 11. Embedded Module Widgets UI
+
+The system should support embeddable public module sections, including livestream player, giving form, event registration form, campaign progress widget, testimony wall, prayer request form, media playlist, store product widget, and worship session player. 
+
+Widget examples:
+
+```text
+<LivestreamWidget />
+<GivingWidget />
+<EventRegistrationWidget />
+<CampaignProgressWidget />
+<TestimonyWallWidget />
+<PrayerRequestWidget />
+<MediaPlaylistWidget />
+<WorshipSessionWidget />
+```
+
+Each widget should support:
+
+```text
+loading state
+empty state
+error state
+locked/module-disabled state
+preview state
+```
+
+---
+
+# 12. Visual Style Guide
+
+## Light Mode
+
+```text
+Background: warm off-white
+Surface: white
+Text: charcoal
+Muted Text: slate gray
+Border: soft gray
+Accent: tenant-selected accent
+```
+
+## Dark Mode
+
+```text
+Background: soft charcoal / deep slate
+Surface: slightly lighter charcoal
+Text: soft white
+Muted Text: muted slate
+Border: dark slate
+Accent: tenant-selected accent
+```
+
+Dark mode should not be pure black. The uploaded plan specifically describes Christo Theme as soft, premium, spiritual, modern, warm, trustworthy, minimal, and cinematic but clean. 
+
+## Shape
+
+```text
+Cards: rounded-xl
+Feature panels: rounded-2xl
+Buttons/badges: rounded-full
+Borders: thin and soft
+Spacing: generous
+Shadows: soft, not heavy
+```
+
+## Icon System
+
+Use **Lucide icons** across:
+
+```text
+navigation
+cards
+buttons
+forms
+alerts
+empty states
+module pages
+footer contact items
+media controls
+event info
+giving cards
+```
+
+---
+
+# 13. Important Empty States
+
+Every page and section should have beautiful empty states.
+
+Examples:
+
+```text
+No sermons have been published yet.
+No upcoming events are available.
+Giving is not currently available.
+This resource is for members only.
+This livestream has not started yet.
+This campaign has ended.
+This page is currently being prepared.
+```
+
+The development plan requires loading, empty, error, and permission/visibility states for every public page and section. 
+
+---
+
+# 14. AI Agent Prompt To Build This UI
+
+```text
+You are updating the Digital Church OS frontend UI.
+
+Use the uploaded frontend development plan as the source of truth. Build the UI as a theme-based public frontend system, not as one hardcoded church website.
+
+The UI must include two major experiences:
+
+1. Tenant Dashboard Website Builder UI
+2. Public Church Website UI using the default Christo Theme
+
+First inspect the existing codebase and identify the current frontend routes, tenant dashboard routes, theme files, UI components, Tailwind/theme tokens, CMS structure, module routes, tenant resolver, entitlement logic, auth/member logic, localization support, and analytics hooks.
+
+Do not create duplicate systems. Update what already exists where possible.
+
+Build the Tenant Dashboard Website Builder UI with the following pages:
+
+- Website Overview
+- Pages
+- Navigation
+- Theme Builder
+- Sections
+- Christo Theme
+- Preview
+- Forms
+- SEO
+- Localization
+- Media Display
+- Public Settings
+
+The Website Overview page should show the current public website status, active theme, page count, public modules, custom domain status, publish status, website health checklist, and public module visibility cards.
+
+Build the Theme Builder as a three-panel interface:
+
+Left panel:
+- Brand
+- Colors
+- Typography
+- Header
+- Footer
+- Buttons
+- Cards
+- Sections
+- Forms
+- Advanced
+
+Center panel:
+- Live website preview
+- Desktop/tablet/mobile preview controls
+- Preview URL frame
+- Active/draft preview state
+
+Right panel:
+- Current page sections
+- Drag-and-drop ordering
+- Visibility toggles
+- Edit, duplicate, and delete controls
+
+Build Christo Theme as the default public website UI.
+
+Christo Theme should feel premium, spiritual, warm, modern, minimal, cinematic but clean, and suitable for churches across different cultures and sizes.
+
+Use light mode and soft dark mode. Do not use harsh black dark mode.
+
+Support tenant-selected accent colors:
+- orange
+- blue
+- purple
+- green
+- red
+- pink
+- gray / charcoal
+
+Use Lucide icons throughout.
+
+Build these Christo Theme public pages:
+
+- /
+- /about
+- /ministries
+- /ministries/[slug]
+- /leadership
+- /service-times
+- /locations
+- /contact
+- /blog
+- /blog/[slug]
+- /sermons
+- /sermons/[slug]
+- /media
+- /media/[slug]
+- /services
+- /services/[slug]
+- /livestream
+- /events
+- /events/[slug]
+- /giving
+- /partnerships
+- /campaigns
+- /campaigns/[slug]
+- /store
+- /store/products/[slug]
+- /prayer
+- /testimonies
+- /groups
+- /groups/[slug]
+- /courses
+- /courses/[slug]
+- /salvation
+- /new-here
+- /resources
+- /resources/[slug]
+- /invite/[memberSlug]
+- /search
+- /member/login
+- /member/profile
+
+Build the homepage using reusable sections:
+
+- Hero
+- Service Times
+- Welcome Message
+- About / Mission
+- Featured Ministries
+- Upcoming Events
+- Livestream Preview
+- Latest Sermons
+- Media Highlights
+- Giving CTA
+- Prayer Request CTA
+- Testimony Highlights
+- Blog / Devotional Highlights
+- Group / Cell CTA
+- Salvation CTA
+- Newsletter Signup
+- Location / Map
+- Contact CTA
+
+Each section must be optional and controlled by CMS/theme settings.
+
+Build reusable Christo components:
+
+- ChristoHeader
+- ChristoTopBar
+- ChristoMobileNav
+- ChristoFooter
+- ChristoMegaMenu
+- ChristoHero
+- ChristoButton
+- ChristoCard
+- ChristoSection
+- ChristoContainer
+- ChristoBadge
+- ChristoStatCard
+- ChristoEventCard
+- ChristoSermonCard
+- ChristoMediaCard
+- ChristoMinistryCard
+- ChristoLeaderCard
+- ChristoGivingCard
+- ChristoCampaignCard
+- ChristoTestimonyCard
+- ChristoPrayerCard
+- ChristoCourseCard
+- ChristoProductCard
+- ChristoForm
+- ChristoInput
+- ChristoSelect
+- ChristoTextarea
+- ChristoTabs
+- ChristoAccordion
+- ChristoModal
+- ChristoDrawer
+- ChristoEmptyState
+- ChristoLoadingSkeleton
+- ChristoErrorState
+
+Build the member portal UI with:
+
+- member login
+- member registration
+- profile
+- giving history
+- course progress
+- group memberships
+- event registrations
+- prayer requests
+- testimony submissions
+- saved sermon notes
+- notifications
+- invite links
+
+Build landing page/funnel UI for:
+
+- salvation calls
+- new visitor forms
+- event registration
+- campaign pages
+- partnership pages
+- course enrollment
+- livestream reminder capture
+- invite campaigns
+- resource downloads
+
+Build embedded public widgets for:
+
+- livestream player
+- giving form
+- event registration form
+- campaign progress widget
+- testimony wall
+- prayer request form
+- media playlist
+- store product widget
+- worship session player
+
+All public pages must respect:
+
+- tenant resolution
+- theme runtime
+- module entitlement
+- public visibility
+- member-only visibility
+- password protection
+- preview token protection
+- localization
+- SEO metadata
+- accessibility
+- loading states
+- empty states
+- error states
+
+The final UI should allow a church tenant to publish a full public website using Christo Theme, preview theme changes, customize branding, control sections, render module pages, and provide visitors and members with a warm, professional, modern church digital experience.
+```

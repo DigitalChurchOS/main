@@ -33,7 +33,7 @@ function readSourcePermissions() {
     'user.update',
     'user.delete',
   ]);
-  const modules = new Set(['website-cms', 'ministry-funnels', 'ai-assistant-ministry-copilot']);
+  const modules = new Set(['website-cms', 'ministry-funnels', 'ai-assistant-ministry-copilot', 'domain-tenant-management']);
 
   for (const file of fs.readdirSync(path.join(srcDir, 'routes'))) {
     if (!file.endsWith('.ts')) continue;

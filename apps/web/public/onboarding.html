@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Church OS — Guided Onboarding Wizard</title>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --bg: #f8f4ed;
+      --bg-2: #fffaf3;
+      --ink: #15171a;
+      --muted: #73706b;
+      --soft: rgba(255,255,255,.72);
+      --solid: #ffffff;
+      --line: rgba(21,23,26,.1);
+      --accent: #f97316;
+      --accent-2: #ffc27a;
+      --accent-soft: rgba(249,115,22,.12);
+      --charcoal: #1d1d1c;
+      --shadow: 0 30px 90px rgba(61, 44, 21, .12);
+      --shadow-soft: 0 18px 44px rgba(61, 44, 21, .08);
+      --radius: 34px;
+      --radius-sm: 22px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    [data-theme="dark"] {
+      --bg: #151413;
+      --bg-2: #1d1b19;
+      --ink: #f7f0e8;
+      --muted: #aaa29a;
+      --soft: rgba(37,36,34,.68);
+      --solid: #22201e;
+      --line: rgba(255,255,255,.1);
+      --accent-soft: rgba(249,115,22,.18);
+      --shadow: 0 30px 100px rgba(0,0,0,.35);
+      --shadow-soft: 0 18px 50px rgba(0,0,0,.25);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at 15% 10%, var(--accent-soft), transparent 28%),
+        radial-gradient(circle at 92% 4%, rgba(91, 33, 182, .12), transparent 24%),
+        linear-gradient(135deg, var(--bg), var(--bg-2));
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      opacity: .18;
+      background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 72px 72px;
+      mask-image: radial-gradient(circle at top, black 0%, transparent 85%);
+    }
+
+    .nav {
+      height: 72px;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 65%, transparent);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-inline: clamp(16px, 4vw, 40px);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      font-weight: 950;
+      letter-spacing: -.04em;
+    }
+
+    .brand-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn, .icon-btn {
+      border: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+    }
+
+    .btn {
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 800;
+      background: var(--soft);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--soft);
+      border: 1px solid var(--line);
+    }
+
+    .btn:hover, .icon-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      border: 0;
+      box-shadow: 0 14px 28px color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+
+    /* Onboarding Layout */
+    .onboarding-grid {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      flex: 1;
+      min-height: calc(100vh - 72px);
+    }
+
+    .sidebar {
+      border-right: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 30%, transparent);
+      padding: 30px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .steps-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 18px;
+      cursor: pointer;
+      transition: .25s ease;
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 13px;
+    }
+
+    .step-item:hover {
+      background: var(--accent-soft);
+      color: var(--ink);
+    }
+
+    .step-item.active {
+      background: var(--solid);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .step-item.completed {
+      color: #16a34a;
+    }
+
+    .step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      display: grid;
+      place-items: center;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .step-item.active .step-num {
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      border: 0;
+    }
+
+    .step-item.completed .step-num {
+      background: rgba(22, 163, 74, 0.1);
+      color: #16a34a;
+      border-color: rgba(22, 163, 74, 0.2);
+    }
+
+    .wizard-content {
+      padding: clamp(24px, 5vw, 64px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wizard-card {
+      width: 100%;
+      max-width: 680px;
+      padding: clamp(24px, 4vw, 48px);
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 68%, transparent);
+      backdrop-filter: blur(24px);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      transition: opacity .3s ease, transform .3s ease;
+    }
+
+    .wizard-header {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .wizard-header h2 {
+      font-size: 32px;
+      letter-spacing: -.05em;
+      margin: 0;
+    }
+
+    .wizard-header p {
+      color: var(--muted);
+      line-height: 1.6;
+      margin: 0;
+      font-size: 15px;
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 75%, transparent);
+      color: var(--ink);
+      border-radius: 16px;
+      min-height: 50px;
+      padding: 0 15px;
+      outline: 0;
+      transition: border .25s ease, box-shadow .25s ease;
+    }
+
+    textarea {
+      min-height: 100px;
+      padding-top: 12px;
+      resize: vertical;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+      box-shadow: 0 0 0 5px var(--accent-soft);
+    }
+
+    .wizard-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 24px;
+    }
+
+    /* Theme Cards and Mode Options */
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .select-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 18px;
+      background: color-mix(in srgb, var(--solid) 40%, transparent);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: .25s ease;
+    }
+
+    .select-card:hover {
+      background: var(--accent-soft);
+      transform: translateY(-2px);
+    }
+
+    .select-card.active {
+      border-color: var(--accent);
+      background: var(--solid);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .select-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+    }
+
+    .select-card h4 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -.03em;
+    }
+
+    .select-card p {
+      margin: 0;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Modules checkbox rows */
+    .module-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--solid) 40%, transparent);
+      margin-bottom: 10px;
+      transition: .2s ease;
+    }
+
+    .module-item.active {
+      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      background: var(--solid);
+    }
+
+    .module-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .module-info-text h4 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -.03em;
+    }
+
+    .module-info-text p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .module-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+
+    .module-badge.locked {
+      background: rgba(220,38,38,.08);
+      color: #dc2626;
+      border-color: rgba(220,38,38,.15);
+    }
+
+    /* Custom Checkbox Toggle */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: color-mix(in srgb, var(--muted) 35%, transparent);
+      transition: .3s;
+      border-radius: 34px;
+    }
+
+    .slider::before {
+      content: "";
+      position: absolute;
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translateX(-50%) translateY(100px);
+      opacity: 0;
+      padding: 14px 22px;
+      border-radius: 999px;
+      background: var(--ink);
+      color: var(--bg);
+      font-weight: 900;
+      font-size: 14px;
+      box-shadow: var(--shadow);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      transition: transform .35s cubic-bezier(.175, .885, .32, 1.275), opacity .3s ease;
+    }
+    .toast-container.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Final Checklist Summary */
+    .summary-list {
+      display: grid;
+      gap: 12px;
+    }
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 820px) {
+      .onboarding-grid {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        padding: 16px;
+      }
+      .steps-list {
+        flex-direction: row;
+        overflow-x: auto;
+        padding-bottom: 8px;
+      }
+      .step-item {
+        white-space: nowrap;
+      }
+    }
+  </style>
+</head>
+<body data-theme="light">
+  <header class="nav">
+    <div class="brand">
+      <span class="brand-icon"><i data-lucide="church"></i></span>
+      <span id="churchNameHeader">Digital Church OS</span>
+    </div>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">
+        <i data-lucide="moon"></i>
+      </button>
+      <button class="btn" id="btnLogOut" type="button"><i data-lucide="log-out"></i> Sign Out</button>
+    </div>
+  </header>
+
+  <main class="onboarding-grid">
+    <!-- Sidebar Wizard Steps Indicator -->
+    <aside class="sidebar">
+      <div style="display:flex; flex-direction:column; gap:4px; margin-bottom: 8px;">
+        <span style="font-size:11px; font-weight:800; text-transform:uppercase; color:var(--accent); letter-spacing:0.1em;">Setup Progress</span>
+        <span style="font-weight:900; font-size:16px;" id="progressLabel">0% Completed</span>
+      </div>
+      
+      <nav class="steps-list" id="stepsSidebarList">
+        <!-- Generated Dynamically -->
+      </nav>
+    </aside>
+
+    <!-- Main Content Stage -->
+    <section class="wizard-content">
+      <div class="wizard-card" id="wizardCard">
+        <!-- Active Onboarding Step Rendered Here -->
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-container" id="toast">
+    <i data-lucide="info" id="toastIcon"></i>
+    <span id="toastMessage">Step updated successfully!</span>
+  </div>
+
+  <script>
+    const body = document.body;
+    const themeToggle = document.getElementById("themeToggle");
+    const churchNameHeader = document.getElementById("churchNameHeader");
+    const progressLabel = document.getElementById("progressLabel");
+    const stepsSidebarList = document.getElementById("stepsSidebarList");
+    const wizardCard = document.getElementById("wizardCard");
+
+    // Secure authentication check
+    const token = localStorage.getItem("churchos.token");
+    const tenantId = localStorage.getItem("churchos.tenantId");
+
+    if (!token || !tenantId) {
+      window.location.href = "/start";
+    }
+
+    // Sign out
+    document.getElementById("btnLogOut").addEventListener("click", () => {
+      localStorage.clear();
+      window.location.href = "/start";
+    });
+
+    // Theme Icon toggle
+    function icon(name) {
+      return `<i data-lucide="${name}"></i>`;
+    }
+
+    function syncThemeIcon() {
+      const isDark = body.dataset.theme === "dark";
+      themeToggle.innerHTML = isDark ? icon("sun") : icon("moon");
+      lucide.createIcons();
+    }
+
+    themeToggle.addEventListener("click", () => {
+      body.dataset.theme = body.dataset.theme === "dark" ? "light" : "dark";
+      syncThemeIcon();
+    });
+
+    // Onboarding checklist steps definition
+    const onboardingStepsDef = [
+      { stepKey: 'profile', title: 'Church Profile', description: 'Address, phone, email, and timezone settings' },
+      { stepKey: 'logo', title: 'Upload Logo', description: 'Main light/dark logo and favicon' },
+      { stepKey: 'theme', title: 'Choose Theme', description: 'Starter theme selection' },
+      { stepKey: 'design', title: 'Design Style', description: 'Mode, accent color, and border edges' },
+      { stepKey: 'modules', title: 'Select Modules', description: 'Entitle and activate ministry modules' },
+      { stepKey: 'website', title: 'Website Basics', description: 'Homepage titles, primary CTA and text' },
+      { stepKey: 'domain', title: 'Domain Setup', description: 'Configure church domain structure' },
+      { stepKey: 'giving', title: 'Giving Setup', description: 'Integrate Pesapal, Stripe or Flutterwave' },
+      { stepKey: 'invite', title: 'Invite Team', description: 'Invite pastors and office administrators' },
+      { stepKey: 'complete', title: 'Launch Dashboard', description: 'Final launch checklists summary' }
+    ];
+
+    let state = {
+      currentStepIndex: 0,
+      progressPercent: 0,
+      steps: [], // status records from API
+      tenant: {},
+      plan: 'growth' // default plan, will be loaded from billing
+    };
+
+    // Toast utility
+    const toastEl = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMessage");
+    function showToast(msg, error = false) {
+      toastMsg.textContent = msg;
+      toastEl.className = "toast-container show";
+      if (error) {
+        toastEl.style.background = "#dc2626";
+      } else {
+        toastEl.style.background = "var(--ink)";
+      }
+      setTimeout(() => {
+        toastEl.className = "toast-container";
+      }, 3000);
+    }
+
+    // API fetch utilities
+    async function apiGet(endpoint) {
+      const res = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+          'x-tenant-id': tenantId,
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'API request failed');
+      }
+      return res.json();
+    }
+
+    async function apiPatch(endpoint, bodyData) {
+      const res = await fetch(endpoint, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-tenant-id': tenantId,
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyData)
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Update failed');
+      }
+      return res.json();
+    }
+
+    async function apiPost(endpoint, bodyData = {}) {
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-tenant-id': tenantId,
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(bodyData)
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Operation failed');
+      }
+      return res.json();
+    }
+
+    // Load onboarding data from API
+    async function loadOnboarding() {
+      try {
+        const resData = await apiGet('/api/onboarding');
+        const data = resData.data;
+        
+        state.steps = data.steps;
+        state.tenant = data.tenant;
+        state.progressPercent = data.progressPercent;
+        
+        if (state.tenant.name) {
+          churchNameHeader.textContent = state.tenant.name;
+        }
+
+        // Determine plan by querying subscription
+        try {
+          const subData = await apiGet('/api/billing-subscription-management/current');
+          if (subData && subData.plan) {
+            state.plan = subData.plan.slug || 'growth';
+          }
+        } catch (subErr) {
+          console.warn('Subscription fetch warning (defaulting to Growth plan):', subErr.message);
+        }
+
+        renderSidebar();
+        renderActiveStep();
+      } catch (err) {
+        console.error(err);
+        showToast('Failed to load onboarding data: ' + err.message, true);
+      }
+    }
+
+    // Render step checklist sidebar
+    function renderSidebar() {
+      progressLabel.textContent = `${state.progressPercent}% Completed`;
+      
+      stepsSidebarList.innerHTML = onboardingStepsDef.map((step, index) => {
+        // Find completion status in API steps list
+        const apiStep = state.steps.find(s => s.stepKey === step.stepKey);
+        const isCompleted = apiStep && (apiStep.status === 'completed' || apiStep.status === 'skipped');
+        const isActive = index === state.currentStepIndex;
+        
+        let statusClass = '';
+        if (isActive) statusClass = 'active';
+        else if (isCompleted) statusClass = 'completed';
+
+        return `
+          <div class="step-item ${statusClass}" onclick="goToStep(${index})">
+            <span class="step-num">${index + 1}</span>
+            <span>${step.title}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function goToStep(index) {
+      if (index >= 0 && index < onboardingStepsDef.length) {
+        state.currentStepIndex = index;
+        renderSidebar();
+        renderActiveStep();
+      }
+    }
+
+    // Active Step Template Renderer
+    function renderActiveStep() {
+      const step = onboardingStepsDef[state.currentStepIndex];
+      const apiStep = state.steps.find(s => s.stepKey === step.stepKey) || {};
+      
+      let metadata = {};
+      if (apiStep.metadataJson) {
+        try {
+          metadata = JSON.parse(apiStep.metadataJson);
+        } catch {}
+      }
+
+      let formHtml = '';
+
+      switch(step.stepKey) {
+        case 'profile':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field">
+                <label for="profileCountry">Country</label>
+                <input id="profileCountry" value="${metadata.country || state.tenant.country || ''}" placeholder="e.g. Canada" required />
+              </div>
+              <div class="field">
+                <label for="profileCity">City</label>
+                <input id="profileCity" value="${metadata.city || state.tenant.city || ''}" placeholder="e.g. Edmonton" required />
+              </div>
+              <div class="field full">
+                <label for="profileAddress">Full Address</label>
+                <input id="profileAddress" value="${metadata.address || ''}" placeholder="e.g. 221 Victory Ave, Edmonton" />
+              </div>
+              <div class="field">
+                <label for="profilePhone">Phone Number</label>
+                <input id="profilePhone" value="${metadata.phone || ''}" placeholder="e.g. +1 780-000-0000" />
+              </div>
+              <div class="field">
+                <label for="profileEmail">Church Public Email</label>
+                <input id="profileEmail" type="email" value="${metadata.email || ''}" placeholder="e.g. info@church.org" />
+              </div>
+              <div class="field">
+                <label for="profileServiceTimes">Service Times</label>
+                <input id="profileServiceTimes" value="${metadata.serviceTimes || 'Sundays 10:00 AM'}" placeholder="e.g. Sundays 9:30 AM & 11:30 AM" required />
+              </div>
+              <div class="field">
+                <label for="profileTimezone">Timezone</label>
+                <select id="profileTimezone">
+                  <option value="America/Edmonton" ${state.tenant.timezone === 'America/Edmonton' ? 'selected' : ''}>Edmonton (MST)</option>
+                  <option value="UTC" ${state.tenant.timezone === 'UTC' ? 'selected' : ''}>UTC</option>
+                  <option value="Africa/Nairobi" ${state.tenant.timezone === 'Africa/Nairobi' ? 'selected' : ''}>Nairobi (EAT)</option>
+                  <option value="Europe/London" ${state.tenant.timezone === 'Europe/London' ? 'selected' : ''}>London (GMT)</option>
+                </select>
+              </div>
+            </form>
+          `;
+          break;
+        case 'logo':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field full">
+                <label for="logoUrl">Main Light Logo URL</label>
+                <input id="logoUrl" value="${metadata.logoUrl || ''}" placeholder="https://example.com/logo.png" />
+              </div>
+              <div class="field full">
+                <label for="darkLogoUrl">Dark Mode Logo URL (Optional)</label>
+                <input id="darkLogoUrl" value="${metadata.darkLogoUrl || ''}" placeholder="https://example.com/logo-dark.png" />
+              </div>
+              <div class="field full">
+                <label for="faviconUrl">Favicon URL</label>
+                <input id="faviconUrl" value="${metadata.faviconUrl || ''}" placeholder="https://example.com/favicon.ico" />
+              </div>
+            </form>
+          `;
+          break;
+        case 'theme':
+          formHtml = `
+            <form id="stepForm">
+              <input type="hidden" id="selectedTheme" value="${metadata.themeId || 'theme-christo'}" />
+              <div class="selection-grid">
+                <div class="select-card ${(!metadata.themeId || metadata.themeId === 'theme-christo') ? 'active' : ''}" data-theme-id="theme-christo" onclick="selectThemeCard('theme-christo')">
+                  <div class="select-card-icon"><i data-lucide="sparkles"></i></div>
+                  <h4>Christo Theme</h4>
+                  <p>Our premium system starter theme. Modern overlays, grids, and radial layouts.</p>
+                </div>
+                <div class="select-card ${(metadata.themeId === 'theme-neon') ? 'active' : ''}" data-theme-id="theme-neon" onclick="selectThemeCard('theme-neon')">
+                  <div class="select-card-icon"><i data-lucide="zap"></i></div>
+                  <h4>Neon Youth</h4>
+                  <p>Vibrant gradients and bold typefaces for youth and student networks.</p>
+                </div>
+                <div class="select-card ${(metadata.themeId === 'theme-hymnal') ? 'active' : ''}" data-theme-id="theme-hymnal" onclick="selectThemeCard('theme-hymnal')">
+                  <div class="select-card-icon"><i data-lucide="book-open"></i></div>
+                  <h4>Traditional</h4>
+                  <p>Classic serif styling and balanced spacing for liturgical services.</p>
+                </div>
+              </div>
+            </form>
+          `;
+          break;
+        case 'design':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field">
+                <label for="designMode">Default Mode</label>
+                <select id="designMode">
+                  <option value="system" ${metadata.mode === 'system' ? 'selected' : ''}>System Preference</option>
+                  <option value="light" ${metadata.mode === 'light' ? 'selected' : ''}>Light Mode</option>
+                  <option value="dark" ${metadata.mode === 'dark' ? 'selected' : ''}>Dark Mode</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="designAccent">Accent Color</label>
+                <select id="designAccent">
+                  <option value="#f97316" ${metadata.accentColor === '#f97316' ? 'selected' : ''}>Orange</option>
+                  <option value="#3b82f6" ${metadata.accentColor === '#3b82f6' ? 'selected' : ''}>Blue</option>
+                  <option value="#8b5cf6" ${metadata.accentColor === '#8b5cf6' ? 'selected' : ''}>Purple</option>
+                  <option value="#10b981" ${metadata.accentColor === '#10b981' ? 'selected' : ''}>Green</option>
+                </select>
+              </div>
+              <div class="field full">
+                <label style="display:flex; align-items:center; justify-content:space-between;">
+                  <span>Rounded Edges</span>
+                  <span class="switch">
+                    <input type="checkbox" id="roundedEdges" ${metadata.roundedEdges !== false ? 'checked' : ''} />
+                    <span class="slider"></span>
+                  </span>
+                </label>
+              </div>
+            </form>
+          `;
+          break;
+        case 'modules':
+          // Module plan locking conditions
+          const isStarter = state.plan === 'starter';
+          const isGrowth = state.plan === 'growth';
+          
+          formHtml = `
+            <form id="stepForm">
+              <div class="module-item active">
+                <div class="module-info">
+                  <i data-lucide="globe" style="color: var(--accent);"></i>
+                  <div class="module-info-text">
+                    <h4>Website Builder & CMS</h4>
+                    <p>Included in all plans</p>
+                  </div>
+                </div>
+                <span style="font-size:12px; color:var(--muted); font-weight:800;">Always Active</span>
+              </div>
+
+              <div class="module-item active">
+                <div class="module-info">
+                  <i data-lucide="users" style="color: var(--accent);"></i>
+                  <div class="module-info-text">
+                    <h4>Members & CRM logs</h4>
+                    <p>Core member registry</p>
+                  </div>
+                </div>
+                <label class="switch">
+                  <input type="checkbox" class="module-chk" value="members" checked disabled />
+                  <span class="slider"></span>
+                </label>
+              </div>
+
+              <div class="module-item ${isStarter ? '' : 'active'}">
+                <div class="module-info">
+                  <i data-lucide="hand-coins" style="color: var(--accent);"></i>
+                  <div class="module-info-text">
+                    <h4>Giving & Payments</h4>
+                    <p>Online donations gateway</p>
+                  </div>
+                </div>
+                ${isStarter 
+                  ? `<span class="module-badge locked">Upgrade Plan</span>`
+                  : `<label class="switch">
+                       <input type="checkbox" class="module-chk" value="giving" checked />
+                       <span class="slider"></span>
+                     </label>`
+                }
+              </div>
+
+              <div class="module-item ${(isStarter || isGrowth) ? '' : 'active'}">
+                <div class="module-info">
+                  <i data-lucide="video" style="color: var(--accent);"></i>
+                  <div class="module-info-text">
+                    <h4>Livestream & Replays</h4>
+                    <p>Broadcast video directly to website</p>
+                  </div>
+                </div>
+                ${(isStarter || isGrowth)
+                  ? `<span class="module-badge locked">Upgrade Plan</span>`
+                  : `<label class="switch">
+                       <input type="checkbox" class="module-chk" value="livestream" />
+                       <span class="slider"></span>
+                     </label>`
+                }
+              </div>
+            </form>
+          `;
+          break;
+        case 'website':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field full">
+                <label for="homepageTitle">Homepage Title</label>
+                <input id="homepageTitle" value="${metadata.homepageTitle || 'Welcome Home'}" placeholder="e.g. Welcome to Christ Embassy" required />
+              </div>
+              <div class="field full">
+                <label for="homepageSubtitle">Homepage Subtitle</label>
+                <input id="homepageSubtitle" value="${metadata.homepageSubtitle || 'We are glad you are here.'}" placeholder="e.g. Build, manage, and grow your church online." required />
+              </div>
+              <div class="field full">
+                <label for="aboutText">About Text Paragraph</label>
+                <textarea id="aboutText" placeholder="Brief story about your church mission and core values...">${metadata.aboutText || ''}</textarea>
+              </div>
+              <div class="field">
+                <label for="primaryCtaText">Primary CTA Button Label</label>
+                <input id="primaryCtaText" value="${metadata.primaryCtaText || 'Plan a Visit'}" placeholder="e.g. Watch Live" />
+              </div>
+              <div class="field">
+                <label for="primaryCtaUrl">Primary CTA Button Link</label>
+                <input id="primaryCtaUrl" value="${metadata.primaryCtaUrl || '/visit'}" placeholder="e.g. /give" />
+              </div>
+            </form>
+          `;
+          break;
+        case 'domain':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field full">
+                <label>Reserved Subdomain</label>
+                <div class="domain-preview">
+                  <code>${state.tenant.subdomain}.churchos.com</code>
+                  <span class="pill ok"><i data-lucide="check-circle-2"></i> Connected</span>
+                </div>
+              </div>
+              <div class="field full">
+                <label for="customDomain">Custom Domain (Optional)</label>
+                <input id="customDomain" value="${metadata.customDomain || state.tenant.customDomain || ''}" placeholder="e.g. www.mychurch.org" />
+                <span style="font-size:12px; color:var(--muted); line-height: 1.4;">Add your custom domain. In production, configure DNS A Records to point to our central server IP.</span>
+              </div>
+            </form>
+          `;
+          break;
+        case 'giving':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field">
+                <label for="gatewayProvider">Payment Gateway Provider</label>
+                <select id="gatewayProvider">
+                  <option value="pesapal" ${metadata.gatewayProvider === 'pesapal' ? 'selected' : ''}>Pesapal (East Africa)</option>
+                  <option value="flutterwave" ${metadata.gatewayProvider === 'flutterwave' ? 'selected' : ''}>Flutterwave</option>
+                  <option value="yo" ${metadata.gatewayProvider === 'yo' ? 'selected' : ''}>Yo! Payments</option>
+                  <option value="stripe" ${metadata.gatewayProvider === 'stripe' ? 'selected' : ''}>Stripe (Card Payments)</option>
+                  <option value="bank" ${metadata.gatewayProvider === 'bank' ? 'selected' : ''}>Manual Bank Transfer</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="integrationMode">Integration Mode</label>
+                <select id="integrationMode">
+                  <option value="pending" selected>Pending DNS Configuration</option>
+                  <option value="active">Live Production Gate</option>
+                </select>
+              </div>
+              <div class="field full">
+                <span style="font-size:12px; color:var(--muted); line-height: 1.4;">Select a giving portal gateway. Configuration can be skipped and adjusted later from your dashboard Settings panel.</span>
+              </div>
+            </form>
+          `;
+          break;
+        case 'invite':
+          formHtml = `
+            <form id="stepForm" class="form-grid">
+              <div class="field">
+                <label for="inviteEmail">Staff Email Address</label>
+                <input id="inviteEmail" type="email" placeholder="e.g. pastor@church.org" />
+              </div>
+              <div class="field">
+                <label for="inviteRole">Assigned Role</label>
+                <select id="inviteRole">
+                  <option value="Pastor">Associate Pastor</option>
+                  <option value="Admin">Administrator</option>
+                  <option value="Finance Manager">Finance Director</option>
+                  <option value="Media Manager">Creative Producer</option>
+                </select>
+              </div>
+              <div class="field full" style="margin-top: 10px;">
+                <button class="btn btn-primary" type="button" id="btnInvite" style="width:100%; min-height:48px;">
+                  <i data-lucide="user-plus"></i> Send Invitation
+                </button>
+              </div>
+            </form>
+          `;
+          break;
+        case 'complete':
+          formHtml = `
+            <div class="summary-list">
+              <div class="summary-row">
+                <span>Workspace name</span>
+                <strong>${state.tenant.name}</strong>
+              </div>
+              <div class="summary-row">
+                <span>Subdomain URL</span>
+                <strong>${state.tenant.subdomain}.churchos.com</strong>
+              </div>
+              <div class="summary-row">
+                <span>Plan active</span>
+                <strong>${state.plan.toUpperCase()} (14-day free trial)</strong>
+              </div>
+              <div class="summary-row">
+                <span>Design pairing</span>
+                <strong>Mode: Light/Dark System</strong>
+              </div>
+            </div>
+          `;
+          break;
+      }
+
+      wizardCard.innerHTML = `
+        <div class="wizard-header">
+          <div class="eyebrow">Step ${state.currentStepIndex + 1} of 10</div>
+          <h2>${step.title}</h2>
+          <p>${step.description}</p>
+        </div>
+        
+        ${formHtml}
+        
+        <div class="wizard-footer">
+          <button class="btn" type="button" id="btnBack" onclick="goToStep(${state.currentStepIndex - 1})" ${state.currentStepIndex === 0 ? 'disabled' : ''}>
+            <i data-lucide="arrow-left"></i> Back
+          </button>
+          
+          <div style="display:flex; gap:8px;">
+            ${step.stepKey !== 'complete' 
+              ? `<button class="btn" type="button" onclick="skipStep()">Skip</button>
+                 <button class="btn btn-primary" type="button" id="btnNext" onclick="submitActiveStep()">
+                   Save & Continue <i data-lucide="arrow-right"></i>
+                 </button>`
+              : `<button class="btn btn-primary" type="button" onclick="completeOnboarding()">
+                   Launch Dashboard <i data-lucide="rocket"></i>
+                 </button>`
+            }
+          </div>
+        </div>
+      `;
+
+      lucide.createIcons();
+
+      // Hook invite button specifically if on invite step
+      if (step.stepKey === 'invite') {
+        document.getElementById("btnInvite").addEventListener("click", sendInvitation);
+      }
+    }
+
+    // Handles theme selection cards
+    function selectThemeCard(themeId) {
+      document.getElementById("selectedTheme").value = themeId;
+      document.querySelectorAll(".select-card").forEach(card => {
+        card.classList.toggle("active", card.dataset.themeId === themeId);
+      });
+    }
+
+    // Handles skipping steps
+    function skipStep() {
+      showToast('Step skipped');
+      goToStep(state.currentStepIndex + 1);
+    }
+
+    // Handles Step form submissions
+    async function submitActiveStep() {
+      const step = onboardingStepsDef[state.currentStepIndex];
+      const form = document.getElementById("stepForm");
+
+      try {
+        let bodyData = {};
+        let url = '';
+
+        switch(step.stepKey) {
+          case 'profile':
+            url = '/api/onboarding/church-profile';
+            bodyData = {
+              country: document.getElementById("profileCountry").value.trim(),
+              city: document.getElementById("profileCity").value.trim(),
+              address: document.getElementById("profileAddress").value.trim(),
+              phone: document.getElementById("profilePhone").value.trim(),
+              email: document.getElementById("profileEmail").value.trim(),
+              serviceTimes: document.getElementById("profileServiceTimes").value.trim(),
+              timezone: document.getElementById("profileTimezone").value
+            };
+            break;
+          case 'logo':
+            url = '/api/onboarding/logo';
+            bodyData = {
+              logoUrl: document.getElementById("logoUrl").value.trim(),
+              darkLogoUrl: document.getElementById("darkLogoUrl").value.trim(),
+              faviconUrl: document.getElementById("faviconUrl").value.trim()
+            };
+            break;
+          case 'theme':
+            url = '/api/onboarding/theme';
+            bodyData = {
+              themeId: document.getElementById("selectedTheme").value
+            };
+            break;
+          case 'design':
+            url = '/api/onboarding/design';
+            bodyData = {
+              mode: document.getElementById("designMode").value,
+              accentColor: document.getElementById("designAccent").value,
+              roundedEdges: document.getElementById("roundedEdges").checked
+            };
+            break;
+          case 'modules':
+            url = '/api/onboarding/modules';
+            const chks = document.querySelectorAll(".module-chk");
+            const keys = ['website-cms', 'theme-engine', 'domain-tenant-management']; // core defaults
+            chks.forEach(chk => {
+              if (chk.checked) {
+                if (chk.value === 'members') keys.push('members');
+                if (chk.value === 'giving') keys.push('giving');
+                if (chk.value === 'livestream') keys.push('livestream');
+              }
+            });
+            bodyData = { enabledModuleKeys: keys };
+            break;
+          case 'website':
+            url = '/api/onboarding/website-basics';
+            bodyData = {
+              homepageTitle: document.getElementById("homepageTitle").value.trim(),
+              homepageSubtitle: document.getElementById("homepageSubtitle").value.trim(),
+              aboutText: document.getElementById("aboutText").value.trim(),
+              primaryCtaText: document.getElementById("primaryCtaText").value.trim(),
+              primaryCtaUrl: document.getElementById("primaryCtaUrl").value.trim()
+            };
+            break;
+          case 'domain':
+            url = '/api/onboarding/domain';
+            bodyData = {
+              customDomain: document.getElementById("customDomain").value.trim()
+            };
+            break;
+          case 'giving':
+            url = '/api/onboarding/giving';
+            bodyData = {
+              gatewayProvider: document.getElementById("gatewayProvider").value,
+              integrationMode: document.getElementById("integrationMode").value
+            };
+            break;
+          case 'invite':
+            // If email is empty, they just continue without inviting
+            const emailVal = document.getElementById("inviteEmail").value.trim();
+            if (!emailVal) {
+              goToStep(state.currentStepIndex + 1);
+              return;
+            }
+            // If they filled it, send invite
+            await sendInvitation();
+            goToStep(state.currentStepIndex + 1);
+            return;
+        }
+
+        showToast('Saving step...', false);
+        await apiPatch(url, bodyData);
+        showToast('Saved successfully!', false);
+        
+        // Reload onboarding status to update sidebar checkmarks and progress %
+        await loadOnboarding();
+        
+        // Proceed to next step
+        setTimeout(() => {
+          goToStep(state.currentStepIndex + 1);
+        }, 400);
+
+      } catch (err) {
+        showToast(err.message || 'An error occurred during save', true);
+      }
+    }
+
+    // Handles sending team invites
+    async function sendInvitation() {
+      const email = document.getElementById("inviteEmail").value.trim();
+      const roleName = document.getElementById("inviteRole").value;
+
+      if (!email) {
+        showToast('Email address is required to invite a team member', true);
+        return;
+      }
+
+      try {
+        showToast('Sending invitation...', false);
+        await apiPost('/api/onboarding/invite-team', { email, roleName });
+        showToast(`Invitation sent to ${email}!`, false);
+        
+        // Reset email input
+        document.getElementById("inviteEmail").value = '';
+        await loadOnboarding();
+      } catch (err) {
+        showToast(err.message || 'Invitation failed', true);
+      }
+    }
+
+    // Launch completed onboarding
+    async function completeOnboarding() {
+      try {
+        showToast('Completing onboarding...', false);
+        await apiPost('/api/onboarding/complete');
+        showToast('Launch success! Entering dashboard...', false);
+        
+        setTimeout(() => {
+          window.location.href = "/admin";
+        }, 1200);
+      } catch (err) {
+        showToast(err.message || 'Launch failed', true);
+      }
+    }
+
+    // Initialize Page
+    loadOnboarding();
+    syncThemeIcon();
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "@churchos/api",
+  "private": true,
+  "version": "1.0.0",
+  "main": "src/server.ts",
+  "scripts": {
+    "dev": "npx ts-node --files src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "db:migrate": "npx prisma migrate dev --schema ../../packages/db/prisma/schema.prisma",
+    "db:seed": "npx ts-node src/seed.ts",
+    "db:reset": "npx prisma migrate reset --force --schema ../../packages/db/prisma/schema.prisma"
+  }
+}

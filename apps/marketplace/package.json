@@ -1,0 +1,9 @@
+{
+  "name": "@churchos/marketplace",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "node backend/server.js",
+    "build": "node ../../scripts/verify-static-app.js frontend/index.html frontend/publish.html developer/index.html backend/server.js"
+  }
+}
