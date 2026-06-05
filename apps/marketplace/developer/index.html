@@ -382,7 +382,7 @@
       border: 1px solid var(--line);
       background: var(--panel);
       border-radius: var(--radius);
-      padding: 18px;
+      padding: 38px;
       min-width: 0;
     }
 
@@ -391,6 +391,14 @@
       font-size: 18px;
       letter-spacing: -.03em;
       font-family: Outfit, sans-serif;
+    }
+
+    .page-section-title {
+      font-family: Outfit, sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0 0 16px 4px;
+      color: var(--text);
     }
 
     .table {
@@ -688,27 +696,31 @@
           </div>
 
           <div class="panel-grid">
-            <div class="panel">
-              <h3>Developer Profile</h3>
-              <div style="font-size: 13.5px; display: flex; flex-direction: column; gap: 8px; color: var(--text)" id="devProfileInfo">
-                Register a developer profile to get started.
+            <div>
+              <h3 class="page-section-title">Developer Profile</h3>
+              <div class="panel">
+                <div style="font-size: 13.5px; display: flex; flex-direction: column; gap: 8px; color: var(--text)" id="devProfileInfo">
+                  Register a developer profile to get started.
+                </div>
               </div>
             </div>
 
-            <div class="panel">
-              <h3>Quick Sandbox Setup</h3>
-              <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 16px; line-height: 1.55;">
-                Spin up a temporary ChurchOS tenant environment to test layouts and functional logic in real time with preloaded church data.
-              </p>
-              <button class="btn primary" onclick="switchView('sandbox')">Open Sandbox Manager</button>
+            <div>
+              <h3 class="page-section-title">Quick Sandbox Setup</h3>
+              <div class="panel">
+                <p style="font-size: 13.5px; color: var(--muted); margin-bottom: 16px; line-height: 1.55;">
+                  Spin up a temporary ChurchOS tenant environment to test layouts and functional logic in real time with preloaded church data.
+                </p>
+                <button class="btn primary" onclick="switchView('sandbox')">Open Sandbox Manager</button>
+              </div>
             </div>
           </div>
         </section>
 
         <!-- VIEW: Publish Asset -->
         <section id="view-publish" class="view-panel">
+          <h3 class="page-section-title">Publish Theme or Plugin Package</h3>
           <div class="panel">
-            <h3>Publish Theme or Plugin Package</h3>
             <form id="publishForm" onsubmit="handlePublishSubmit(event)">
               <div class="form-group">
                 <label>Extension Type</label>
@@ -755,15 +767,15 @@
 
         <!-- VIEW: My Submissions -->
         <section id="view-packages" class="view-panel">
-          <div class="panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div>
-                <h3>Your Asset Submissions</h3>
-                <p style="color: var(--muted); font-size: 13px;">Track approval states of your submitted versions.</p>
-              </div>
-              <button class="btn secondary" onclick="loadDeveloperSubmissions()"><i data-lucide="refresh-cw" style="width: 14px; height: 14px"></i> Reload List</button>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding: 0 4px;">
+            <div>
+              <h3 class="page-section-title" style="margin: 0 0 6px;">Your Asset Submissions</h3>
+              <p style="color: var(--muted); font-size: 13.5px;">Track approval states of your submitted versions.</p>
             </div>
+            <button class="btn secondary" onclick="loadDeveloperSubmissions()"><i data-lucide="refresh-cw" style="width: 14px; height: 14px"></i> Reload List</button>
+          </div>
 
+          <div class="panel">
             <table class="table">
               <thead>
                 <tr>
@@ -784,15 +796,15 @@
 
         <!-- VIEW: Sandbox -->
         <section id="view-sandbox" class="view-panel">
-          <div class="panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div>
-                <h3>Sandbox Testing Environments</h3>
-                <p style="color: var(--muted); font-size: 13px;">Launch isolated church tenants to test layouts and scripts.</p>
-              </div>
-              <button class="btn primary" onclick="provisionSandbox()"><i data-lucide="plus" style="width: 16px; height: 16px"></i> Provision Sandbox</button>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding: 0 4px;">
+            <div>
+              <h3 class="page-section-title" style="margin: 0 0 6px;">Sandbox Testing Environments</h3>
+              <p style="color: var(--muted); font-size: 13.5px;">Launch isolated church tenants to test layouts and scripts.</p>
             </div>
+            <button class="btn primary" onclick="provisionSandbox()"><i data-lucide="plus" style="width: 16px; height: 16px"></i> Provision Sandbox</button>
+          </div>
 
+          <div class="panel">
             <table class="table">
               <thead>
                 <tr>
@@ -811,15 +823,15 @@
 
         <!-- VIEW: Payouts -->
         <section id="view-payouts" class="view-panel">
-          <div class="panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div>
-                <h3>Earnings & Payout Splits</h3>
-                <p style="color: var(--muted); font-size: 13px;">Track license purchases, shares, and commissions.</p>
-              </div>
-              <div style="font-weight: 700; font-size: 15px; color: var(--success)" id="totalRevenueText">Total Share: $0.00</div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding: 0 4px;">
+            <div>
+              <h3 class="page-section-title" style="margin: 0 0 6px;">Earnings & Payout Splits</h3>
+              <p style="color: var(--muted); font-size: 13.5px;">Track license purchases, shares, and commissions.</p>
             </div>
+            <div style="font-weight: 700; font-size: 15px; color: var(--success); padding-bottom: 4px;" id="totalRevenueText">Total Share: $0.00</div>
+          </div>
 
+          <div class="panel">
             <table class="table">
               <thead>
                 <tr>
@@ -839,15 +851,15 @@
 
         <!-- VIEW: Logs -->
         <section id="view-logs" class="view-panel">
-          <div class="panel">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-              <div>
-                <h3>Developer Portal Logs</h3>
-                <p style="color: var(--muted); font-size: 13px;">Audit trail of your activities and marketplace updates.</p>
-              </div>
-              <button class="btn secondary" onclick="loadDeveloperLogs()"><i data-lucide="refresh-cw" style="width: 14px; height: 14px"></i> Reload logs</button>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 16px; padding: 0 4px;">
+            <div>
+              <h3 class="page-section-title" style="margin: 0 0 6px;">Developer Portal Logs</h3>
+              <p style="color: var(--muted); font-size: 13.5px;">Audit trail of your activities and marketplace updates.</p>
             </div>
+            <button class="btn secondary" onclick="loadDeveloperLogs()"><i data-lucide="refresh-cw" style="width: 14px; height: 14px"></i> Reload logs</button>
+          </div>
 
+          <div class="panel">
             <table class="table">
               <thead>
                 <tr>

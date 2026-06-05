@@ -6,10 +6,6 @@
   <title>Digital Church OS — Theme & Plugin Marketplace</title>
 
   <script src="https://unpkg.com/lucide@latest"></script>
-  <!-- Google Fonts: Inter & Outfit -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -44,11 +40,10 @@
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     body {
+      margin: 0;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       background:
         radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 24%, transparent), transparent 34%),
@@ -57,7 +52,6 @@
       color: var(--text);
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background 0.3s ease, color 0.3s ease;
     }
 
     button,
@@ -65,7 +59,6 @@
     select,
     textarea {
       font: inherit;
-      color: inherit;
     }
 
     button {
@@ -87,8 +80,6 @@
       background: color-mix(in srgb, var(--panel-solid) 82%, transparent);
       backdrop-filter: blur(18px);
       z-index: 20;
-      display: flex;
-      flex-direction: column;
     }
 
     .brand {
@@ -96,8 +87,6 @@
       align-items: center;
       gap: 12px;
       padding: 10px 10px 22px;
-      text-decoration: none;
-      color: inherit;
     }
 
     .brand-mark {
@@ -129,10 +118,6 @@
       margin: 16px 0;
     }
 
-    .nav-section {
-      margin: 16px 0;
-    }
-
     .nav-label {
       font-size: 11px;
       text-transform: uppercase;
@@ -154,7 +139,6 @@
       margin-bottom: 4px;
       transition: .2s ease;
       text-align: left;
-      text-decoration: none;
     }
 
     .nav-btn svg {
@@ -174,7 +158,10 @@
     }
 
     .sidebar-card {
-      margin-top: auto;
+      position: absolute;
+      left: 16px;
+      right: 16px;
+      bottom: 18px;
       border: 1px solid var(--line);
       background: var(--panel);
       border-radius: 20px;
@@ -190,8 +177,6 @@
 
     .main {
       min-width: 0;
-      display: flex;
-      flex-direction: column;
     }
 
     .topbar {
@@ -258,7 +243,6 @@
       justify-content: center;
       gap: 8px;
       transition: .2s ease;
-      text-decoration: none;
     }
 
     .icon-btn {
@@ -276,10 +260,6 @@
       border-color: transparent;
       color: white;
       background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    }
-
-    .btn.secondary {
-      background: var(--panel);
     }
 
     .btn.ghost {
@@ -300,7 +280,6 @@
 
     .content {
       padding: 28px;
-      flex: 1;
     }
 
     .hero {
@@ -506,8 +485,6 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 13px;
-      font-weight: 600;
     }
 
     .tab.active,
@@ -546,8 +523,6 @@
       overflow: hidden;
       box-shadow: 0 1px 0 rgba(255,255,255,.04);
       transition: .22s ease;
-      display: flex;
-      flex-direction: column;
     }
 
     .asset-card:hover {
@@ -563,11 +538,6 @@
         linear-gradient(135deg, color-mix(in srgb, var(--accent) 35%, transparent), transparent),
         linear-gradient(160deg, rgba(255,255,255,.15), transparent),
         #1a1d29;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 2.2rem;
     }
 
     .asset-preview.plugin {
@@ -584,7 +554,6 @@
       backdrop-filter: blur(10px);
       border-radius: 18px 18px 0 0;
       padding: 14px;
-      pointer-events: none;
     }
 
     .fake-line {
@@ -617,9 +586,6 @@
 
     .asset-body {
       padding: 16px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
     }
 
     .asset-head {
@@ -698,7 +664,6 @@
       line-height: 1.55;
       min-height: 62px;
       margin: 10px 0 14px;
-      flex: 1;
     }
 
     .meta {
@@ -711,7 +676,6 @@
     .card-actions {
       display: flex;
       gap: 8px;
-      margin-top: auto;
     }
 
     .card-actions .btn {
@@ -728,7 +692,7 @@
       border: 1px solid var(--line);
       background: var(--panel);
       border-radius: var(--radius);
-      padding: 38px;
+      padding: 18px;
       min-width: 0;
     }
 
@@ -736,14 +700,6 @@
       margin: 0 0 14px;
       font-size: 18px;
       letter-spacing: -.03em;
-    }
-
-    .page-section-title {
-      font-family: Outfit, sans-serif;
-      font-size: 20px;
-      font-weight: 700;
-      margin: 0 0 16px 4px;
-      color: var(--text);
     }
 
     .table {
@@ -840,12 +796,6 @@
       overflow: hidden;
       display: flex;
       flex-direction: column;
-      animation: slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    @keyframes slideLeft {
-      from { transform: translateX(100%); }
-      to { transform: translateX(0); }
     }
 
     .drawer-header {
@@ -860,9 +810,6 @@
     .drawer-content {
       padding: 18px;
       overflow: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
     }
 
     .drawer-title {
@@ -882,14 +829,6 @@
       margin-top: 4px;
       color: var(--muted);
       font-size: 13px;
-    }
-
-    .drawer-footer {
-      padding: 16px 20px;
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
     }
 
     .preview-shell {
@@ -1090,53 +1029,6 @@
       font-size: 13px;
     }
 
-    /* Modal dialog */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-overlay.open {
-      display: flex;
-    }
-
-    .modal-box {
-      background: var(--panel-solid);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      width: min(480px, calc(100% - 32px));
-      padding: 24px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .modal-header h3 {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .permission-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      padding: 8px;
-      background: var(--soft);
-      border-radius: 10px;
-      margin-bottom: 8px;
-    }
-
-    .permission-item input {
-      margin-top: 3px;
-    }
-
     .toast {
       position: fixed;
       left: 50%;
@@ -1247,7 +1139,8 @@
     }
   </style>
 </head>
-<body data-theme="dark">
+
+<body data-theme="light">
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
@@ -1265,6 +1158,10 @@
         <button class="nav-btn active" data-view="tenant">
           <i data-lucide="shopping-bag"></i>
           Tenant Marketplace
+        </button>
+        <button class="nav-btn" data-view="admin">
+          <i data-lucide="shield-check"></i>
+          Super Admin Review
         </button>
         <button class="nav-btn" data-view="developer">
           <i data-lucide="code-2"></i>
@@ -1298,12 +1195,12 @@
             <i data-lucide="sparkles"></i>
           </div>
           <div>
-            <strong style="font-size:13px;">Marketplace Engine</strong>
+            <strong>Marketplace Engine</strong>
             <span>Versioned, reviewed, tenant-safe.</span>
           </div>
         </div>
-        <p style="font-size:12px; margin: 8px 0 12px; color:var(--muted)">Every asset passes review, permissions, compatibility, and tenant isolation checks.</p>
-        <button class="btn primary" style="width:100%" onclick="provisionSandbox()">
+        <p>Every asset passes review, permissions, compatibility, and tenant isolation checks.</p>
+        <button class="btn primary" style="width:100%" onclick="showToast('Sandbox tenant opened')">
           <i data-lucide="flask-conical"></i>
           Open Sandbox
         </button>
@@ -1318,12 +1215,12 @@
 
         <div class="search">
           <i data-lucide="search"></i>
-          <input id="searchInput" type="text" placeholder="Search themes, plugins, integrations, developers..." oninput="handleSearch()" />
+          <input id="searchInput" type="text" placeholder="Search themes, plugins, integrations, developers..." />
         </div>
 
         <div class="top-actions">
-          <button class="icon-btn" id="themeToggle" onclick="toggleTheme()" title="Toggle theme">
-            <i data-lucide="sun"></i>
+          <button class="icon-btn" id="themeToggle" title="Toggle theme">
+            <i data-lucide="moon"></i>
           </button>
           <button class="icon-btn" id="accentToggle" title="Change accent">
             <i data-lucide="paintbrush"></i>
@@ -1356,6 +1253,10 @@
                   <i data-lucide="puzzle"></i>
                   Explore Plugins
                 </button>
+                <button class="btn ghost" onclick="switchView('admin')">
+                  <i data-lucide="shield-check"></i>
+                  Review Queue
+                </button>
               </div>
             </div>
 
@@ -1380,7 +1281,6 @@
 
         <section class="stats-grid" id="statsGrid"></section>
 
-        <!-- Catalog / Tenant Marketplace View -->
         <section id="tenantView">
           <div class="toolbar">
             <div class="tabs">
@@ -1403,7 +1303,7 @@
             </div>
 
             <div class="select-row">
-              <select class="select" id="categoryFilter" onchange="loadAssets()">
+              <select class="select" id="categoryFilter">
                 <option value="all">All categories</option>
                 <option value="Website">Website</option>
                 <option value="Prayer">Prayer</option>
@@ -1413,7 +1313,7 @@
                 <option value="Integration">Integration</option>
               </select>
 
-              <select class="select" id="priceFilter" onchange="loadAssets()">
+              <select class="select" id="priceFilter">
                 <option value="all">All pricing</option>
                 <option value="free">Free</option>
                 <option value="paid">Paid</option>
@@ -1423,113 +1323,166 @@
 
           <div class="grid" id="assetGrid"></div>
 
-          <div id="installedPanel" style="display:none; margin-top:24px;">
-            <h3 class="page-section-title">Installed Assets</h3>
-            <div class="panel">
-              <div id="installedList"></div>
-            </div>
+          <div class="panel" id="installedPanel" style="display:none; margin-top:16px;">
+            <h3>Installed Assets</h3>
+            <div id="installedList"></div>
           </div>
         </section>
 
-
-
-        <!-- Developer Portal View -->
-        <section id="developerView" style="display:none;">
+        <section id="adminView" style="display:none;">
           <div class="panel-grid">
-            <div>
-              <h3 class="page-section-title">Developer Portal</h3>
-              <div class="panel">
-                <div class="submission-item">
-                  <div class="mini-title">
-                    <div class="mini-icon"><i data-lucide="package-plus"></i></div>
-                    <div>
-                      <strong>Create new marketplace asset</strong>
-                      <span>Theme, plugin, block, integration, or widget.</span>
-                    </div>
-                  </div>
-                  <button class="btn primary" onclick="openSubmitDrawer()">Start</button>
-                </div>
-
-                <div class="submission-item">
-                  <div class="mini-title">
-                    <div class="mini-icon"><i data-lucide="flask-conical"></i></div>
-                    <div>
-                      <strong>Sandbox tenant</strong>
-                      <span>Test your theme/plugin with realistic church data.</span>
-                    </div>
-                  </div>
-                  <button class="btn" onclick="provisionSandbox()">Open</button>
-                </div>
-
-                <div class="submission-item">
-                  <div class="mini-title">
-                    <div class="mini-icon"><i data-lucide="book-open"></i></div>
-                    <div>
-                      <strong>Developer documentation</strong>
-                      <span>SDK, manifest schema, APIs, and extension points.</span>
-                    </div>
-                  </div>
-                  <button class="btn" onclick="showToast('Documentation coming soon')">Read</button>
-                </div>
-              </div>
+            <div class="panel">
+              <h3>Submission Review Queue</h3>
+              <div id="submissionList"></div>
             </div>
 
-            <div>
-              <h3 class="page-section-title">My Asset Performance</h3>
-              <div class="panel">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th>Metric</th>
-                      <th>Value</th>
-                      <th>Detail</th>
-                    </tr>
-                  </thead>
-                  <tbody id="developerStatsRows">
-                    <tr>
-                      <td>Total Sales Volume</td>
-                      <td id="devSalesValue">$0.00</td>
-                      <td>Consolidated paid purchases</td>
-                    </tr>
-                    <tr>
-                      <td>Developer Share (70%)</td>
-                      <td id="devShareValue">$0.00</td>
-                      <td>Paid payout due</td>
-                    </tr>
-                    <tr>
-                      <td>Platform Share (30%)</td>
-                      <td id="devPlatformValue">$0.00</td>
-                      <td>SaaS platform commission</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+            <div class="panel">
+              <h3>Security & Compatibility</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Asset</th>
+                    <th>Risk</th>
+                    <th>Compatibility</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Prayer Wall Pro</td>
+                    <td><span class="badge warning">Medium</span></td>
+                    <td>v1.0+</td>
+                    <td><span class="badge warning">Review</span></td>
+                  </tr>
+                  <tr>
+                    <td>Christo Blocks</td>
+                    <td><span class="badge success">Low</span></td>
+                    <td>v1.0+</td>
+                    <td><span class="badge success">Passed</span></td>
+                  </tr>
+                  <tr>
+                    <td>Advanced WhatsApp Connector</td>
+                    <td><span class="badge danger">High</span></td>
+                    <td>v1.2+</td>
+                    <td><span class="badge danger">Blocked</span></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
-          <div style="margin-top:24px;">
-            <h3 class="page-section-title">Submission Checklist</h3>
-            <div class="panel">
-              <div class="detail-grid">
-                <div class="detail-box">
-                  <strong>Theme requirements</strong>
-                  <ul>
-                    <li>Valid theme manifest config</li>
-                    <li>Desktop, tablet, and mobile layouts mockup</li>
-                    <li>Settings schema for colors, fonts, layouts</li>
-                    <li>Compatible with platform theme engine</li>
-                  </ul>
-                </div>
+          <div class="panel" style="margin-top:16px;">
+            <h3>Developer Management</h3>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Developer</th>
+                  <th>Assets</th>
+                  <th>Installs</th>
+                  <th>Revenue</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="developerRows"></tbody>
+            </table>
+          </div>
+        </section>
 
-                <div class="detail-box">
-                  <strong>Plugin requirements</strong>
-                  <ul>
-                    <li>Valid plugin package manifest</li>
-                    <li>Declared permissions and required modules</li>
-                    <li>Tenant-scoped API operations only</li>
-                    <li>Install, update, rollback, and uninstall scripts</li>
-                  </ul>
+        <section id="developerView" style="display:none;">
+          <div class="panel-grid">
+            <div class="panel">
+              <h3>Developer Portal</h3>
+
+              <div class="submission-item">
+                <div class="mini-title">
+                  <div class="mini-icon"><i data-lucide="package-plus"></i></div>
+                  <div>
+                    <strong>Create new marketplace asset</strong>
+                    <span>Theme, plugin, block, integration, or widget.</span>
+                  </div>
                 </div>
+                <button class="btn primary" onclick="openSubmitDrawer()">Start</button>
+              </div>
+
+              <div class="submission-item">
+                <div class="mini-title">
+                  <div class="mini-icon"><i data-lucide="flask-conical"></i></div>
+                  <div>
+                    <strong>Sandbox tenant</strong>
+                    <span>Test your theme/plugin with realistic church data.</span>
+                  </div>
+                </div>
+                <button class="btn">Open</button>
+              </div>
+
+              <div class="submission-item">
+                <div class="mini-title">
+                  <div class="mini-icon"><i data-lucide="book-open"></i></div>
+                  <div>
+                    <strong>Developer documentation</strong>
+                    <span>SDK, manifest schema, APIs, and extension points.</span>
+                  </div>
+                </div>
+                <button class="btn">Read</button>
+              </div>
+            </div>
+
+            <div class="panel">
+              <h3>My Asset Performance</h3>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Asset</th>
+                    <th>Installs</th>
+                    <th>Rating</th>
+                    <th>Revenue</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Sermon Notes Plus</td>
+                    <td>1,248</td>
+                    <td>4.8</td>
+                    <td>$2,840</td>
+                  </tr>
+                  <tr>
+                    <td>Youth Ministry Theme</td>
+                    <td>394</td>
+                    <td>4.7</td>
+                    <td>$1,120</td>
+                  </tr>
+                  <tr>
+                    <td>Event Countdown Block</td>
+                    <td>2,811</td>
+                    <td>4.9</td>
+                    <td>Free</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:16px;">
+            <h3>Submission Checklist</h3>
+            <div class="detail-grid">
+              <div class="detail-box">
+                <strong>Theme requirements</strong>
+                <ul>
+                  <li>Valid theme manifest</li>
+                  <li>Desktop, tablet, and mobile screenshots</li>
+                  <li>Settings schema for colors, fonts, edges, and layouts</li>
+                  <li>Compatible with platform theme engine</li>
+                </ul>
+              </div>
+
+              <div class="detail-box">
+                <strong>Plugin requirements</strong>
+                <ul>
+                  <li>Valid plugin manifest</li>
+                  <li>Declared permissions and required modules</li>
+                  <li>Tenant-scoped API access only</li>
+                  <li>Install, update, rollback, and uninstall handling</li>
+                </ul>
               </div>
             </div>
           </div>
@@ -1538,7 +1491,6 @@
     </main>
   </div>
 
-  <!-- Detail / Submit Drawer -->
   <div class="drawer" id="assetDrawer">
     <div class="drawer-backdrop" onclick="closeDrawer()"></div>
     <div class="drawer-panel">
@@ -1559,22 +1511,6 @@
       </div>
 
       <div class="drawer-content" id="drawerContent"></div>
-      <div class="drawer-footer" id="drawerFooterActions"></div>
-    </div>
-  </div>
-
-  <!-- Permissions Approval Modal -->
-  <div class="modal-overlay" id="permissionsModal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3>Approve Plugin Permissions</h3>
-        <p style="font-size:12px; color:var(--muted); margin-top:2px;">This plugin requires additional scopes. Please approve them to activate.</p>
-      </div>
-      <div id="permissionsModalList" style="max-height: 240px; overflow-y: auto;"></div>
-      <div class="modal-footer" style="display:flex; justify-content:flex-end; gap:8px;">
-        <button class="btn secondary" onclick="closePermissionsModal()">Cancel</button>
-        <button class="btn primary" id="permissionsApproveBtn">Approve & Activate</button>
-      </div>
     </div>
   </div>
 
@@ -1584,94 +1520,227 @@
   </div>
 
   <script>
-    const tenantId = localStorage.getItem('churchos.tenantId') || 'demo-church-local';
-    const token = localStorage.getItem('churchos.token') || 'local-preview-token';
-    const apiHeaders = {
-      'Authorization': `Bearer ${token}`,
-      'x-tenant-id': tenantId,
-      'Content-Type': 'application/json'
-    };
+    const assets = [
+      {
+        id: 1,
+        type: "theme",
+        name: "Christo Theme",
+        developer: "Digital Church OS",
+        category: "Website",
+        price: "free",
+        rating: "4.9",
+        installs: "428",
+        version: "1.0.0",
+        status: "Verified",
+        icon: "palette",
+        description: "Default premium church website theme with sermons, services, giving, ministries, events, blog, and media layouts.",
+        permissions: [],
+        features: ["Theme settings", "Desktop/tablet/mobile preview", "Accent colors", "Page templates", "Section blocks"]
+      },
+      {
+        id: 2,
+        type: "theme",
+        name: "Youth Revival Theme",
+        developer: "Kingdom Studio",
+        category: "Website",
+        price: "paid",
+        rating: "4.7",
+        installs: "394",
+        version: "1.2.0",
+        status: "Approved",
+        icon: "sparkles",
+        description: "A bold, energetic theme for youth ministries, conferences, campus fellowships, and evangelism campaigns.",
+        permissions: [],
+        features: ["Event hero sections", "Video-first layouts", "Countdown blocks", "Youth group pages", "Mobile optimized"]
+      },
+      {
+        id: 3,
+        type: "plugin",
+        name: "Prayer Wall Pro",
+        developer: "Grace Plugins",
+        category: "Prayer",
+        price: "paid",
+        rating: "4.8",
+        installs: "1,120",
+        version: "1.3.0",
+        status: "Permission Review",
+        icon: "hand-heart",
+        description: "Adds advanced public and private prayer walls, moderation, reactions, prayer confirmations, and member follow-up links.",
+        permissions: ["prayer-request.read", "prayer-request.moderate", "member.read", "notification.send"],
+        features: ["Prayer wall widget", "Moderation queue", "Amen reactions", "Member follow-up", "Notification hooks"]
+      },
+      {
+        id: 4,
+        type: "plugin",
+        name: "Sermon Notes Plus",
+        developer: "Media Tools Co.",
+        category: "Media",
+        price: "free",
+        rating: "4.8",
+        installs: "1,248",
+        version: "2.0.1",
+        status: "Verified",
+        icon: "notebook-pen",
+        description: "Lets members take notes during livestreams, sermons, media playback, and Bible teaching sessions.",
+        permissions: ["media.read", "member-notes.create", "member-notes.read"],
+        features: ["Livestream notes", "Bible references", "Export PDF", "Member library", "Cloud sync"]
+      },
+      {
+        id: 5,
+        type: "plugin",
+        name: "Giving Analytics Booster",
+        developer: "Stewardship Labs",
+        category: "Giving",
+        price: "paid",
+        rating: "4.6",
+        installs: "671",
+        version: "1.1.4",
+        status: "Approved",
+        icon: "badge-dollar-sign",
+        description: "Adds deeper giving dashboards, giving trends, campaign performance, pledge summaries, and donor segments.",
+        permissions: ["giving.read", "member.read", "analytics.write"],
+        features: ["Giving trends", "Donor segments", "Campaign reports", "Exportable charts", "Dashboard widgets"]
+      },
+      {
+        id: 6,
+        type: "integration",
+        name: "WhatsApp Follow-Up Connector",
+        developer: "ConnectBridge",
+        category: "Integration",
+        price: "paid",
+        rating: "4.5",
+        installs: "289",
+        version: "1.0.8",
+        status: "Security Review",
+        icon: "message-circle",
+        description: "Connects pastoral follow-up, visitor care, prayer requests, and event reminders to WhatsApp Business flows.",
+        permissions: ["contact.read", "notification.send", "pastoral-care.read", "integration.manage"],
+        features: ["WhatsApp templates", "Visitor follow-up", "Prayer alerts", "Event reminders", "Care team routing"]
+      }
+    ];
 
-    let allAssets = [];
-    let installedAssets = [];
-    let currentFilter = 'all';
-    let currentView = 'tenant';
-    let currentDevice = 'desktop';
-    let selectedAsset = null;
+    const submissions = [
+      {
+        name: "Prayer Wall Pro",
+        type: "Plugin",
+        developer: "Grace Plugins",
+        version: "1.3.0",
+        status: "Permission Review",
+        icon: "hand-heart"
+      },
+      {
+        name: "Christo Blocks",
+        type: "Block Pack",
+        developer: "Digital Church OS",
+        version: "1.1.0",
+        status: "Ready",
+        icon: "blocks"
+      },
+      {
+        name: "Advanced WhatsApp Connector",
+        type: "Integration",
+        developer: "ConnectBridge",
+        version: "1.0.8",
+        status: "Security Review",
+        icon: "plug-zap"
+      }
+    ];
+
+    const developers = [
+      ["Grace Plugins", "3", "1,914", "$4,220", "Approved"],
+      ["Kingdom Studio", "5", "2,621", "$7,880", "Approved"],
+      ["ConnectBridge", "2", "289", "$720", "Review"],
+      ["Stewardship Labs", "4", "1,076", "$3,140", "Approved"]
+    ];
+
+    let currentFilter = "all";
+    let currentView = "tenant";
+    let currentDevice = "desktop";
 
     const stats = {
       tenant: [
-        ["Installed Assets", "0", "Updated recently", "download"],
-        ["Available Themes", "3", "+1 new", "palette"],
-        ["Available Plugins", "4", "Verified secure", "puzzle"],
-        ["Pending Consent", "0", "Requires approval", "shield-alert"]
+        ["Installed Assets", "14", "+3 this month", "download"],
+        ["Available Themes", "32", "+8 new", "palette"],
+        ["Available Plugins", "86", "+15 new", "puzzle"],
+        ["Updates Needed", "4", "Review soon", "refresh-cw"]
+      ],
+      admin: [
+        ["Pending Reviews", "12", "+5 today", "shield-check"],
+        ["Approved Assets", "118", "+21 this month", "badge-check"],
+        ["Active Developers", "37", "+6 this month", "code-2"],
+        ["Marketplace Revenue", "$18.4k", "+12.8%", "badge-dollar-sign"]
       ],
       developer: [
-        ["My Submissions", "0", "Total drafts & approved", "package"],
-        ["Earnings Volume", "$0.00", "Gross revenue", "badge-dollar-sign"],
-        ["Payout Due (70%)", "$0.00", "Net developer cut", "wallet"],
-        ["Sandbox Access", "Active", "30 days expiry", "flask-conical"]
+        ["My Assets", "8", "+2 drafts", "package"],
+        ["Total Installs", "4,453", "+18.5%", "download"],
+        ["Average Rating", "4.8", "Excellent", "star"],
+        ["Payout Due", "$2,140", "Next cycle", "wallet"]
       ]
     };
 
     const colors = ["#6d5dfc", "#f97316", "#0ea5e9", "#10b981", "#ec4899", "#ef4444", "#64748b"];
     let colorIndex = 0;
 
-    async function apiRequest(method, endpoint, body = null) {
-      try {
-        const options = {
-          method,
-          headers: apiHeaders
-        };
-        if (body) {
-          options.body = JSON.stringify(body);
-        }
-        const res = await fetch(endpoint, options);
-        if (res.ok) {
-          const json = await res.json();
-          return json.data || json;
-        } else {
-          const errData = await res.json();
-          throw new Error(errData.error || `HTTP ${res.status}`);
-        }
-      } catch (err) {
-        showToast(err.message, 'danger');
-        console.error(err);
-        return null;
-      }
+    function init() {
+      renderStats();
+      renderAssets();
+      renderSubmissions();
+      renderDevelopers();
+      bindEvents();
+      lucide.createIcons();
     }
 
-    function showToast(text, type = 'success') {
-      const toast = document.getElementById('toast');
-      const icon = toast.querySelector('i');
-      document.getElementById('toastText').textContent = text;
-      
-      if (type === 'success') {
-        icon.setAttribute('data-lucide', 'check-circle-2');
-        icon.style.color = 'var(--success)';
-      } else {
-        icon.setAttribute('data-lucide', 'alert-circle');
-        icon.style.color = 'var(--danger)';
-      }
-      
-      lucide.createIcons();
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 2500);
-    }
+    function bindEvents() {
+      document.querySelectorAll("[data-view]").forEach(btn => {
+        btn.addEventListener("click", () => switchView(btn.dataset.view));
+      });
 
-    function toggleTheme() {
-      const body = document.body;
-      const themeIcon = document.querySelector('#themeToggle i');
-      if (body.getAttribute('data-theme') === 'dark') {
-        body.setAttribute('data-theme', 'light');
-        themeIcon.setAttribute('data-lucide', 'moon');
-      } else {
-        body.setAttribute('data-theme', 'dark');
-        themeIcon.setAttribute('data-lucide', 'sun');
-      }
-      lucide.createIcons();
+      document.querySelectorAll("[data-filter]").forEach(btn => {
+        btn.addEventListener("click", () => setMarketplaceFilter(btn.dataset.filter));
+      });
+
+      document.querySelectorAll("[data-tab]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("[data-tab]").forEach(x => x.classList.remove("active"));
+          btn.classList.add("active");
+
+          if (btn.dataset.tab === "installed") {
+            document.getElementById("assetGrid").style.display = "none";
+            document.getElementById("installedPanel").style.display = "block";
+            renderInstalled();
+          } else {
+            document.getElementById("assetGrid").style.display = "grid";
+            document.getElementById("installedPanel").style.display = "none";
+
+            if (btn.dataset.tab === "themes") currentFilter = "theme";
+            else if (btn.dataset.tab === "plugins") currentFilter = "plugin";
+            else currentFilter = "all";
+
+            renderAssets();
+          }
+
+          lucide.createIcons();
+        });
+      });
+
+      document.getElementById("searchInput").addEventListener("input", renderAssets);
+      document.getElementById("categoryFilter").addEventListener("change", renderAssets);
+      document.getElementById("priceFilter").addEventListener("change", renderAssets);
+
+      document.getElementById("themeToggle").addEventListener("click", () => {
+        const body = document.body;
+        body.dataset.theme = body.dataset.theme === "dark" ? "light" : "dark";
+        document.getElementById("themeToggle").innerHTML = body.dataset.theme === "dark"
+          ? '<i data-lucide="sun"></i>'
+          : '<i data-lucide="moon"></i>';
+        lucide.createIcons();
+      });
+
+      document.getElementById("accentToggle").addEventListener("click", () => {
+        colorIndex = (colorIndex + 1) % colors.length;
+        document.documentElement.style.setProperty("--accent", colors[colorIndex]);
+        showToast("Accent updated");
+      });
     }
 
     function switchView(view) {
@@ -1682,6 +1751,7 @@
       });
 
       document.getElementById("tenantView").style.display = view === "tenant" ? "block" : "none";
+      document.getElementById("adminView").style.display = view === "admin" ? "block" : "none";
       document.getElementById("developerView").style.display = view === "developer" ? "block" : "none";
 
       const title = document.getElementById("heroTitle");
@@ -1690,10 +1760,16 @@
       if (view === "tenant") {
         title.textContent = "Install beautiful themes and safe plugins for every church tenant.";
         text.textContent = "Browse approved themes, plugins, blocks, and integrations. Preview themes in desktop, tablet, and mobile, approve plugin permissions, manage updates, and keep every tenant protected.";
-      } else if (view === "developer") {
+      }
+
+      if (view === "admin") {
+        title.textContent = "Review, approve, suspend, and monitor the entire marketplace ecosystem.";
+        text.textContent = "Super Admins can review submissions, inspect permissions, approve versions, monitor security risk, manage developers, and track installs and revenue.";
+      }
+
+      if (view === "developer") {
         title.textContent = "Give approved developers a clean portal to build for Digital Church OS.";
         text.textContent = "Developers can submit themes, plugins, blocks, and integrations, test inside sandbox tenants, view review feedback, and track installs and revenue.";
-        loadDeveloperData();
       }
 
       renderStats();
@@ -1708,7 +1784,7 @@
         btn.classList.toggle("active", btn.dataset.filter === filter);
       });
 
-      loadAssets();
+      renderAssets();
       switchView("tenant");
     }
 
@@ -1727,31 +1803,26 @@
       lucide.createIcons();
     }
 
-    async function loadAssets() {
+    function renderAssets() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
       const category = document.getElementById("categoryFilter").value;
       const price = document.getElementById("priceFilter").value;
-      const search = document.getElementById("searchInput").value;
 
-      let url = '/api/marketplace/assets';
-      const params = [];
-      if (currentFilter !== 'all') params.push(`type=${currentFilter}`);
-      if (price !== 'all') params.push(`pricingType=${price}`);
-      if (search) params.push(`query=${encodeURIComponent(search)}`);
-      if (params.length) url += '?' + params.join('&');
+      const filtered = assets.filter(asset => {
+        const matchesType = currentFilter === "all" || asset.type === currentFilter;
+        const matchesQuery =
+          asset.name.toLowerCase().includes(query) ||
+          asset.developer.toLowerCase().includes(query) ||
+          asset.description.toLowerCase().includes(query) ||
+          asset.category.toLowerCase().includes(query);
+        const matchesCategory = category === "all" || asset.category === category;
+        const matchesPrice = price === "all" || asset.price === price;
 
-      const data = await apiRequest('GET', url);
-      allAssets = data || [];
-
-      // Filter by category frontend-side if it's set and not 'all'
-      let filtered = allAssets;
-      if (category !== 'all') {
-        filtered = allAssets.filter(a => {
-          const config = JSON.parse(a.assetConfig || '{}');
-          return a.category === category || config.category === category;
-        });
-      }
+        return matchesType && matchesQuery && matchesCategory && matchesPrice;
+      });
 
       const grid = document.getElementById("assetGrid");
+
       if (!filtered.length) {
         grid.innerHTML = `
           <div class="panel" style="grid-column:1/-1; text-align:center; padding:42px;">
@@ -1767,8 +1838,7 @@
       }
 
       grid.innerHTML = filtered.map(asset => {
-        const isInstalled = installedAssets.some(i => i.assetId === asset.id);
-        const statusBadge = isInstalled ? '<span class="badge success">Installed</span>' : '<span class="badge success">Approved</span>';
+        const statusClass = asset.status.includes("Review") ? "warning" : "success";
         const previewClass = asset.type === "theme" ? "" : "plugin";
 
         return `
@@ -1789,33 +1859,34 @@
               <div class="asset-head">
                 <div class="asset-title">
                   <div class="asset-icon">
-                    <i data-lucide="${asset.type === 'theme' ? 'palette' : 'puzzle'}"></i>
+                    <i data-lucide="${asset.icon}"></i>
                   </div>
                   <div>
                     <h3>${asset.name}</h3>
-                    <span>by ${asset.developer?.companyName || 'Unknown'}</span>
+                    <span>${asset.developer}</span>
                   </div>
                 </div>
-                ${statusBadge}
+
+                <span class="badge ${statusClass}">${asset.status}</span>
               </div>
 
-              <p>${asset.description || 'No description details.'}</p>
+              <p>${asset.description}</p>
 
               <div class="meta">
-                <span class="badge"><i data-lucide="${asset.type === 'theme' ? 'palette' : 'puzzle'}"></i>${asset.type}</span>
-                <span class="badge"><i data-lucide="star"></i>${asset.rating || '5.0'}</span>
-                <span class="badge"><i data-lucide="download"></i>${asset.installs || '0'}</span>
-                <span class="badge">${asset.pricingType === 'paid' ? '$' + asset.price.toFixed(2) : 'Free'}</span>
+                <span class="badge"><i data-lucide="${asset.type === "theme" ? "palette" : asset.type === "plugin" ? "puzzle" : "plug-zap"}"></i>${asset.type}</span>
+                <span class="badge"><i data-lucide="star"></i>${asset.rating}</span>
+                <span class="badge"><i data-lucide="download"></i>${asset.installs}</span>
+                <span class="badge">${asset.price === "free" ? "Free" : "Premium"}</span>
               </div>
 
               <div class="card-actions">
-                <button class="btn" onclick="openAssetDrawer('${asset.id}')">
+                <button class="btn" onclick="openAssetDrawer(${asset.id})">
                   <i data-lucide="eye"></i>
                   Details
                 </button>
-                <button class="btn primary" onclick="installAsset('${asset.id}')">
-                  <i data-lucide="${asset.pricingType === 'paid' ? 'badge-dollar-sign' : 'download'}"></i>
-                  ${asset.pricingType === 'paid' ? 'Buy' : 'Install'}
+                <button class="btn primary" onclick="installAsset(${asset.id})">
+                  <i data-lucide="${asset.price === "free" ? "download" : "badge-dollar-sign"}"></i>
+                  ${asset.price === "free" ? "Install" : "Buy"}
                 </button>
               </div>
             </div>
@@ -1826,46 +1897,25 @@
       lucide.createIcons();
     }
 
-    async function loadInstalledAssets() {
-      const data = await apiRequest('GET', '/api/marketplace/installed');
-      installedAssets = data || [];
-      
-      stats.tenant[0][1] = installedAssets.length.toString();
-      
-      const pendingConsentCount = installedAssets.filter(i => i.status === 'pending_permissions').length;
-      stats.tenant[3][1] = pendingConsentCount.toString();
-
-      const list = document.getElementById("installedList");
-      if (installedAssets.length === 0) {
-        list.innerHTML = `<p style="color:var(--muted); text-align:center; padding:12px;">No assets installed in this tenant workspace yet.</p>`;
-        return;
-      }
-
-      list.innerHTML = installedAssets.map(item => {
-        let actionButtons = ``;
-        if (item.status === 'active') {
-          actionButtons = `<button class="btn danger" onclick="disableAsset('${item.assetId}')">Disable</button>`;
-        } else if (item.status === 'disabled') {
-          actionButtons = `<button class="btn primary" onclick="enableAsset('${item.assetId}')">Enable</button>`;
-        } else if (item.status === 'pending_permissions') {
-          actionButtons = `<button class="btn primary" onclick="openPermissionsApprovalModal('${item.assetId}')">Approve Consent</button>`;
-        }
+    function renderSubmissions() {
+      const list = document.getElementById("submissionList");
+      list.innerHTML = submissions.map((item, index) => {
+        const badgeClass = item.status === "Ready" ? "success" : item.status.includes("Security") ? "danger" : "warning";
 
         return `
-          <div class="installed-item">
+          <div class="submission-item">
             <div class="mini-title">
-              <div class="mini-icon"><i data-lucide="${item.asset?.type === 'theme' ? 'palette' : 'puzzle'}"></i></div>
+              <div class="mini-icon"><i data-lucide="${item.icon}"></i></div>
               <div>
-                <strong>${item.asset?.name || 'Unnamed Asset'}</strong>
-                <span>Installed Version: v${item.version?.version || '1.0.0'}</span>
+                <strong>${item.name}</strong>
+                <span>${item.type} · ${item.developer} · v${item.version}</span>
               </div>
             </div>
 
             <div class="select-row">
-              <span class="badge ${item.status === 'active' ? 'success' : 'warning'}">${item.status}</span>
-              <button class="btn" onclick="openAssetDrawer('${item.assetId}')">Settings</button>
-              ${actionButtons}
-              <button class="btn danger" onclick="uninstallAsset('${item.assetId}')">Uninstall</button>
+              <span class="badge ${badgeClass}">${item.status}</span>
+              <button class="btn" onclick="showToast('Review opened for ${item.name}')">Review</button>
+              <button class="btn success" onclick="approveSubmission(${index})">Approve</button>
             </div>
           </div>
         `;
@@ -1874,66 +1924,81 @@
       lucide.createIcons();
     }
 
-
-
-    async function loadDeveloperData() {
-      // Load Payouts & Submissions
-      const devProfile = await apiRequest('GET', '/api/marketplace/submissions') || [];
-      stats.developer[0][1] = devProfile.length.toString();
-
-      try {
-        const payouts = await apiRequest('GET', '/api/marketplace/developer/payouts');
-        if (payouts) {
-          stats.developer[1][1] = `$${payouts.totalSales.toFixed(2)}`;
-          stats.developer[2][1] = `$${payouts.totalDeveloperShare.toFixed(2)}`;
-          
-          document.getElementById("devSalesValue").textContent = `$${payouts.totalSales.toFixed(2)}`;
-          document.getElementById("devShareValue").textContent = `$${payouts.totalDeveloperShare.toFixed(2)}`;
-          document.getElementById("devPlatformValue").textContent = `$${payouts.totalPlatformShare.toFixed(2)}`;
-        }
-      } catch (err) {
-        console.error(err);
-      }
-
-      renderStats();
+    function renderDevelopers() {
+      const rows = document.getElementById("developerRows");
+      rows.innerHTML = developers.map(dev => `
+        <tr>
+          <td>${dev[0]}</td>
+          <td>${dev[1]}</td>
+          <td>${dev[2]}</td>
+          <td>${dev[3]}</td>
+          <td><span class="badge ${dev[4] === "Approved" ? "success" : "warning"}">${dev[4]}</span></td>
+        </tr>
+      `).join("");
     }
 
+    function renderInstalled() {
+      const installed = [
+        ["Christo Theme", "Theme", "Active", "v1.0.0", "palette"],
+        ["Sermon Notes Plus", "Plugin", "Enabled", "v2.0.1", "notebook-pen"],
+        ["Giving Analytics Booster", "Plugin", "Update available", "v1.1.4", "badge-dollar-sign"],
+        ["Event Countdown Block", "Block", "Enabled", "v1.4.2", "timer"]
+      ];
 
+      document.getElementById("installedList").innerHTML = installed.map(item => `
+        <div class="installed-item">
+          <div class="mini-title">
+            <div class="mini-icon"><i data-lucide="${item[4]}"></i></div>
+            <div>
+              <strong>${item[0]}</strong>
+              <span>${item[1]} · ${item[3]}</span>
+            </div>
+          </div>
 
-    async function openAssetDrawer(id) {
-      const asset = await apiRequest('GET', `/api/marketplace/assets/${id}`);
-      if (!asset) return;
-      selectedAsset = asset;
+          <div class="select-row">
+            <span class="badge ${item[2].includes("Update") ? "warning" : "success"}">${item[2]}</span>
+            <button class="btn">Settings</button>
+            <button class="btn">Rollback</button>
+            <button class="btn danger">Disable</button>
+          </div>
+        </div>
+      `).join("");
 
-      document.getElementById('drawerTitle').textContent = asset.name;
-      document.getElementById('drawerMeta').textContent = `by ${asset.developer?.companyName || 'Developer'} · v${asset.version}`;
-      document.getElementById('drawerIcon').innerHTML = `<i data-lucide="${asset.type === 'theme' ? 'palette' : 'puzzle'}"></i>`;
+      lucide.createIcons();
+    }
 
-      const config = JSON.parse(asset.assetConfig || '{}');
+    function openAssetDrawer(id) {
+      const asset = assets.find(x => x.id === id);
+      const drawer = document.getElementById("assetDrawer");
+
+      document.getElementById("drawerTitle").textContent = asset.name;
+      document.getElementById("drawerMeta").textContent = `${asset.developer} · ${asset.type} · v${asset.version} · ${asset.category}`;
+      document.getElementById("drawerIcon").innerHTML = `<i data-lucide="${asset.icon}"></i>`;
+
       const isTheme = asset.type === "theme";
 
-      document.getElementById('drawerContent').innerHTML = `
+      document.getElementById("drawerContent").innerHTML = `
         ${isTheme ? renderThemePreview(asset) : renderPluginDetail(asset)}
 
         <div class="detail-grid">
           <div class="detail-box">
             <strong>Overview</strong>
-            <p>${asset.description || 'No description details provided.'}</p>
+            <p>${asset.description}</p>
           </div>
 
           <div class="detail-box">
             <strong>Marketplace Status</strong>
             <p>
-              <span class="badge success">${asset.status}</span>
-              <span class="badge">${asset.pricingType === 'paid' ? 'Premium' : 'Free'}</span>
-              <span class="badge">${asset.installs || 0} installs</span>
+              <span class="badge ${asset.status.includes("Review") ? "warning" : "success"}">${asset.status}</span>
+              <span class="badge">${asset.price === "free" ? "Free" : "Premium"}</span>
+              <span class="badge">${asset.installs} installs</span>
             </p>
           </div>
 
           <div class="detail-box">
             <strong>Features</strong>
             <ul>
-              ${(config.features || ["Customizable schema", "Tenant isolation verified", "Responsive preview", "Rollback support"]).map(f => `<li>${f}</li>`).join("")}
+              ${asset.features.map(f => `<li>${f}</li>`).join("")}
             </ul>
           </div>
 
@@ -1941,137 +2006,36 @@
             <strong>${isTheme ? "Theme Compatibility" : "Plugin Permissions"}</strong>
             ${
               isTheme
-                ? `<p>Compatible with Digital Church OS Theme Engine. Supports real-time layout templates, styles config, and custom colors.</p>`
+                ? `<p>Compatible with platform theme engine v1.0+. Supports preview, customization schema, active theme switching, and rollback.</p>`
                 : `<div class="permission-list">
-                    ${(config.requiredPermissions || []).map(p => `
+                    ${asset.permissions.map(p => `
                       <div class="permission">
-                        <span><code>${p}</code></span>
-                        <span class="badge warning">Required</span>
+                        <span>${p}</span>
+                        <span class="badge warning">Requires approval</span>
                       </div>
                     `).join("")}
-                    ${(config.requiredPermissions || []).length === 0 ? '<p style="color:var(--muted)">No additional permissions declared.</p>' : ''}
                   </div>`
             }
           </div>
         </div>
 
-        <div id="drawerVersionUpgrade" style="display:none; border:1px solid var(--line); border-radius:18px; padding:14px; background:color-mix(in srgb, var(--accent) 8%, transparent);">
-          <div style="display:flex; justify-content:between; align-items:center; gap:10px; flex-wrap:wrap;">
-            <div style="flex:1;">
-              <strong>Newer Version Available!</strong>
-              <div id="drawerNewVersionLabel" style="font-size:12px; color:var(--muted)">Version v1.1.0 is available.</div>
-            </div>
-            <button class="btn primary" id="drawerUpgradeBtn">Upgrade Now</button>
-          </div>
-        </div>
-
-        <div id="drawerRollbackSection" style="display:none; border:1px solid var(--line); border-radius:18px; padding:14px; background:var(--soft);">
-          <strong>Rollback to Older Release</strong>
-          <div style="display:flex; gap:10px; margin-top:8px;">
-            <select class="select" id="drawerRollbackSelect" style="flex:1;"></select>
-            <button class="btn secondary" id="drawerRollbackBtn">Rollback</button>
-          </div>
-        </div>
-
-        <!-- Feedback & Review -->
-        <div class="panel" style="margin-top:10px;">
-          <h3>Leave Feedback & Review</h3>
-          <div style="display:grid; gap:12px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <span>Rating:</span>
-              <select class="select" id="feedbackRating" style="height:32px; padding:0 8px;">
-                <option value="5">5 Stars</option>
-                <option value="4">4 Stars</option>
-                <option value="3">3 Stars</option>
-                <option value="2">2 Stars</option>
-                <option value="1">1 Star</option>
-              </select>
-            </div>
-            <textarea id="feedbackComment" class="select" style="height:70px; padding:10px; resize:none;" placeholder="Write your feedback..."></textarea>
-            <button class="btn secondary" style="align-self:end;" id="drawerFeedbackSubmitBtn">Submit Review</button>
-          </div>
+        <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+          <button class="btn primary" onclick="installAsset(${asset.id})">
+            <i data-lucide="${asset.price === "free" ? "download" : "badge-dollar-sign"}"></i>
+            ${asset.price === "free" ? "Install Asset" : "Purchase & Install"}
+          </button>
+          <button class="btn" onclick="showToast('Documentation opened')">
+            <i data-lucide="book-open"></i>
+            Documentation
+          </button>
+          <button class="btn" onclick="showToast('Support contact opened')">
+            <i data-lucide="life-buoy"></i>
+            Support
+          </button>
         </div>
       `;
 
-      // Check installation state
-      const inst = installedAssets.find(i => i.assetId === asset.id);
-      const footerActions = document.getElementById('drawerFooterActions');
-
-      if (inst) {
-        // Rollback setup
-        const versions = asset.versions || [];
-        if (versions.length > 1) {
-          const rollbackSection = document.getElementById('drawerRollbackSection');
-          rollbackSection.style.display = 'block';
-          const rSelect = document.getElementById('drawerRollbackSelect');
-          rSelect.innerHTML = versions.map(v => `<option value="${v.id}">Version ${v.version}</option>`).join('');
-          
-          document.getElementById('drawerRollbackBtn').onclick = async () => {
-            const vId = rSelect.value;
-            await apiRequest('POST', `/api/marketplace/assets/${asset.id}/rollback`, { versionId: vId });
-            showToast('Asset version rolled back!', 'success');
-            closeDrawer();
-            await loadInstalledAssets();
-            await loadAssets();
-          };
-        }
-
-        // Upgrade setup
-        if (asset.version !== inst.version?.version) {
-          const latestVer = versions.find(v => v.version === asset.version);
-          if (latestVer) {
-            const upgradeSection = document.getElementById('drawerVersionUpgrade');
-            upgradeSection.style.display = 'block';
-            document.getElementById('drawerNewVersionLabel').textContent = `Latest v${asset.version} available (currently installed v${inst.version?.version})`;
-            document.getElementById('drawerUpgradeBtn').onclick = async () => {
-              await apiRequest('POST', `/api/marketplace/assets/${asset.id}/update`, { versionId: latestVer.id });
-              showToast('Asset version updated!', 'success');
-              closeDrawer();
-              await loadInstalledAssets();
-              await loadAssets();
-            };
-          }
-        }
-
-        // Action buttons
-        let actionsHtml = ``;
-        if (inst.status === 'active') {
-          actionsHtml = `<button class="btn danger" onclick="disableAsset('${asset.id}')">Disable Plugin</button>`;
-        } else if (inst.status === 'disabled') {
-          actionsHtml = `<button class="btn primary" onclick="enableAsset('${asset.id}')">Enable Plugin</button>`;
-        } else if (inst.status === 'pending_permissions') {
-          actionsHtml = `<button class="btn primary" onclick="openPermissionsApprovalModal('${asset.id}')">Approve Consent</button>`;
-        }
-
-        footerActions.innerHTML = `
-          <button class="btn secondary" onclick="closeDrawer()">Cancel</button>
-          ${actionsHtml}
-          <button class="btn danger" onclick="uninstallAsset('${asset.id}')">Uninstall</button>
-        `;
-      } else {
-        footerActions.innerHTML = `
-          <button class="btn secondary" onclick="closeDrawer()">Cancel</button>
-          <button class="btn primary" onclick="installAsset('${asset.id}')">
-            <i data-lucide="${asset.pricingType === 'paid' ? 'badge-dollar-sign' : 'download'}"></i>
-            ${asset.pricingType === 'paid' ? `Purchase & Install ($${asset.price.toFixed(2)})` : 'Install Asset'}
-          </button>
-        `;
-      }
-
-      // Ratings feedback submit handler
-      document.getElementById('drawerFeedbackSubmitBtn').onclick = async () => {
-        const rating = parseInt(document.getElementById('feedbackRating').value, 10);
-        const comment = document.getElementById('feedbackComment').value;
-        const feedback = await apiRequest('POST', `/api/marketplace/assets/${asset.id}/feedback`, { rating, comment });
-        if (feedback) {
-          showToast('Feedback submitted!', 'success');
-          document.getElementById('feedbackComment').value = '';
-          closeDrawer();
-          loadAssets();
-        }
-      };
-
-      document.getElementById('assetDrawer').classList.add('open');
+      drawer.classList.add("open");
       lucide.createIcons();
     }
 
@@ -2079,7 +2043,7 @@
       return `
         <div class="preview-shell">
           <div class="preview-top">
-            <strong style="font-size:13px;">Theme Preview mockup</strong>
+            <strong style="font-size:13px;">Theme Preview</strong>
             <div class="device-toggle">
               <button class="device-btn active" data-device="desktop" onclick="setDevice('desktop')">
                 <i data-lucide="monitor"></i>
@@ -2122,24 +2086,23 @@
     }
 
     function renderPluginDetail(asset) {
-      const config = JSON.parse(asset.assetConfig || '{}');
       return `
         <div class="preview-shell">
           <div class="preview-top">
-            <strong style="font-size:13px;">Plugin Consent Preview</strong>
+            <strong style="font-size:13px;">Plugin Permission Preview</strong>
             <span class="badge warning">Tenant approval required</span>
           </div>
 
           <div style="padding:18px;">
-            <div class="submission-item" style="margin-bottom:0;">
+            <div class="submission-item">
               <div class="mini-title">
-                <div class="mini-icon"><i data-lucide="puzzle"></i></div>
+                <div class="mini-icon"><i data-lucide="${asset.icon}"></i></div>
                 <div>
                   <strong>${asset.name}</strong>
                   <span>This plugin wants access to selected tenant data and extension points.</span>
                 </div>
               </div>
-              <span class="badge">${(config.requiredPermissions || []).length} permissions</span>
+              <span class="badge">${asset.permissions.length} permissions</span>
             </div>
           </div>
         </div>
@@ -2148,6 +2111,7 @@
 
     function setDevice(device) {
       currentDevice = device;
+
       document.querySelectorAll("[data-device]").forEach(btn => {
         btn.classList.toggle("active", btn.dataset.device === device);
       });
@@ -2156,277 +2120,113 @@
       if (!canvas) return;
 
       canvas.classList.remove("tablet", "mobile");
+
       if (device === "tablet") canvas.classList.add("tablet");
       if (device === "mobile") canvas.classList.add("mobile");
-      lucide.replace();
+
+      lucide.createIcons();
     }
 
     function closeDrawer() {
       document.getElementById("assetDrawer").classList.remove("open");
-      selectedAsset = null;
     }
 
-    async function installAsset(id) {
-      const asset = allAssets.find(x => x.id === id) || selectedAsset;
-      if (!asset) return;
+    function installAsset(id) {
+      const asset = assets.find(x => x.id === id);
 
-      // 1. Entitlement check simulation
-      if (asset.pricingType === 'paid') {
-        const purchase = await apiRequest('POST', `/api/marketplace/assets/${asset.id}/purchase`);
-        if (!purchase) return;
-        showToast('Entitlement billing verified successfully!', 'success');
-      }
-
-      // 2. Perform installation
-      const versions = asset.versions || [];
-      if (versions.length === 0) {
-        showToast('No approved release versions found.', 'danger');
-        return;
-      }
-
-      const latestVer = versions[0];
-      const inst = await apiRequest('POST', `/api/marketplace/assets/${asset.id}/install`, { versionId: latestVer.id });
-      if (inst) {
-        showToast(`${asset.name} installed successfully!`, 'success');
-        closeDrawer();
-        await loadInstalledAssets();
-        await loadAssets();
-
-        if (inst.status === 'pending_permissions') {
-          openPermissionsApprovalModal(asset.id);
-        }
+      if (asset.type === "plugin" || asset.type === "integration") {
+        showToast(`${asset.name} permission approval started`);
+      } else {
+        showToast(`${asset.name} installed for preview`);
       }
     }
 
-    function openPermissionsApprovalModal(assetId) {
-      const inst = installedAssets.find(i => i.assetId === assetId) || { asset: selectedAsset };
-      const config = JSON.parse(inst.asset?.assetConfig || '{}');
-      const reqPerms = config.requiredPermissions || [];
-
-      const modalList = document.getElementById('permissionsModalList');
-      modalList.innerHTML = reqPerms.map(p => `
-        <div class="permission-item">
-          <input type="checkbox" checked disabled />
-          <div>
-            <code style="font-weight:700;">${p}</code>
-            <div style="font-size:11px; color:var(--muted)">Required for normal plugin operation.</div>
-          </div>
-        </div>
-      `).join('');
-
-      document.getElementById('permissionsApproveBtn').onclick = async () => {
-        const updated = await apiRequest('POST', `/api/marketplace/assets/${assetId}/permissions`, { permissions: reqPerms });
-        if (updated) {
-          showToast('Permissions approved and plugin activated!', 'success');
-          closePermissionsModal();
-          await loadInstalledAssets();
-          await loadAssets();
-        }
-      };
-
-      document.getElementById('permissionsModal').classList.add('open');
-    }
-
-    function closePermissionsModal() {
-      document.getElementById('permissionsModal').classList.remove('open');
-    }
-
-    async function disableAsset(assetId) {
-      await apiRequest('POST', `/api/marketplace/assets/${assetId}/disable`);
-      showToast('Asset disabled successfully.');
-      closeDrawer();
-      await loadInstalledAssets();
-      await loadAssets();
-    }
-
-    async function enableAsset(assetId) {
-      await apiRequest('POST', `/api/marketplace/assets/${assetId}/enable`);
-      showToast('Asset enabled and activated.');
-      closeDrawer();
-      await loadInstalledAssets();
-      await loadAssets();
-    }
-
-    async function uninstallAsset(assetId) {
-      if (!confirm('Are you sure you want to uninstall this asset? All tenant configurations will be deleted.')) return;
-      await apiRequest('POST', `/api/marketplace/assets/${assetId}/uninstall`);
-      showToast('Asset uninstalled from church workspace.');
-      closeDrawer();
-      await loadInstalledAssets();
-      await loadAssets();
-    }
-
-    async function provisionSandbox() {
-      showToast('Provisioning sandbox workspace...');
-      try {
-        const res = await apiRequest('POST', '/api/marketplace/developer/sandbox');
-        if (res) {
-          showToast(`Sandbox tenant created: ${res.tenant?.subdomain}.churchos.online`, 'success');
-        }
-      } catch (err) {
-        showToast('Sandbox setup failed.', 'danger');
-      }
+    function approveSubmission(index) {
+      const item = submissions[index];
+      showToast(`${item.name} approved`);
+      item.status = "Ready";
+      renderSubmissions();
     }
 
     function openSubmitDrawer() {
-      document.getElementById('drawerTitle').textContent = "Submit Marketplace Asset";
-      document.getElementById('drawerMeta').textContent = "Developer Portal · Submit new theme, plugin, or integration";
-      document.getElementById('drawerIcon').innerHTML = `<i data-lucide="upload-cloud"></i>`;
+      document.getElementById("drawerTitle").textContent = "Submit Marketplace Asset";
+      document.getElementById("drawerMeta").textContent = "Developer Portal · Theme, plugin, block, or integration";
+      document.getElementById("drawerIcon").innerHTML = `<i data-lucide="upload-cloud"></i>`;
 
-      document.getElementById('drawerContent').innerHTML = `
+      document.getElementById("drawerContent").innerHTML = `
         <div class="detail-grid">
           <div class="detail-box">
-            <strong>1. Asset Specifications</strong>
-            <p>Select whether you are submitting a theme layouts pack, plugin package, or external API integration.</p>
-            <select class="select" id="submitType" style="width:100%;">
-              <option value="theme">Theme Template</option>
-              <option value="plugin">Plugin Package</option>
+            <strong>1. Asset Type</strong>
+            <p>Select whether you are submitting a theme, plugin, integration, block pack, or dashboard extension.</p>
+            <select class="select" style="width:100%;">
+              <option>Theme</option>
+              <option>Plugin</option>
+              <option>Integration</option>
+              <option>Block / Section Pack</option>
             </select>
           </div>
 
           <div class="detail-box">
-            <strong>2. Manifest Schema</strong>
-            <p>Your package configuration must declare exact required permissions, versions, settings, and screenshots.</p>
-            <button class="btn" style="width:100%;" onclick="showToast('Manifest parsed successfully')">
-              <i data-lucide="upload"></i> Upload manifest
+            <strong>2. Manifest Upload</strong>
+            <p>Upload a package with a valid manifest, screenshots, documentation, and compatibility details.</p>
+            <button class="btn" style="width:100%;">
+              <i data-lucide="upload"></i>
+              Upload Package
             </button>
+          </div>
+
+          <div class="detail-box">
+            <strong>3. Review Rules</strong>
+            <ul>
+              <li>Security scan required</li>
+              <li>Tenant isolation required</li>
+              <li>Permissions must be declared</li>
+              <li>Updates require version approval</li>
+            </ul>
+          </div>
+
+          <div class="detail-box">
+            <strong>4. Marketplace Listing</strong>
+            <p>Provide title, screenshots, pricing, category, features, documentation, and support information.</p>
           </div>
         </div>
 
-        <div class="panel">
-          <h3>Submission Form Details</h3>
-          <div style="display:grid; gap:12px;">
-            <input class="select" id="submitName" placeholder="Asset Title (e.g. Prayer Wall Pro)" />
-            <select class="select" id="submitPricing">
-              <option value="free">Free Listing</option>
-              <option value="paid">Paid Premium</option>
-            </select>
-            <input class="select" id="submitPrice" placeholder="Price (e.g. 15.00)" type="number" step="0.01" />
-            <input class="select" id="submitCategory" placeholder="Category (e.g. Website, Giving, Media)" />
-            <textarea class="select" id="submitDescription" style="height:100px; padding:10px; resize:none;" placeholder="Short descriptive summary details..."></textarea>
-            
-            <strong style="font-size:13px;">Required Permissions (Comma-separated, e.g. member.read, member.create)</strong>
-            <input class="select" id="submitPermissions" placeholder="member.read" />
+        <div class="panel" style="margin-top:16px;">
+          <h3>Submission Form</h3>
 
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:8px;">
-              <button class="btn primary" onclick="submitDraftAsset()">
-                <i data-lucide="send"></i> Submit Draft
+          <div style="display:grid; gap:12px;">
+            <input class="select" placeholder="Asset name" />
+            <input class="select" placeholder="Developer / organization name" />
+            <input class="select" placeholder="Version e.g. 1.0.0" />
+            <textarea class="select" style="height:120px; padding:12px;" placeholder="Short description"></textarea>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="btn primary" onclick="showToast('Asset submitted for review')">
+                <i data-lucide="send"></i>
+                Submit for Review
               </button>
-              <button class="btn" onclick="closeDrawer()">Cancel</button>
+              <button class="btn" onclick="showToast('Draft saved')">
+                <i data-lucide="save"></i>
+                Save Draft
+              </button>
             </div>
           </div>
         </div>
       `;
 
-      document.getElementById('drawerFooterActions').innerHTML = ``;
-      document.getElementById('assetDrawer').classList.add('open');
+      document.getElementById("assetDrawer").classList.add("open");
       lucide.createIcons();
     }
 
-    async function submitDraftAsset() {
-      const name = document.getElementById("submitName").value;
-      const type = document.getElementById("submitType").value;
-      const pricingType = document.getElementById("submitPricing").value;
-      const price = parseFloat(document.getElementById("submitPrice").value || "0.00");
-      const category = document.getElementById("submitCategory").value || "Website";
-      const description = document.getElementById("submitDescription").value;
-      const permissionsStr = document.getElementById("submitPermissions").value || "";
-      const requiredPermissions = permissionsStr.split(",").map(p => p.trim()).filter(p => p.length > 0);
-
-      // 1. Create asset draft
-      const assetConfig = {
-        requiredPermissions,
-        requiredOsVersion: "1.0.0",
-        category
-      };
-
-      // Ensure a developer profile exists
-      let developerId;
-      try {
-        const profileRes = await apiRequest('POST', '/api/marketplace/developer/register', { companyName: 'Grace Devs', website: 'https://grace.org', payoutEmail: 'payouts@grace.org' });
-        developerId = profileRes.id;
-      } catch (err) {
-        // Developer profile might already exist, fetch all and select first
-        const devList = await apiRequest('GET', '/api/super-admin/marketplace/developers') || [];
-        developerId = devList[0]?.id;
-      }
-
-      if (!developerId) {
-        showToast('Developer registration or fetch failed.', 'danger');
-        return;
-      }
-
-      const asset = await apiRequest('POST', '/api/marketplace/assets', {
-        developerId,
-        name,
-        description,
-        type,
-        pricingType,
-        price,
-        assetConfig
-      });
-
-      if (asset) {
-        // 2. Submit initial version
-        await apiRequest('POST', `/api/marketplace/assets/${asset.id}/submit`, {
-          version: "1.0.0",
-          changelog: "Initial package upload"
-        });
-
-        showToast('Asset draft version submitted successfully!', 'success');
-        closeDrawer();
-        loadDeveloperData();
-      }
-    }
-
-    function handleSearch() {
-      loadAssets();
-    }
-
-    function bindEvents() {
-      document.querySelectorAll("[data-view]").forEach(btn => {
-        btn.addEventListener("click", () => switchView(btn.dataset.view));
-      });
-
-      document.querySelectorAll("[data-filter]").forEach(btn => {
-        btn.addEventListener("click", () => setMarketplaceFilter(btn.dataset.filter));
-      });
-
-      document.querySelectorAll("[data-tab]").forEach(btn => {
-        btn.addEventListener("click", async () => {
-          document.querySelectorAll("[data-tab]").forEach(x => x.classList.remove("active"));
-          btn.classList.add("active");
-
-          if (btn.dataset.tab === "installed") {
-            document.getElementById("assetGrid").style.display = "none";
-            document.getElementById("installedPanel").style.display = "block";
-            await loadInstalledAssets();
-          } else {
-            document.getElementById("assetGrid").style.display = "grid";
-            document.getElementById("installedPanel").style.display = "none";
-
-            if (btn.dataset.tab === "themes") currentFilter = "theme";
-            else if (btn.dataset.tab === "plugins") currentFilter = "plugin";
-            else currentFilter = "all";
-
-            await loadAssets();
-          }
-        });
-      });
-
-      document.getElementById("accentToggle").addEventListener("click", () => {
-        colorIndex = (colorIndex + 1) % colors.length;
-        document.documentElement.style.setProperty("--accent", colors[colorIndex]);
-        showToast("Accent color updated!");
-      });
-    }
-
-    async function init() {
-      bindEvents();
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toastText").textContent = message;
+      toast.classList.add("show");
       lucide.createIcons();
-      await loadInstalledAssets();
-      await loadAssets();
-      renderStats();
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2300);
     }
 
     init();
