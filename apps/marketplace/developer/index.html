@@ -748,7 +748,7 @@
             <form id="publishForm" onsubmit="handlePublishSubmit(event)">
               <div class="form-group">
                 <label>Extension Type</label>
-                <select id="pubType" class="select" style="width: 100%;">
+                <select id="pubType" class="select" style="width: 100%;" onchange="updateConfigDefault()">
                   <option value="theme">Theme Layout Template</option>
                   <option value="plugin">Functional Logic Plugin</option>
                 </select>
@@ -1211,12 +1211,64 @@
       if (submission) {
         showToast('Package and version submitted for review!', 'success');
         document.getElementById('publishForm').reset();
+        updateConfigDefault();
         switchView('packages');
+      }
+    }
+
+    const themeDefaultConfig = {
+      id: "grace-modern",
+      name: "Grace Modern",
+      version: "1.0.0",
+      author: "Developer Name",
+      description: "A clean modern church theme for public websites.",
+      archiveFile: "grace-modern-v1.0.0.zip",
+      themeCoverImage: "screenshot.png",
+      templates: ["homepage", "about", "ministries", "leadership", "contact", "blog", "events", "giving"],
+      sections: ["hero-banner", "feature-grid", "sermon-player", "giving-callout", "footer"],
+      settingsSchema: {
+        type: "object",
+        properties: {
+          accentPreset: {
+            type: "string",
+            enum: ["orange-flame", "royal-blue", "deep-purple", "emerald-green", "crimson-red", "rose-pink", "charcoal-gray", "gold-glory"],
+            default: "royal-blue"
+          },
+          colorMode: {
+            type: "string",
+            enum: ["light", "dark", "system"],
+            default: "light"
+          },
+          edgeStyle: {
+            type: "string",
+            enum: ["rounded", "soft", "sharp"],
+            default: "rounded"
+          }
+        }
+      }
+    };
+
+    const pluginDefaultConfig = {
+      requiredPermissions: ["member.read"],
+      requiredModules: ["theme-engine"],
+      version: "1.0.0",
+      changelog: "Initial release v1.0.0",
+      defaultSettings: {}
+    };
+
+    function updateConfigDefault() {
+      const type = document.getElementById('pubType').value;
+      const configArea = document.getElementById('pubConfig');
+      if (type === 'theme') {
+        configArea.value = JSON.stringify(themeDefaultConfig, null, 2);
+      } else {
+        configArea.value = JSON.stringify(pluginDefaultConfig, null, 2);
       }
     }
 
     // Initialize
     lucide.createIcons();
+    updateConfigDefault();
     loadDeveloperOverview();
     loadSandboxes();
   </script>

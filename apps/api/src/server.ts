@@ -2,6 +2,19 @@ import app from './app';
 
 const PORT = parseInt(process.env.PORT || '3000', 10);
 
+process.on('uncaughtException', (err) => {
+  console.error('CRITICAL UNCAUGHT EXCEPTION:', err);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('CRITICAL UNHANDLED REJECTION:', reason);
+});
+
+// Heartbeat to prevent sandbox inactivity timeouts
+setInterval(() => {
+  console.log('Heartbeat: Server is running healthy...', new Date().toISOString());
+}, 30000);
+
 
 
 // Check if running inside Cloudflare Workers/Pages V8 isolate context

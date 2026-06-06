@@ -1798,6 +1798,7 @@ async function fetchMarketplace() {
     document.getElementById('kpiMarketplaceSecurity').textContent = securityReviews.length;
     document.getElementById('kpiMarketplaceSuspended').textContent = assets.filter(a => a.status === 'suspended').length;
 
+    window.superAdminSubmissions = submissions;
     const tbodySub = document.getElementById('marketplaceTableBody');
     if (submissions.length === 0) {
       tbodySub.innerHTML = '<tr><td colspan="8"><div class="empty-state"><h3>No submissions</h3></div></td></tr>';
@@ -1813,7 +1814,7 @@ async function fetchMarketplace() {
         <td>
           ${s.status === 'pending'
             ? `<div class="action-cell">
-                 <button class="small-btn" onclick="openReviewSubmissionModal('${s.id}', '${s.asset?.name.replace(/'/g, "\\'")}', '${s.version}', '${(s.changelog || 'No changelog').replace(/'/g, "\\'").replace(/\n/g, "<br>")}')">${ic('edit')} Review</button>
+                 <button class="small-btn" onclick="openReviewSubmissionModal('${s.id}')">${ic('edit')} Review</button>
                </div>`
             : 'Reviewed'
           }
@@ -1902,20 +1903,91 @@ function switchMarketSubView(subViewId, btn) {
 }
 
 let activeReviewSubmissionId = null;
-function openReviewSubmissionModal(submissionId, assetName, version, changelog) {
+async function openReviewSubmissionModal(submissionId) {
+  const s = (window.superAdminSubmissions || []).find(sub => sub.id === submissionId);
+  if (!s) return;
   activeReviewSubmissionId = submissionId;
+
+  let securityStatus = "Pending Scan";
+  let securityNotes = "No scan logs found.";
+  let manifestSpecs = "";
+  let previewLinkHtml = "";
+
+  try {
+    const reviewsRes = await apiFetch('/api/super-admin/marketplace/security-reviews');
+    const reviews = reviewsRes.data || [];
+    const matchedReview = reviews.find(r => r.assetId === s.assetId && r.version?.version === s.version);
+    if (matchedReview) {
+      securityStatus = matchedReview.status.toUpperCase();
+      securityNotes = matchedReview.notes || "Scan completed successfully.";
+    }
+  } catch (err) {
+    console.error("Failed to load security reviews", err);
+  }
+
+  try {
+    const config = JSON.parse(s.asset?.assetConfig || '{}');
+    if (s.asset?.type === 'theme') {
+      manifestSpecs = `
+        <div style="margin-top: 10px; font-size: 12px; color: var(--text);">
+          <strong style="display:block; margin-bottom: 4px;">Theme Manifest Specs:</strong>
+          <ul style="padding-left: 16px; margin-top: 4px; color: var(--muted); list-style-type: disc;">
+            <li>Supported Templates: <code>${(config.templates || []).join(', ') || 'None'}</code></li>
+            <li>Supported Sections: <code>${(config.sections || []).join(', ') || 'None'}</code></li>
+            <li>Author: <code>${config.author || 'Developer'}</code></li>
+          </ul>
+        </div>
+      `;
+      // Live Preview Button using standard demo content
+      previewLinkHtml = `
+        <div style="margin-top: 14px; display: flex; gap: 10px;">
+          <a href="/church?preview=true&theme=${config.id || s.assetId}&demo=true" target="_blank" class="btn primary small-btn" style="flex:1; text-align:center; padding: 6px 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; color: white;">
+            ${ic('eye')} Live Demo Preview
+          </a>
+          <a href="/church?preview=true&theme=${config.id || s.assetId}&tenantId=demo-church-local" target="_blank" class="btn secondary small-btn" style="flex:1; text-align:center; padding: 6px 0; display: inline-flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none;">
+            ${ic('globe')} Test Tenant Preview
+          </a>
+        </div>
+      `;
+    } else {
+      manifestSpecs = `
+        <div style="margin-top: 10px; font-size: 12px; color: var(--text);">
+          <strong style="display:block; margin-bottom: 4px;">Plugin Manifest Specs:</strong>
+          <ul style="padding-left: 16px; margin-top: 4px; color: var(--muted); list-style-type: disc;">
+            <li>Required Permissions: <code>${(config.requiredPermissions || []).join(', ') || 'None'}</code></li>
+            <li>Required Modules: <code>${(config.requiredModules || []).join(', ') || 'None'}</code></li>
+          </ul>
+        </div>
+      `;
+    }
+  } catch (err) {
+    console.error("Failed to parse config", err);
+  }
+
   openModal({
     title: 'Review Submission',
-    subtitle: `${assetName} — version v${version}`,
+    subtitle: `${s.asset?.name} — version v${s.version}`,
     icon: 'edit',
     primaryText: 'Submit Decision',
     body: `
-      <div class="field">
-        <label>Changelog</label>
-        <div style="padding: 10px; background: var(--surface-strong); border: 1px solid var(--border); border-radius: 8px; font-size: 13px; max-height: 120px; overflow-y: auto;">
-          ${changelog}
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+        <div class="field">
+          <label>Changelog</label>
+          <div style="padding: 10px; background: var(--surface-strong); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; height: 120px; overflow-y: auto; color: var(--muted);">
+            ${s.changelog || 'No changelog'}
+          </div>
+        </div>
+        <div class="field">
+          <label>Security Audit Scan</label>
+          <div style="padding: 10px; background: var(--surface-strong); border: 1px solid var(--border); border-radius: 8px; font-size: 12px; height: 120px; overflow-y: auto;">
+            <div style="margin-bottom: 6px;">Status: <span class="badge ${securityStatus === 'PASSED' ? 'success' : 'danger'}" style="font-size: 10px; padding: 2px 6px;">${securityStatus}</span></div>
+            <div style="color: var(--muted); font-size: 11px; white-space: pre-wrap;">${securityNotes}</div>
+          </div>
         </div>
       </div>
+      ${manifestSpecs}
+      ${previewLinkHtml}
+      <hr style="margin: 16px 0; border: 0; border-top: 1px solid var(--border);" />
       <div class="field">
         <label>Review Decision</label>
         <select id="reviewDecisionSelect">

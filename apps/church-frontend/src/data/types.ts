@@ -25,6 +25,7 @@ export interface SiteContextResponse {
     theme: {
       name: string;
       settings: any;
+      draftSettings?: any;
     };
     moduleRoutes: ModuleRoute[];
     enabledPlugins?: string[];
@@ -56,6 +57,7 @@ export interface CMSPageResponse {
     theme: {
       name: string;
       settings: any;
+      draftSettings?: any;
     };
     isPreviewMode?: boolean;
     enabledPlugins?: string[];

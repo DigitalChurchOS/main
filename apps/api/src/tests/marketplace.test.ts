@@ -231,8 +231,23 @@ describe('ChurchOS Developer Marketplace Module', () => {
           pricingType: 'paid',
           price: 9.99,
           assetConfig: {
-            colors: { primary: '#1a1a1a', secondary: '#ffffff' },
-            font: 'Outfit',
+            id: 'modern-grace-theme',
+            name: 'Modern Grace Theme',
+            version: '1.0.0',
+            author: 'Acme Devs',
+            description: 'A beautiful sleek dark theme template',
+            archiveFile: 'modern-grace-theme.zip',
+            themeCoverImage: 'screenshot.png',
+            settingsSchema: {
+              type: 'object',
+              properties: {
+                colors: { primary: '#1a1a1a', secondary: '#ffffff' },
+                font: 'Outfit'
+              }
+            },
+            templates: ['homepage', 'about'],
+            sections: ['hero', 'footer'],
+            font: 'Outfit'
           },
         });
 

@@ -331,4 +331,104 @@ router.post('/themes/:themeId/preview/customize', requireThemeEnginePermission('
   }
 });
 
+/**
+ * PATCH /api/theme-engine/themes/:themeId/customization/draft
+ * Save customization draft settings.
+ */
+router.patch('/themes/:themeId/customization/draft', requireThemeEnginePermission('theme-engine.update'), async (req: Request, res: Response) => {
+  try {
+    const updatedTheme = await ThemeEngineService.customizeThemeDraft(req.tenantId!, req.params.themeId as string, req.body);
+    await ThemeEngineService.logActivity(req.tenantId!, req.user!.userId, 'draft_customize_theme', {
+      themeId: req.params.themeId,
+    });
+    res.json({ data: updatedTheme });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/theme-engine/themes/:themeId/customization/publish
+ * Publish draft theme settings.
+ */
+router.post('/themes/:themeId/customization/publish', requireThemeEnginePermission('theme-engine.update'), async (req: Request, res: Response) => {
+  try {
+    const updatedTheme = await ThemeEngineService.publishThemeCustomization(req.tenantId!, req.params.themeId as string);
+    await ThemeEngineService.logActivity(req.tenantId!, req.user!.userId, 'publish_theme_customization', {
+      themeId: req.params.themeId,
+    });
+    res.json({ data: updatedTheme });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/theme-engine/themes/:themeId/customization/discard
+ * Discard draft settings.
+ */
+router.post('/themes/:themeId/customization/discard', requireThemeEnginePermission('theme-engine.update'), async (req: Request, res: Response) => {
+  try {
+    const updatedTheme = await ThemeEngineService.discardThemeDraft(req.tenantId!, req.params.themeId as string);
+    await ThemeEngineService.logActivity(req.tenantId!, req.user!.userId, 'discard_theme_draft', {
+      themeId: req.params.themeId,
+    });
+    res.json({ data: updatedTheme });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/theme-engine/themes/:themeId/customization/reset
+ * Reset theme to defaults.
+ */
+router.post('/themes/:themeId/customization/reset', requireThemeEnginePermission('theme-engine.update'), async (req: Request, res: Response) => {
+  try {
+    const updatedTheme = await ThemeEngineService.resetThemeCustomization(req.tenantId!, req.params.themeId as string);
+    await ThemeEngineService.logActivity(req.tenantId!, req.user!.userId, 'reset_theme_customization', {
+      themeId: req.params.themeId,
+    });
+    res.json({ data: updatedTheme });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/theme-engine/themes/:themeId/update
+ * Update theme to new version.
+ */
+router.post('/themes/:themeId/update', requireThemeEnginePermission('theme-engine.update'), async (req: Request, res: Response) => {
+  try {
+    const { versionId } = req.body;
+    const updated = await ThemeEngineService.updateThemeVersion(req.tenantId!, req.params.themeId as string, versionId);
+    await ThemeEngineService.logActivity(req.tenantId!, req.user!.userId, 'update_theme_version', {
+      themeId: req.params.themeId,
+      versionId,
+    });
+    res.json({ data: updated });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/theme-engine/themes/:themeId/rollback
+ * Rollback theme version.
+ */
+router.post('/themes/:themeId/rollback', requireThemeEnginePermission('theme-engine.update'), async (req: Request, res: Response) => {
+  try {
+    const { versionId } = req.body;
+    const updated = await ThemeEngineService.rollbackThemeVersion(req.tenantId!, req.params.themeId as string, versionId);
+    await ThemeEngineService.logActivity(req.tenantId!, req.user!.userId, 'rollback_theme_version', {
+      themeId: req.params.themeId,
+      versionId,
+    });
+    res.json({ data: updated });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 export default router;

@@ -124,11 +124,11 @@ app.use('/', express.static(webPublic));
 app.use('/apps', express.static(appsRoot));
 app.use('/page-builder', express.static(tenantDashboardBuilder));
 app.use('/tenant-dashboard', express.static(tenantDashboardPublic));
-app.use('/super-admin', express.static(superAdminPublic));
+app.use('/central', express.static(superAdminPublic));
 const churchFrontendServe = fs.existsSync(churchFrontendDist) ? churchFrontendDist : churchFrontendPublic;
 app.use('/church', express.static(churchFrontendServe));
 app.use('/marketplace', express.static(marketplaceFrontend));
-app.use('/marketplace/developer', express.static(marketplaceDeveloper));
+app.use('/developer', express.static(marketplaceDeveloper));
 
 app.get(['/', '/index.html', '/features', '/pricing', '/demo', '/themes', '/plugins', '/modules', '/start', '/auth/register-church', '/auth/login'], (_req, res) => {
   res.sendFile(path.join(webPublic, 'index.html'));
@@ -138,7 +138,7 @@ app.get(['/onboarding', '/onboarding.html'], (_req, res) => {
   res.sendFile(path.join(webPublic, 'onboarding.html'));
 });
 
-app.get(['/super-admin', '/super-admin/index.html'], (_req, res) => {
+app.get(['/central', '/central/index.html'], (_req, res) => {
   res.sendFile(path.join(superAdminPublic, 'index.html'));
 });
 
@@ -158,7 +158,7 @@ app.get(['/marketplace', '/marketplace.html'], (_req, res) => {
   res.sendFile(path.join(marketplaceFrontend, 'index.html'));
 });
 
-app.get(['/marketplace/developer', '/marketplace/developer/'], (_req, res) => {
+app.get(['/developer', '/developer/'], (_req, res) => {
   res.sendFile(path.join(marketplaceDeveloper, 'index.html'));
 });
 

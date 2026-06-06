@@ -189,11 +189,158 @@
       resize: vertical;
     }
 
-    /* Refactored Sidebar CSS (Hostinger inspired dual-column) */
+    /* Full Width Application Shell (sidebar removed) */
     .app-shell {
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Marketplace Top Navigation Bar */
+    .marketplace-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      background: var(--topbar);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+    .marketplace-topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .marketplace-topbar-left .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--accent);
+      color: white;
       display: grid;
-      grid-template-columns: 316px minmax(0, 1fr);
+      place-items: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .marketplace-topbar-left .brand-logo:hover { transform: scale(1.06); }
+    .marketplace-topbar-left .brand-logo i,
+    .marketplace-topbar-left .brand-logo svg { width: 20px !important; height: 20px !important; }
+    .marketplace-brand {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+    }
+    .marketplace-topbar-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .marketplace-topbar-nav .topnav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .marketplace-topbar-nav .topnav-btn:hover {
+      color: var(--text);
+      background: var(--panel-2);
+    }
+    .marketplace-topbar-nav .topnav-btn.active {
+      color: var(--text);
+      background: var(--accent-soft);
+      border-color: color-mix(in srgb, var(--accent) 20%, transparent);
+    }
+    .marketplace-topbar-nav .topnav-btn i,
+    .marketplace-topbar-nav .topnav-btn svg {
+      width: 16px !important;
+      height: 16px !important;
+    }
+    .marketplace-topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .marketplace-login-link {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+    .marketplace-login-link:hover {
+      color: var(--text);
+      background: var(--panel-2);
+    }
+
+    /* Horizontal Sub-Tab Navigation */
+    .marketplace-subtabs {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      padding: 0 32px;
+      border-bottom: 1px solid var(--line);
+      background: var(--panel);
+      overflow-x: auto;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+    .marketplace-subtabs::-webkit-scrollbar { display: none; }
+    .marketplace-subtab {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 12px 16px;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.2s;
+    }
+    .marketplace-subtab:hover {
+      color: var(--text);
+    }
+    .marketplace-subtab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .marketplace-subtab i,
+    .marketplace-subtab svg {
+      width: 15px !important;
+      height: 15px !important;
+    }
+
+    @media (max-width: 768px) {
+      .marketplace-topbar {
+        padding: 0 16px;
+        gap: 8px;
+      }
+      .marketplace-brand { display: none; }
+      .marketplace-topbar-nav { gap: 2px; }
+      .marketplace-topbar-nav .topnav-btn { padding: 6px 10px; font-size: 12px; }
+      .marketplace-subtabs { padding: 0 16px; }
+      .marketplace-subtab { padding: 10px 12px; font-size: 12px; }
     }
     .sidebar-wrapper {
       position: sticky;
@@ -351,7 +498,9 @@
       flex-direction: column;
       gap: 24px;
       width: 100%;
-      height: 100vh;
+      max-width: 1400px;
+      margin: 0 auto;
+      min-height: 0;
       overflow-y: auto;
     }
 
@@ -493,43 +642,29 @@
 </head>
 <body>
 
-  <!-- Dual Column Application Shell -->
+  <!-- Full Width Application Shell -->
   <div class="app-shell">
-    <div class="sidebar-wrapper">
-      
-      <!-- COLUMN A: Category Bar -->
-      <aside class="sidebar-column-a">
-        <div class="sidebar-a-logo" onclick="window.location.href='/admin.html'" style="cursor: pointer;" title="Back to Dashboard">
+    <!-- Top Navigation Bar -->
+    <header class="marketplace-topbar">
+      <div class="marketplace-topbar-left">
+        <div class="brand-logo" title="ChurchOS">
           <i data-lucide="church"></i>
         </div>
-        <div class="sidebar-a-nav">
-          <button class="sidebar-a-btn active" onclick="selectMarketCategory('plugin-engine')" id="catBtn-plugin-engine" title="Marketplace">
-            <i data-lucide="store"></i>
-            <span>Marketplace</span>
-          </button>
-          <button class="sidebar-a-btn" onclick="selectMarketCategory('developer')" id="catBtn-developer" title="Developer Portal">
-            <i data-lucide="code"></i>
-            <span>Portal</span>
-          </button>
-        </div>
-      </aside>
+        <span class="marketplace-brand">ChurchOS</span>
+      </div>
+      <nav class="marketplace-topbar-nav" id="marketplaceTopNav">
+        <!-- Populated by JS -->
+      </nav>
+      <div class="marketplace-topbar-actions">
+        <a href="dashboard.html" class="marketplace-login-link"><i data-lucide="log-in" style="width:15px;height:15px;vertical-align:middle;margin-right:5px;"></i>Log In</a>
+        <a href="dashboard.html?action=create" class="btn primary" style="text-decoration:none;"><i data-lucide="rocket"></i>Get Started Now</a>
+      </div>
+    </header>
 
-      <!-- COLUMN B: Workspace / Sub-Nav Bar -->
-      <aside class="sidebar-column-b">
-        <div class="sidebar-b-header">
-          <div class="website-selector" onclick="window.location.href='/admin.html'">
-            <div class="website-info">
-              <span class="website-label">Church OS Context</span>
-              <strong class="website-name">Return Dashboard</strong>
-            </div>
-            <i data-lucide="arrow-left" style="width: 14px; height: 14px; color: var(--muted);"></i>
-          </div>
-        </div>
-        <div class="sidebar-b-content" style="padding: 16px; display: flex; flex-direction: column; gap: 4px;" id="sidebarTabsB">
-          <!-- Populated dynamically via JS -->
-        </div>
-      </aside>
-    </div>
+    <!-- Horizontal Sub-Tab Navigation -->
+    <nav class="marketplace-subtabs" id="marketplaceSubTabs">
+      <!-- Populated by JS -->
+    </nav>
 
     <!-- MAIN CONTENT VIEW PANEL -->
     <main class="main-content">
@@ -1369,26 +1504,21 @@
     window.selectMarketCategory = function(catKey) {
       marketState.activeCategory = catKey;
       
-      // Update Column A active buttons
-      document.querySelectorAll('.sidebar-a-btn').forEach(btn => {
+      // Update top nav active buttons
+      document.querySelectorAll('.topnav-btn').forEach(btn => {
         btn.classList.toggle('active', btn.id === `catBtn-${catKey}`);
       });
 
-      // Render Column B tabs
-      const tabsContainer = document.getElementById('sidebarTabsB');
+      // Render horizontal sub-tabs
+      const tabsContainer = document.getElementById('marketplaceSubTabs');
       if (tabsContainer) {
         const cat = categories[catKey];
-        tabsContainer.innerHTML = `
-          <div style="font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); margin-bottom: 8px; padding-left: 8px;">
-            ${cat.name}
-          </div>
-          ${cat.tabs.map(t => `
-            <button class="sidebar-b-item" id="tabBtn-${t.key}" onclick="selectMarketTab('${t.key}')">
-              <i data-lucide="${t.icon}" style="width: 16px; height: 16px;"></i>
-              <span>${t.name}</span>
-            </button>
-          `).join('')}
-        `;
+        tabsContainer.innerHTML = cat.tabs.map(t => `
+          <button class="marketplace-subtab" id="tabBtn-${t.key}" onclick="selectMarketTab('${t.key}')">
+            <i data-lucide="${t.icon}"></i>
+            <span>${t.name}</span>
+          </button>
+        `).join('');
       }
 
       // Automatically select the first tab of the category
@@ -1399,8 +1529,8 @@
     window.selectMarketTab = function(tabKey) {
       marketState.activeTab = tabKey;
 
-      // Update Column B active tabs
-      document.querySelectorAll('.sidebar-b-item').forEach(btn => {
+      // Update horizontal sub-tab active state
+      document.querySelectorAll('.marketplace-subtab').forEach(btn => {
         btn.classList.toggle('active', btn.id === `tabBtn-${tabKey}`);
       });
 
@@ -2703,6 +2833,19 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       applyChurchOSTheme();
+
+      // Render top navigation category buttons
+      const topNav = document.getElementById('marketplaceTopNav');
+      if (topNav) {
+        const catIcons = { 'plugin-engine': 'store', 'developer': 'code' };
+        topNav.innerHTML = Object.entries(categories).map(([key, cat]) => `
+          <button class="topnav-btn" id="catBtn-${key}" onclick="selectMarketCategory('${key}')">
+            <i data-lucide="${catIcons[key] || 'layout-grid'}"></i>
+            <span>${cat.name}</span>
+          </button>
+        `).join('');
+      }
+
       // Trigger default active category rendering
       selectMarketCategory('plugin-engine');
     });

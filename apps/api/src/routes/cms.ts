@@ -295,10 +295,14 @@ router.get('/site-context', dnsMiddleware, async (req: Request, res: Response) =
             const { sanitized } = sanitizeCustomCSS(resolved.customCSS.customCSS);
             resolved.customCSS.customCSS = sanitized;
           }
+          const draftSettings = website.theme.draftSettings
+            ? JSON.parse(website.theme.draftSettings)
+            : null;
           return {
             name: website.theme.name,
             themeKey: website.theme.name,
             settings: rawSettings,
+            draftSettings: draftSettings,
             appearanceSettings: resolved,
           };
         })(),

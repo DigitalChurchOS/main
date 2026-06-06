@@ -99,6 +99,7 @@ const superAdminPublic = path.join(appsRoot, 'super-admin', 'public');
 const churchFrontendPublic = path.join(appsRoot, 'church-frontend', 'public');
 const marketplaceFrontend = path.join(appsRoot, 'marketplace', 'frontend');
 const marketplaceDeveloper = path.join(appsRoot, 'marketplace', 'developer');
+const webPublic = path.join(appsRoot, 'web', 'public');
 
 // ── Global middleware ──────────────────────────────────────
 app.use(helmet({
@@ -116,15 +117,24 @@ const apiLimiter = rateLimit({
 });
 
 // ── Serve static files ──────────────────────────────────────
+app.use('/', express.static(webPublic));
 app.use('/apps', express.static(appsRoot));
 app.use('/page-builder', express.static(tenantDashboardBuilder));
 app.use('/tenant-dashboard', express.static(tenantDashboardPublic));
-app.use('/super-admin', express.static(superAdminPublic));
+app.use('/central', express.static(superAdminPublic));
 app.use('/church', express.static(churchFrontendPublic));
 app.use('/marketplace', express.static(marketplaceFrontend));
-app.use('/marketplace/developer', express.static(marketplaceDeveloper));
+app.use('/developer', express.static(marketplaceDeveloper));
 
-app.get(['/', '/index.html', '/super-admin'], (_req, res) => {
+app.get(['/', '/index.html', '/features', '/pricing', '/demo', '/themes', '/plugins', '/modules', '/start', '/auth/register-church', '/auth/login'], (_req, res) => {
+  res.sendFile(path.join(webPublic, 'index.html'));
+});
+
+app.get(['/onboarding', '/onboarding.html'], (_req, res) => {
+  res.sendFile(path.join(webPublic, 'onboarding.html'));
+});
+
+app.get(['/central', '/central/index.html'], (_req, res) => {
   res.sendFile(path.join(superAdminPublic, 'index.html'));
 });
 
@@ -144,7 +154,7 @@ app.get(['/marketplace', '/marketplace.html'], (_req, res) => {
   res.sendFile(path.join(marketplaceFrontend, 'index.html'));
 });
 
-app.get(['/marketplace/developer', '/marketplace/developer/'], (_req, res) => {
+app.get(['/developer', '/developer/'], (_req, res) => {
   res.sendFile(path.join(marketplaceDeveloper, 'index.html'));
 });
 

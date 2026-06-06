@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../lib/prisma';
 import { platformAuthMiddleware, requirePlatformPermission } from '../middleware/platformAuth';
-import { suspendMarketplaceAsset, recordSecurityReview } from '../services/marketplace';
+import { suspendMarketplaceAsset, recordSecurityReview, reviewSubmission } from '../services/marketplace';
 
 if (!process.env.JWT_SECRET) {
   throw new Error('FATAL: JWT_SECRET environment variable is not defined.');
@@ -976,6 +976,24 @@ router.patch('/marketplace/:submissionId', requirePlatformPermission('platform.w
     res.json({ data: updatedSub });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/submissions/:submissionId/review', requirePlatformPermission('platform.write'), async (req: Request, res: Response): Promise<void> => {
+  try {
+    const submissionId = req.params.submissionId as string;
+    const { decision, notes } = req.body;
+    const reviewerId = req.platformUser!.userId;
+
+    if (!decision) {
+      res.status(400).json({ error: 'decision is required' });
+      return;
+    }
+
+    const review = await reviewSubmission(submissionId, reviewerId, decision, notes);
+    res.status(201).json({ data: review });
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
   }
 });
 

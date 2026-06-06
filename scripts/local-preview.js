@@ -3756,10 +3756,18 @@ http
 
     let filePath;
     const webPublicPath = path.join(webPublic, urlPath);
-    if (urlPath === '/super-admin' || urlPath === '/super-admin/index.html') {
+    if (urlPath === '/central' || urlPath === '/central/index.html') {
       filePath = path.join(superAdminPublic, 'index.html');
+    } else if (urlPath.startsWith('/central/')) {
+      filePath = path.join(superAdminPublic, urlPath.slice('/central/'.length));
+    } else if (urlPath === '/super-admin' || urlPath === '/super-admin/index.html') {
+      res.writeHead(301, { Location: '/central' });
+      res.end();
+      return;
     } else if (urlPath.startsWith('/super-admin/')) {
-      filePath = path.join(superAdminPublic, urlPath.slice('/super-admin/'.length));
+      res.writeHead(301, { Location: '/central/' + urlPath.slice('/super-admin/'.length) });
+      res.end();
+      return;
     } else if (urlPath === '/admin' || urlPath === '/admin.html') {
       filePath = path.join(tenantDashboardPublic, 'index.html');
     } else if (urlPath.startsWith('/tenant-dashboard/')) {
@@ -3775,10 +3783,18 @@ http
       return;
     } else if (urlPath === '/marketplace' || urlPath === '/marketplace/' || urlPath === '/marketplace.html') {
       filePath = path.join(marketplaceFrontend, 'index.html');
-    } else if (urlPath === '/marketplace/developer' || urlPath === '/marketplace/developer/') {
+    } else if (urlPath === '/developer' || urlPath === '/developer/') {
       filePath = path.join(marketplaceDeveloper, 'index.html');
+    } else if (urlPath.startsWith('/developer/')) {
+      filePath = path.join(marketplaceDeveloper, urlPath.slice('/developer/'.length));
+    } else if (urlPath === '/marketplace/developer' || urlPath === '/marketplace/developer/') {
+      res.writeHead(301, { Location: '/developer' });
+      res.end();
+      return;
     } else if (urlPath.startsWith('/marketplace/developer/')) {
-      filePath = path.join(marketplaceDeveloper, urlPath.slice('/marketplace/developer/'.length));
+      res.writeHead(301, { Location: '/developer/' + urlPath.slice('/marketplace/developer/'.length) });
+      res.end();
+      return;
     } else if (urlPath.startsWith('/marketplace/')) {
       filePath = path.join(marketplaceFrontend, urlPath.slice('/marketplace/'.length));
     } else if (urlPath === '/page-builder' || urlPath === '/page-builder/') {

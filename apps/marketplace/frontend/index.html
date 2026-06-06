@@ -1829,6 +1829,20 @@
         const statusBadge = isInstalled ? '<span class="badge success">Installed</span>' : '<span class="badge success">Approved</span>';
         const previewClass = asset.type === "theme" ? "" : "plugin";
 
+        let extraBadges = '';
+        try {
+          const config = JSON.parse(asset.assetConfig || '{}');
+          if (asset.type === 'theme') {
+            const hasDark = config.settingsSchema?.properties?.colorMode?.enum?.includes('dark') || true;
+            extraBadges += `<span class="badge"><i data-lucide="sun"></i>Light/Dark</span>`;
+            extraBadges += `<span class="badge">v${config.version || asset.version || '1.0.0'}</span>`;
+          } else {
+            extraBadges += `<span class="badge">v${asset.version || '1.0.0'}</span>`;
+          }
+        } catch(e) {
+          extraBadges += `<span class="badge">v${asset.version || '1.0.0'}</span>`;
+        }
+
         return `
           <article class="asset-card">
             <div class="asset-preview ${previewClass}">
@@ -1862,8 +1876,9 @@
               <div class="meta">
                 <span class="badge"><i data-lucide="${asset.type === 'theme' ? 'palette' : 'puzzle'}"></i>${asset.type}</span>
                 <span class="badge"><i data-lucide="star"></i>${asset.rating || '5.0'}</span>
-                <span class="badge"><i data-lucide="download"></i>${asset.installs || '0'}</span>
+                <span class="badge"><i data-lucide="check-circle-2"></i>Compatible</span>
                 <span class="badge">${asset.pricingType === 'paid' ? '$' + asset.price.toFixed(2) : 'Free'}</span>
+                ${extraBadges}
               </div>
 
               <div class="card-actions">

@@ -12,6 +12,7 @@ export const LayoutShell: React.FC = () => {
       announcementData: context.announcement,
       navigationData: context.navigation,
       footerData: context.footer,
+      themeSettings: context.appearanceSettings,
       children: React.createElement(Outlet, null)
     }
   );

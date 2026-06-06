@@ -77,6 +77,93 @@ export async function createAsset(
 }
 
 /**
+ * Validate theme package manifest and configuration fields.
+ */
+export function validateThemePackage(config: any): string[] {
+  const errors: string[] = [];
+
+  // 1. Check for manifest identity fields
+  if (!config.id && !config.themeKey && !config.slug) {
+    errors.push("Theme must declare an 'id', 'themeKey', or 'slug' in manifest configuration.");
+  }
+  if (!config.name && !config.displayName) {
+    errors.push("Theme must declare a 'name' or 'displayName'.");
+  }
+  if (!config.version) {
+    errors.push("Theme must declare a 'version' number (e.g., '1.0.0').");
+  }
+  if (!config.author) {
+    errors.push("Theme must declare an 'author'.");
+  }
+  if (!config.description) {
+    errors.push("Theme must declare a 'description'.");
+  }
+
+  // 2. Check settings schema
+  if (!config.settingsSchema) {
+    errors.push("Theme must declare a 'settingsSchema' object.");
+  }
+
+  // 3. Check templates & sections
+  if (!config.templates || !Array.isArray(config.templates)) {
+    errors.push("Theme must support a 'templates' array in its manifest.");
+  }
+  if (!config.sections || !Array.isArray(config.sections)) {
+    errors.push("Theme must support a 'sections' array in its manifest.");
+  }
+
+  // 4. Check for unsafe scripts / direct db operations / backends
+  const serialized = JSON.stringify(config).toLowerCase();
+  const unsafePatterns = [
+    '<script',
+    'javascript:',
+    'onload=',
+    'onerror=',
+    'eval(',
+    'document.cookie',
+    'window.location',
+    'prisma.',
+    'db.query',
+    'select * from',
+  ];
+
+  for (const pattern of unsafePatterns) {
+    if (serialized.includes(pattern)) {
+      errors.push(`Security Scan Flagged Unsafe Pattern: "${pattern}"`);
+    }
+  }
+
+  // Check external tracker domains
+  const trackerPatterns = ['google-analytics.com', 'hotjar.com', 'facebook.net'];
+  for (const tracker of trackerPatterns) {
+    if (serialized.includes(tracker)) {
+      errors.push(`Security Scan Blocked Unauthorized External Tracker: "${tracker}"`);
+    }
+  }
+
+  // 5. Check for .zip archive package file
+  if (!config.archiveFile) {
+    errors.push("Theme package must specify an 'archiveFile' filename.");
+  } else if (!config.archiveFile.toLowerCase().endsWith('.zip')) {
+    errors.push("Theme package 'archiveFile' must be a valid zip archive (.zip).");
+  }
+
+  // 6. Check for theme cover image (like in WordPress)
+  if (!config.themeCoverImage) {
+    errors.push("Theme package must specify a 'themeCoverImage' filename.");
+  } else {
+    const validImageExtensions = ['.png', '.jpg', '.jpeg'];
+    const lowerImage = config.themeCoverImage.toLowerCase();
+    const hasValidExt = validImageExtensions.some(ext => lowerImage.endsWith(ext));
+    if (!hasValidExt) {
+      errors.push("Theme package 'themeCoverImage' must be a valid image file (.png, .jpg, or .jpeg).");
+    }
+  }
+
+  return errors;
+}
+
+/**
  * Submit an asset version for review.
  */
 export async function submitAssetVersion(
@@ -93,7 +180,14 @@ export async function submitAssetVersion(
   }
 
   const config = JSON.parse(asset.assetConfig || '{}');
+  
+  // Parse and build manifest details
   const manifestObj = {
+    id: config.id || config.themeKey || config.slug || assetId,
+    name: config.name || config.displayName || asset.name,
+    version: version,
+    author: config.author || 'Developer',
+    description: config.description || asset.description || '',
     requiredPermissions: config.requiredPermissions || [],
     requiredModules: config.requiredModules || [],
     defaultSettings: config.defaultSettings || {},
@@ -101,10 +195,18 @@ export async function submitAssetVersion(
     sections: config.sections || [],
     settingsSchema: config.settingsSchema || {},
     screenshots: config.screenshots || [],
+    archiveFile: config.archiveFile || '',
+    themeCoverImage: config.themeCoverImage || '',
   };
 
+  // Run validation checks if asset is a theme
+  let validationErrors: string[] = [];
+  if (asset.type === 'theme') {
+    validationErrors = validateThemePackage(config);
+  }
+
   // Upsert the version entry as pending
-  await prisma.marketplaceAssetVersion.upsert({
+  const versionRecord = await prisma.marketplaceAssetVersion.upsert({
     where: {
       assetId_version: { assetId, version },
     },
@@ -132,13 +234,55 @@ export async function submitAssetVersion(
     },
   });
 
-  // Update asset status to under_review
-  await prisma.marketplaceAsset.update({
-    where: { id: assetId },
-    data: {
-      status: 'under_review',
-    },
-  });
+  // Record security review logs
+  if (validationErrors.length > 0) {
+    await prisma.marketplaceSecurityReview.create({
+      data: {
+        assetId,
+        versionId: versionRecord.id,
+        status: 'failed',
+        notes: `Validation failed with errors:\n- ${validationErrors.join('\n- ')}`,
+      },
+    });
+
+    // Update asset status to rejected
+    await prisma.marketplaceAsset.update({
+      where: { id: assetId },
+      data: { status: 'rejected' },
+    });
+
+    // Update submission status to rejected
+    await prisma.assetSubmission.update({
+      where: { id: submission.id },
+      data: { status: 'rejected' },
+    });
+
+    // Update version status to rejected
+    await prisma.marketplaceAssetVersion.update({
+      where: { id: versionRecord.id },
+      data: { status: 'rejected' },
+    });
+
+    throw new Error(`Theme package validation failed:\n- ${validationErrors.join('\n- ')}`);
+  } else {
+    // Passed validation
+    await prisma.marketplaceSecurityReview.create({
+      data: {
+        assetId,
+        versionId: versionRecord.id,
+        status: 'passed',
+        notes: 'Security scans and manifest structures validated successfully.',
+      },
+    });
+
+    // Update asset status to under_review
+    await prisma.marketplaceAsset.update({
+      where: { id: assetId },
+      data: {
+        status: 'under_review',
+      },
+    });
+  }
 
   return submission;
 }

@@ -39,6 +39,15 @@ export interface CustomizeThemeInput {
     mobileLayout?: string;
   };
   customCss?: string;
+  colorMode?: string;
+  accentPreset?: string;
+  edgeStyle?: string;
+  cardStyle?: string;
+  spacingScale?: string;
+  buttonStyle?: string;
+  backgroundStyle?: string;
+  iconStyle?: string;
+  colorPalette?: string;
 }
 
 export interface ThemeEngineModuleInput {

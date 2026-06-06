@@ -39,6 +39,15 @@ export interface CustomizeThemeInput {
     mobileLayout?: string;
   };
   customCss?: string;
+  colorMode?: string;
+  accentPreset?: string;
+  edgeStyle?: string;
+  cardStyle?: string;
+  spacingScale?: string;
+  buttonStyle?: string;
+  backgroundStyle?: string;
+  iconStyle?: string;
+  colorPalette?: string;
 }
 
 export interface ThemeEngineModuleInput {
@@ -554,6 +563,200 @@ export class ThemeEngineService {
       },
     });
   }
+
+  /**
+   * Customize a theme settings profile as a temporary draft.
+   */
+  static async customizeThemeDraft(tenantId: string, themeId: string, customConfig: CustomizeThemeInput) {
+    validateCustomization(customConfig);
+
+    let theme = await prisma.theme.findFirst({
+      where: {
+        id: themeId,
+        OR: [{ tenantId }, { tenantId: null }],
+      },
+    });
+
+    if (!theme) {
+      throw new Error('Theme not found');
+    }
+
+    if (theme.tenantId === null) {
+      theme = await prisma.theme.create({
+        data: {
+          tenantId,
+          name: `${theme.name} Custom`,
+          settings: theme.settings || '{}',
+          draftSettings: theme.settings || '{}',
+          isCustom: true,
+        },
+      });
+
+      await prisma.website.updateMany({
+        where: { tenantId, themeId },
+        data: { themeId: theme.id },
+      });
+    }
+
+    // Merge existing settings with draft and updates
+    let baseSettings: Record<string, any> = {};
+    try {
+      baseSettings = JSON.parse(theme.draftSettings || theme.settings || '{}');
+    } catch {
+      baseSettings = {};
+    }
+
+    const updatedSettings = {
+      ...baseSettings,
+      ...customConfig,
+      colors: {
+        ...(baseSettings.colors || {}),
+        ...(customConfig.colors || {}),
+      },
+      fonts: {
+        ...(baseSettings.fonts || {}),
+        ...(customConfig.fonts || {}),
+      },
+      logos: {
+        ...(baseSettings.logos || {}),
+        ...(customConfig.logos || {}),
+      },
+      layout: {
+        ...(baseSettings.layout || {}),
+        ...(customConfig.layout || {}),
+      },
+    };
+
+    return await prisma.theme.update({
+      where: { id: theme.id },
+      data: {
+        draftSettings: JSON.stringify(updatedSettings),
+      },
+    });
+  }
+
+  /**
+   * Publish draft customizations to the public website settings.
+   */
+  static async publishThemeCustomization(tenantId: string, themeId: string) {
+    const theme = await prisma.theme.findFirst({
+      where: { id: themeId, tenantId },
+    });
+
+    if (!theme) {
+      throw new Error('Theme not found');
+    }
+
+    if (!theme.draftSettings) {
+      // Nothing to publish
+      return theme;
+    }
+
+    return await prisma.theme.update({
+      where: { id: themeId },
+      data: {
+        settings: theme.draftSettings,
+        draftSettings: null,
+      },
+    });
+  }
+
+  /**
+   * Discard draft customizations.
+   */
+  static async discardThemeDraft(tenantId: string, themeId: string) {
+    const theme = await prisma.theme.findFirst({
+      where: { id: themeId, tenantId },
+    });
+
+    if (!theme) {
+      throw new Error('Theme not found');
+    }
+
+    return await prisma.theme.update({
+      where: { id: themeId },
+      data: {
+        draftSettings: null,
+      },
+    });
+  }
+
+  /**
+   * Reset theme customizations back to theme defaults.
+   */
+  static async resetThemeCustomization(tenantId: string, themeId: string) {
+    const theme = await prisma.theme.findFirst({
+      where: { id: themeId, tenantId },
+    });
+
+    if (!theme) {
+      throw new Error('Theme not found');
+    }
+
+    // Attempt to recover default asset config if installed from marketplace
+    let defaultSettings = '{}';
+    const settingsObj = safeParseJson<Record<string, any>>(theme.settings, {});
+    const marketplaceAssetId = settingsObj.marketplace?.assetId;
+    if (marketplaceAssetId) {
+      const asset = await prisma.marketplaceAsset.findUnique({
+        where: { id: marketplaceAssetId },
+      });
+      if (asset) {
+        defaultSettings = asset.assetConfig;
+      }
+    }
+
+    return await prisma.theme.update({
+      where: { id: themeId },
+      data: {
+        settings: defaultSettings,
+        draftSettings: null,
+      },
+    });
+  }
+
+  /**
+   * Update theme version.
+   */
+  static async updateThemeVersion(tenantId: string, themeId: string, versionId: string) {
+    const theme = await prisma.theme.findFirst({
+      where: { id: themeId, tenantId },
+    });
+    if (!theme) {
+      throw new Error('Theme not found');
+    }
+
+    const version = await prisma.marketplaceAssetVersion.findUnique({
+      where: { id: versionId },
+    });
+    if (!version) {
+      throw new Error('Target version not found');
+    }
+
+    // Merge settings
+    let settingsObj = safeParseJson<Record<string, any>>(theme.settings, {});
+    settingsObj.marketplace = {
+      ...(settingsObj.marketplace || {}),
+      version: version.version,
+      updatedAt: new Date().toISOString(),
+    };
+
+    return await prisma.theme.update({
+      where: { id: themeId },
+      data: {
+        settings: JSON.stringify(settingsObj),
+        marketplaceVersionId: versionId,
+      },
+    });
+  }
+
+  /**
+   * Rollback theme version.
+   */
+  static async rollbackThemeVersion(tenantId: string, themeId: string, versionId: string) {
+    return this.updateThemeVersion(tenantId, themeId, versionId);
+  }
+
 
   /**
    * Preview a theme config in temporary simulation staging context.

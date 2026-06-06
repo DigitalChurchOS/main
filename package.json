@@ -10,9 +10,10 @@
   ],
   "scripts": {
     "bootstrap": "npm install",
-    "build": "npm run build --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present && node scripts/build-cloudflare-assets.js",
     "dev": "npm run dev --workspace=@churchos/api",
     "preview": "node scripts/local-preview.js",
+    "dashboard": "node scripts/dev-dashboard.js",
     "db:migrate": "npm --workspace=@churchos/api run db:migrate",
     "db:seed": "npm --workspace=@churchos/api run db:seed",
     "db:reset": "npm --workspace=@churchos/api run db:reset",
