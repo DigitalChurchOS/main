@@ -7,10 +7,6 @@ import { EcclesiaProvider } from './themes/ecclesia/EcclesiaContext';
 import EcclesiaLayout from './themes/ecclesia/EcclesiaLayout';
 import StaticHtmlPage from './themes/ecclesia/StaticHtmlPage';
 import GenericPage from './themes/ecclesia/GenericPage';
-import MemberAuthPage from './themes/ecclesia/pages/MemberAuthPage';
-import MemberAccountPage from './themes/ecclesia/pages/MemberAccountPage';
-import ServicesPage from './themes/ecclesia/pages/ServicesPage';
-import LivestreamPage from './themes/ecclesia/pages/LivestreamPage';
 import { routeFromHref, slugFromPathname } from './routing';
 import { httpRequest } from './http';
 
@@ -107,35 +103,6 @@ function isEcclesiaTheme(siteContext: SiteContext): boolean {
   return /ecclesia/i.test(`${themeName} ${themeKey}`);
 }
 
-function normalizedAppPath(pathname: string): string {
-  const path = pathname.startsWith('/church') ? pathname.substring('/church'.length) : pathname;
-  return path || '/';
-}
-
-function getMemberPortalRoute(pathname: string): 'login' | 'account' | null {
-  const path = normalizedAppPath(pathname).replace(/\/+$/, '') || '/';
-  if (['/login', '/member-login', '/members/login'].includes(path)) return 'login';
-  if (['/account', '/profile', '/my-giving'].includes(path) || path.startsWith('/account/')) return 'account';
-  return null;
-}
-
-function getServicesRoute(pathname: string): { serviceId?: string } | null {
-  const path = normalizedAppPath(pathname).replace(/\/+$/, '') || '/';
-  if (path === '/services' || path === '/services-archive.html') return {};
-  const detailMatch = path.match(/^\/services\/([^/]+)$/);
-  if (detailMatch) return { serviceId: decodeURIComponent(detailMatch[1]) };
-  if (path === '/service-single.html') return { serviceId: 'sample-service' };
-  return null;
-}
-
-function getLivestreamRoute(pathname: string): { streamId?: string } | null {
-  const path = normalizedAppPath(pathname).replace(/\/+$/, '') || '/';
-  if (path === '/livestream' || path === '/livestream-page.html') return {};
-  const detailMatch = path.match(/^\/livestream\/([^/]+)$/);
-  if (detailMatch) return { streamId: decodeURIComponent(detailMatch[1]) };
-  return null;
-}
-
 const slugToTemplateMap: Record<string, string> = {
   '': 'index.html',
   'about': 'about.html',
@@ -145,7 +112,11 @@ const slugToTemplateMap: Record<string, string> = {
   'prayer': 'prayer.html',
   'contact': 'contact.html',
   'login': 'login.html',
+  'member-login': 'login.html',
+  'members/login': 'login.html',
   'account': 'account.html',
+  'profile': 'account.html',
+  'my-giving': 'account.html',
   'giving': 'giving.html',
   'partnership': 'giving-partnership.html',
   'livestream': 'livestream-page.html',
@@ -201,6 +172,9 @@ function getTemplateFileForSlug(slug: string): string | null {
     if (prefix === 'services') {
       return 'service-single.html';
     }
+    if (prefix === 'livestream') {
+      return 'livestream-page.html';
+    }
     if (prefix === 'library') {
       return 'resource-single.html';
     }
@@ -208,6 +182,9 @@ function getTemplateFileForSlug(slug: string): string | null {
       if (subPath === 'main') return 'course-main.html';
       if (subPath === 'lesson') return 'lesson-single.html';
       return 'course-main.html';
+    }
+    if (prefix === 'account') {
+      return 'account.html';
     }
     if (prefix === 'testimonies') {
       if (subPath === 'submit') return 'testimony-submit.html';
@@ -249,27 +226,6 @@ const PageRenderer: React.FC<{ siteContext: SiteContext; themeSettings: ThemeSet
   useEffect(() => {
     let active = true;
     const loadPage = async () => {
-      if (getMemberPortalRoute(location.pathname)) {
-        setLoading(false);
-        setError(null);
-        setPageData(null);
-        return;
-      }
-
-      if (getServicesRoute(location.pathname)) {
-        setLoading(false);
-        setError(null);
-        setPageData(null);
-        return;
-      }
-
-      if (getLivestreamRoute(location.pathname)) {
-        setLoading(false);
-        setError(null);
-        setPageData(null);
-        return;
-      }
-
       setLoading(true);
       setError(null);
       try {
@@ -287,7 +243,9 @@ const PageRenderer: React.FC<{ siteContext: SiteContext; themeSettings: ThemeSet
         let data = response.data;
         const fullHtml = getFullHtml(data?.contentBlocks);
         if (!fullHtml) {
-          const templateFile = getTemplateFileForSlug(slug);
+          const sourceFile = typeof data?.sourceFile === 'string' ? data.sourceFile : '';
+          const sourceFileName = sourceFile.split(/[?#]/)[0].split('/').filter(Boolean).pop() || '';
+          const templateFile = sourceFileName || getTemplateFileForSlug(slug);
           if (templateFile) {
             try {
               const themeFolder = data?.theme?.settings?.metadata?.sourcePackage || 'ecclesia-full-theme';
@@ -374,44 +332,6 @@ const PageRenderer: React.FC<{ siteContext: SiteContext; themeSettings: ThemeSet
     headerCTAs,
     setHeaderCTAs,
   };
-
-  const memberPortalRoute = getMemberPortalRoute(location.pathname);
-  const servicesRoute = getServicesRoute(location.pathname);
-  const livestreamRoute = getLivestreamRoute(location.pathname);
-
-  if (memberPortalRoute) {
-    return (
-      <EcclesiaProvider value={contextValue}>
-        <EcclesiaLayout useStaticLayout={false}>
-          {memberPortalRoute === 'login' ? (
-            <MemberAuthPage tenant={siteContext.tenant} />
-          ) : (
-            <MemberAccountPage tenant={siteContext.tenant} />
-          )}
-        </EcclesiaLayout>
-      </EcclesiaProvider>
-    );
-  }
-
-  if (servicesRoute) {
-    return (
-      <EcclesiaProvider value={contextValue}>
-        <EcclesiaLayout useStaticLayout={false}>
-          <ServicesPage serviceId={servicesRoute.serviceId} />
-        </EcclesiaLayout>
-      </EcclesiaProvider>
-    );
-  }
-
-  if (livestreamRoute) {
-    return (
-      <EcclesiaProvider value={contextValue}>
-        <EcclesiaLayout useStaticLayout={false}>
-          <LivestreamPage streamId={livestreamRoute.streamId} />
-        </EcclesiaLayout>
-      </EcclesiaProvider>
-    );
-  }
 
   if (loading) {
     return (

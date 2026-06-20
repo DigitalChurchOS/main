@@ -4,7 +4,9 @@ const path = require('path');
 const { handleSuperAdminApi } = require('./local-super-admin-preview');
 
 const root = path.resolve(__dirname, '..');
-const ecclesiaFullTheme = path.join(root, 'ecclesia-full-theme');
+const customizerEcclesiaFullTheme = path.join(root, 'theme-customizer', 'public', 'themes', 'ecclesia-full-theme');
+const rootEcclesiaFullTheme = path.join(root, 'ecclesia-full-theme');
+const ecclesiaFullTheme = fs.existsSync(customizerEcclesiaFullTheme) ? customizerEcclesiaFullTheme : rootEcclesiaFullTheme;
 const port = Number(process.env.PORT || 3000);
 
 const contentTypes = {
@@ -75,6 +77,7 @@ const localEcclesiaThemeSettings = {
     localPath: 'ecclesia-full-theme',
     pages: [
       'index.html', 'about.html', 'sermons.html', 'events.html', 'ministries.html', 'prayer.html', 'contact.html',
+      'login.html', 'account.html',
       'giving.html', 'giving-partnership.html', 'livestream-page.html', 'media-archive.html', 'media-single.html',
       'podcast-archive.html', 'podcast-episode.html', 'blog-archive.html', 'blog-single.html', 'services-archive.html',
       'service-single.html', 'library-archive.html', 'resource-single.html', 'courses-archive.html', 'course-main.html',
@@ -1515,7 +1518,48 @@ function titleFromEcclesiaFile(fileName) {
     .join(' ');
 }
 
+const ECCLESIA_SOURCE_FILE_SLUGS = {
+  'index.html': '',
+  'about.html': 'about',
+  'sermons.html': 'sermons',
+  'events.html': 'events',
+  'ministries.html': 'ministries',
+  'prayer.html': 'prayer',
+  'contact.html': 'contact',
+  'login.html': 'login',
+  'account.html': 'account',
+  'giving.html': 'giving',
+  'giving-partnership.html': 'partnership',
+  'livestream-page.html': 'livestream',
+  'media-archive.html': 'media',
+  'media-single.html': 'media/sample-message',
+  'podcast-archive.html': 'podcast',
+  'podcast-episode.html': 'podcast/sample-episode',
+  'blog-archive.html': 'blog',
+  'blog-single.html': 'blog/sample-post',
+  'services-archive.html': 'services',
+  'service-single.html': 'services/sample-service',
+  'library-archive.html': 'library',
+  'resource-single.html': 'library/sample-resource',
+  'courses-archive.html': 'courses',
+  'course-main.html': 'courses/main',
+  'lesson-single.html': 'courses/lesson',
+  'events-archive.html': 'events/archive',
+  'event-single.html': 'events/sample-event',
+  'event-register.html': 'events/register',
+  'prayer-home.html': 'prayer-home',
+  'prayer-wall.html': 'prayer/wall',
+  'prayer-room.html': 'prayer/room',
+  'testimony-wall.html': 'testimonies',
+  'testimony-single.html': 'testimonies/sample-story',
+  'testimony-submit.html': 'testimonies/submit',
+  'worship.html': 'worship',
+};
+
 function slugFromEcclesiaFile(fileName) {
+  if (Object.prototype.hasOwnProperty.call(ECCLESIA_SOURCE_FILE_SLUGS, fileName)) {
+    return ECCLESIA_SOURCE_FILE_SLUGS[fileName];
+  }
   if (fileName === 'index.html') return '';
   return fileName
     .replace(/\.html$/, '')
@@ -1557,6 +1601,50 @@ function localEcclesiaPageTemplatesPayload() {
   });
   return Array.from(templates.values());
 }
+
+function sourcePageRecordFromEcclesiaFile(fileName) {
+  const slug = slugFromEcclesiaFile(fileName);
+  const slugKey = slug ? slug.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') : 'home';
+  const title = titleFromEcclesiaFile(fileName);
+  return {
+    id: `page-ecclesia-${slugKey || 'home'}`,
+    websiteId: demoWebsiteId,
+    title,
+    slug,
+    status: 'published',
+    isHome: slug === '',
+    seoTitle: `${title} | Demo Church`,
+    seoDescription: `Source-backed Ecclesia page from ${fileName}.`,
+    content: [],
+    draftContent: null,
+    sourceFile: fileName,
+    sourceUrl: `/themes/ecclesia/${fileName}`,
+    module: 'Ecclesia',
+    createdAt: now(),
+    updatedAt: now(),
+  };
+}
+
+function ensureLocalEcclesiaSourcePages() {
+  const files = localEcclesiaThemeSettings.sourcePackage?.pages || [];
+  files.forEach((fileName) => {
+    const sourcePage = sourcePageRecordFromEcclesiaFile(fileName);
+    const existing = state.pages.find((page) => page.slug === sourcePage.slug || page.id === sourcePage.id);
+    if (existing) {
+      Object.assign(existing, {
+        sourceFile: sourcePage.sourceFile,
+        sourceUrl: sourcePage.sourceUrl,
+        module: sourcePage.module,
+        isHome: sourcePage.isHome || existing.isHome,
+        updatedAt: now(),
+      });
+    } else {
+      state.pages.push(sourcePage);
+    }
+  });
+}
+
+ensureLocalEcclesiaSourcePages();
 
 function createPreviewInvoice(status = 'open') {
   const usage = billingUsageSnapshot();
@@ -3413,8 +3501,8 @@ http
     }
 
     let filePath;
-    if (urlPath === '/themes/ecclesia' || urlPath.startsWith('/themes/ecclesia/')) {
-      const themeRelativePath = urlPath.replace(/^\/themes\/ecclesia\/?/, '') || 'index.html';
+    if (urlPath === '/themes/ecclesia' || urlPath.startsWith('/themes/ecclesia/') || urlPath === '/themes/ecclesia-full-theme' || urlPath.startsWith('/themes/ecclesia-full-theme/')) {
+      const themeRelativePath = urlPath.replace(/^\/themes\/(?:ecclesia|ecclesia-full-theme)\/?/, '') || 'index.html';
       filePath = path.normalize(path.join(ecclesiaFullTheme, decodeURIComponent(themeRelativePath)));
       const relativeToTheme = path.relative(ecclesiaFullTheme, filePath);
       if (relativeToTheme.startsWith('..') || path.isAbsolute(relativeToTheme)) {

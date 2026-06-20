@@ -86,6 +86,8 @@ export const ECCLESIA_THEME_SOURCE_PAGES: EcclesiaSourcePage[] = [
   sourcePage('ministries', 'Ministries', 'ministries', 'ministries.html', 'network', 'Ministries', 'Ministry directory and serving pathways.'),
   sourcePage('prayer', 'Prayer', 'prayer', 'prayer.html', 'heart-handshake', 'Prayer', 'Prayer request and care entry point.'),
   sourcePage('contact', 'Contact', 'contact', 'contact.html', 'mail', 'Core', 'Contact, visit planning, and location details.'),
+  sourcePage('login', 'Member Login', 'login', 'login.html', 'log-in', 'Members', 'Member login and registration page from the Ecclesia package.'),
+  sourcePage('account', 'Member Account', 'account', 'account.html', 'circle-user-round', 'Members', 'Member account, profile, and giving activity page from the Ecclesia package.'),
   sourcePage('giving', 'Giving', 'giving', 'giving.html', 'hand-coins', 'Giving', 'Giving page with generosity prompts and secure giving entry.'),
   sourcePage('giving-partnership', 'Partnership', 'partnership', 'giving-partnership.html', 'handshake', 'Giving', 'Partnership campaign and recurring support page.'),
   sourcePage('livestream-page', 'Livestream', 'livestream', 'livestream-page.html', 'radio-tower', 'Livestream', 'Live worship page with stream, prayer, and service actions.'),

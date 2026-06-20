@@ -179,6 +179,9 @@ export interface PageRenderResponse {
     seoTitle: string | null;
     seoDescription: string | null;
     seoKeywords: string | null;
+    sourceFile?: string | null;
+    sourceUrl?: string | null;
+    module?: string | null;
     globalContent: GlobalContent;
     navigation: NavigationData | null;
     footer: FooterData | null;
