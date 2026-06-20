@@ -1176,6 +1176,26 @@ async function routeGet(request: Request, pathname: string, url: URL, env: Env) 
   }
 
   if (pathname === '/api/public/resolve-website-tenant') {
+    const websiteId = String(url.searchParams.get('websiteId') || '');
+    const subdomainFromWebsiteId = cleanSubdomain(websiteId.replace(/^website-/, ''));
+    const resolvedTenant = subdomainFromWebsiteId
+      ? await readRegisteredTenant(env, subdomainFromWebsiteId)
+      : null;
+
+    if (resolvedTenant) {
+      const resolvedContext = getRequestContext(request, url, resolvedTenant as Record<string, unknown>);
+      const resolvedThemeState = await readTenantThemeState(env, resolvedContext);
+      const resolvedTheme = makeThemeForContext(resolvedContext, resolvedThemeState);
+      const resolvedWebsite = makeWebsiteForContext(resolvedContext, resolvedTheme);
+      return withJson({
+        data: {
+          tenantId: resolvedContext.tenant.id,
+          tenant: resolvedContext.tenant,
+          website: resolvedWebsite,
+        } as JsonValue,
+      });
+    }
+
     return withJson({
       data: {
         tenantId: tenant.id,

@@ -345,6 +345,7 @@ export function App() {
               const json = await res.json();
               if (json.data && json.data.tenantId) {
                 resolvedTenantId = json.data.tenantId;
+                resolvedSubdomain = json.data.tenant?.subdomain || json.data.website?.tenant?.subdomain || "";
               }
             }
           } catch (e) {
@@ -375,6 +376,9 @@ export function App() {
           if (resolvedSubdomain) {
             localStorage.setItem("churchos.subdomain", resolvedSubdomain);
             setTenantSubdomain(resolvedSubdomain);
+          } else if (!querySubdomain && !hostSubdomain) {
+            localStorage.removeItem("churchos.subdomain");
+            setTenantSubdomain("");
           }
         } else {
           const existing = localStorage.getItem("churchos.tenantId");
@@ -420,10 +424,8 @@ export function App() {
             finalWebsiteId = matched.id;
             resolvedWebsite = matched;
           } else {
-            if (queryWebsiteId) {
-              throw new Error("404 Website not found under current tenant context");
-            }
             if (websitesRes.data.length > 0) {
+              console.warn(`Website ${queryWebsiteId} was not found under the resolved tenant. Falling back to the tenant primary website.`);
               finalWebsiteId = websitesRes.data[0].id;
               resolvedWebsite = websitesRes.data[0];
             }
@@ -1172,6 +1174,7 @@ export function App() {
           <button
             onClick={() => {
               localStorage.removeItem("churchos.tenantId");
+              localStorage.removeItem("churchos.subdomain");
               localStorage.removeItem("churchos.token");
               window.location.reload();
             }}
