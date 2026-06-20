@@ -14,7 +14,7 @@ const RAIL_ITEMS = [
   { label: 'Library', path: '/library', icon: BookOpen },
   { label: 'LMS', path: '/courses', icon: GraduationCap },
   { label: 'Worship', path: '/worship', icon: Music },
-  { label: 'Account', path: '/account', icon: UserCircle },
+  { label: 'Account', path: '/login', icon: UserCircle },
 ];
 
 interface Props {

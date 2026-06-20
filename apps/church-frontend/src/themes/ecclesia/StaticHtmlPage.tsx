@@ -50,6 +50,7 @@ const RAIL_ITEMS = [
   { label: 'Library', path: '/library', icon: 'book-open' },
   { label: 'LMS', path: '/courses', icon: 'graduation-cap' },
   { label: 'Worship', path: '/worship', icon: 'music' },
+  { label: 'Account', path: '/login', icon: 'user-circle' },
 ];
 
 function escapeHtml(value: string): string {
@@ -74,7 +75,6 @@ function renderRailHtml(pathname: string, entitlements?: ModuleEntitlement[]): s
 
 function renderMobileTabHtml(pathname: string, entitlements?: ModuleEntitlement[]): string {
   const items = RAIL_ITEMS
-    .filter((item) => ['Media', 'Podcast', 'Articles', 'Services', 'Library', 'Worship'].includes(item.label))
     .filter((item) => isUrlEntitled(item.path, entitlements));
   if (items.length === 0) return '';
 
@@ -99,6 +99,16 @@ function renderMobileDrawerHtml(ecContext: EcclesiaContextValue): string {
     '/ministries': 'users-round',
     '/prayer': 'heart-handshake',
     '/contact': 'mail',
+    '/login': 'user-circle',
+    '/account': 'user-circle',
+    '/media': 'tv',
+    '/livestream': 'video',
+    '/podcast': 'mic',
+    '/blog': 'newspaper',
+    '/services': 'calendar',
+    '/library': 'book-open',
+    '/courses': 'graduation-cap',
+    '/worship': 'music',
   };
 
   const closeRow = `
@@ -137,11 +147,16 @@ function renderDefaultMobileDrawerHtml(): string {
   const items = [
     { label: 'Home', url: '/' },
     { label: 'About', url: '/about' },
-    { label: 'Sermons', url: '/sermons' },
-    { label: 'Events', url: '/events' },
-    { label: 'Ministries', url: '/ministries' },
-    { label: 'Prayer', url: '/prayer' },
     { label: 'Contact', url: '/contact' },
+    { label: 'Account', url: '/login' },
+    { label: 'Media', url: '/media' },
+    { label: 'Livestream', url: '/livestream' },
+    { label: 'Podcast', url: '/podcast' },
+    { label: 'Articles', url: '/blog' },
+    { label: 'Services', url: '/services' },
+    { label: 'Library', url: '/library' },
+    { label: 'LMS', url: '/courses' },
+    { label: 'Worship', url: '/worship' },
   ];
 
   const closeRow = `
@@ -156,11 +171,16 @@ function renderDefaultMobileDrawerHtml(): string {
     const navIcons: Record<string, string> = {
       '/': 'home',
       '/about': 'info',
-      '/sermons': 'play-square',
-      '/events': 'calendar-days',
-      '/ministries': 'users-round',
-      '/prayer': 'heart-handshake',
       '/contact': 'mail',
+      '/login': 'user-circle',
+      '/media': 'tv',
+      '/livestream': 'video',
+      '/podcast': 'mic',
+      '/blog': 'newspaper',
+      '/services': 'calendar',
+      '/library': 'book-open',
+      '/courses': 'graduation-cap',
+      '/worship': 'music',
     };
     const icon = navIcons[item.url] || 'link';
     return `<a class="pjax-link" href="${escapeHtml(item.url)}"><i data-lucide="${icon}"></i><span>${escapeHtml(item.label)}</span></a>`;

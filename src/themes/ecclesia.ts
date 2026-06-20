@@ -604,6 +604,7 @@ export function createEcclesiaThemeSettings(overrides: JsonRecord = {}) {
       { label: 'Library', url: 'library-archive.html', icon: 'book-open' },
       { label: 'LMS', url: 'courses-archive.html', icon: 'graduation-cap' },
       { label: 'Worship', url: 'worship.html', icon: 'music' },
+      { label: 'Account', url: 'login.html', icon: 'user-circle' },
     ],
     logo: {
       display: overrides.logo?.display || 'markAndName',
@@ -696,16 +697,32 @@ export function createEcclesiaNavigationItems() {
     { label: 'Ministries', url: '/ministries' },
     { label: 'Prayer', url: '/prayer' },
     { label: 'Contact', url: '/contact' },
+    { label: 'Account', url: '/login' },
+    { label: 'Media', url: '/media' },
+    { label: 'Livestream', url: '/livestream' },
+    { label: 'Podcast', url: '/podcast' },
+    { label: 'Articles', url: '/blog' },
+    { label: 'Services', url: '/services' },
+    { label: 'Library', url: '/library' },
+    { label: 'LMS', url: '/courses' },
+    { label: 'Worship', url: '/worship' },
   ];
 }
 
 export function createEcclesiaFooterLinks() {
   return [
-    { label: 'Watch Live', url: '/livestream' },
-    { label: 'Giving', url: '/giving' },
-    { label: 'Prayer', url: '/prayer' },
-    { label: 'Library', url: '/library' },
+    { label: 'Home', url: '/' },
+    { label: 'About', url: '/about' },
+    { label: 'Contact', url: '/contact' },
+    { label: 'Account', url: '/login' },
+    { label: 'Media', url: '/media' },
+    { label: 'Livestream', url: '/livestream' },
     { label: 'Podcast', url: '/podcast' },
+    { label: 'Articles', url: '/blog' },
+    { label: 'Services', url: '/services' },
+    { label: 'Library', url: '/library' },
+    { label: 'LMS', url: '/courses' },
+    { label: 'Worship', url: '/worship' },
   ];
 }
 
