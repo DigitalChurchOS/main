@@ -12,6 +12,7 @@
     "deploy:api:dry": "wrangler deploy --config wrangler.api.toml --dry-run",
     "deploy:all": "npm run deploy:api && npm run deploy",
     "dev": "npx ts-node --files src/server.ts",
+    "verify:ecclesia": "node scripts/verify-ecclesia-blueprint.cjs",
     "db:migrate": "npx prisma migrate dev",
     "db:seed": "npx ts-node src/seed.ts",
     "db:reset": "npx prisma migrate reset --force",

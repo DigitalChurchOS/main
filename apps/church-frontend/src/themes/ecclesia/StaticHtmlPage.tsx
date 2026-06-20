@@ -43,14 +43,15 @@ declare global {
 
 const RAIL_ITEMS = [
   { label: 'Media', path: '/media', icon: 'tv' },
-  { label: 'Livestream', path: '/livestream', icon: 'video' },
-  { label: 'Podcast', path: '/podcast', icon: 'mic' },
-  { label: 'Articles', path: '/blog', icon: 'newspaper' },
   { label: 'Services', path: '/services', icon: 'calendar' },
+  { label: 'Articles', path: '/blog', icon: 'newspaper' },
   { label: 'Library', path: '/library', icon: 'book-open' },
+  { label: 'Podcast', path: '/podcast', icon: 'mic' },
+  { label: 'Store', path: '/store', icon: 'shopping-bag' },
+  { label: 'Cells', path: '/cells', icon: 'users-round' },
   { label: 'LMS', path: '/courses', icon: 'graduation-cap' },
   { label: 'Worship', path: '/worship', icon: 'music' },
-  { label: 'Account', path: '/login', icon: 'user-circle' },
+  { label: 'Account', path: '/account', icon: 'user-circle' },
 ];
 
 function escapeHtml(value: string): string {
@@ -99,6 +100,9 @@ function renderMobileDrawerHtml(ecContext: EcclesiaContextValue): string {
     '/ministries': 'users-round',
     '/prayer': 'heart-handshake',
     '/contact': 'mail',
+    '/service-times': 'clock',
+    '/campuses': 'map-pin',
+    '/new-visitor': 'clipboard-list',
     '/login': 'user-circle',
     '/account': 'user-circle',
     '/media': 'tv',
@@ -147,16 +151,12 @@ function renderDefaultMobileDrawerHtml(): string {
   const items = [
     { label: 'Home', url: '/' },
     { label: 'About', url: '/about' },
+    { label: 'Service Times', url: '/service-times' },
+    { label: 'Campuses', url: '/campuses' },
+    { label: 'Ministries', url: '/ministries' },
+    { label: 'Events', url: '/events' },
     { label: 'Contact', url: '/contact' },
-    { label: 'Account', url: '/login' },
-    { label: 'Media', url: '/media' },
-    { label: 'Livestream', url: '/livestream' },
-    { label: 'Podcast', url: '/podcast' },
-    { label: 'Articles', url: '/blog' },
-    { label: 'Services', url: '/services' },
-    { label: 'Library', url: '/library' },
-    { label: 'LMS', url: '/courses' },
-    { label: 'Worship', url: '/worship' },
+    { label: 'Connect Card', url: '/new-visitor' },
   ];
 
   const closeRow = `
@@ -171,16 +171,12 @@ function renderDefaultMobileDrawerHtml(): string {
     const navIcons: Record<string, string> = {
       '/': 'home',
       '/about': 'info',
+      '/service-times': 'clock',
+      '/campuses': 'map-pin',
+      '/ministries': 'users-round',
+      '/events': 'calendar-days',
       '/contact': 'mail',
-      '/login': 'user-circle',
-      '/media': 'tv',
-      '/livestream': 'video',
-      '/podcast': 'mic',
-      '/blog': 'newspaper',
-      '/services': 'calendar',
-      '/library': 'book-open',
-      '/courses': 'graduation-cap',
-      '/worship': 'music',
+      '/new-visitor': 'clipboard-list',
     };
     const icon = navIcons[item.url] || 'link';
     return `<a class="pjax-link" href="${escapeHtml(item.url)}"><i data-lucide="${icon}"></i><span>${escapeHtml(item.label)}</span></a>`;
@@ -325,6 +321,13 @@ function buildStaticPayload(
 
   // Strip any existing mobile drawers from the parsed document to avoid duplicates
   doc.querySelectorAll('.mobile-drawer, #mobileDrawer, .drawer, #drawer').forEach((el) => el.remove());
+  doc.querySelectorAll<HTMLFormElement>('form').forEach((form) => {
+    form.setAttribute('novalidate', 'novalidate');
+  });
+  doc.querySelectorAll<HTMLElement>('[required]').forEach((element) => {
+    element.setAttribute('data-required', 'true');
+    element.removeAttribute('required');
+  });
 
   // Extract header actions before we strip/process elements
   const headerActionsEl = doc.querySelector('.header-actions');

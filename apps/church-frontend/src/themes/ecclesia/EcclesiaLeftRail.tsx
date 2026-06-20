@@ -1,20 +1,21 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Tv, Video, Mic, Newspaper, Calendar, BookOpen, GraduationCap, Music, UserCircle } from 'lucide-react';
+import { Tv, Mic, Newspaper, Calendar, BookOpen, GraduationCap, Music, UserCircle, ShoppingBag, UsersRound } from 'lucide-react';
 import { useEcclesia } from './EcclesiaContext';
 import { isUrlEntitled } from '../../entitlements';
 import { withLocalChurchBase } from '../../routing';
 
 const RAIL_ITEMS = [
   { label: 'Media', path: '/media', icon: Tv },
-  { label: 'Livestream', path: '/livestream', icon: Video },
-  { label: 'Podcast', path: '/podcast', icon: Mic },
-  { label: 'Articles', path: '/blog', icon: Newspaper },
   { label: 'Services', path: '/services', icon: Calendar },
+  { label: 'Articles', path: '/blog', icon: Newspaper },
   { label: 'Library', path: '/library', icon: BookOpen },
+  { label: 'Podcast', path: '/podcast', icon: Mic },
+  { label: 'Store', path: '/store', icon: ShoppingBag },
+  { label: 'Cells', path: '/cells', icon: UsersRound },
   { label: 'LMS', path: '/courses', icon: GraduationCap },
   { label: 'Worship', path: '/worship', icon: Music },
-  { label: 'Account', path: '/login', icon: UserCircle },
+  { label: 'Account', path: '/account', icon: UserCircle },
 ];
 
 interface Props {

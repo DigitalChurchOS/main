@@ -8,6 +8,7 @@ import EcclesiaMobileDrawer from './EcclesiaMobileDrawer';
 import EcclesiaLeftRail from './EcclesiaLeftRail';
 import EcclesiaMobileTabRail from './EcclesiaMobileTabRail';
 import TopNotice from './sections/TopNotice';
+import EcclesiaGlobalUI from './blueprint/EcclesiaGlobalUI';
 
 interface Props {
   children: React.ReactNode;
@@ -70,6 +71,7 @@ const EcclesiaLayout: React.FC<Props> = ({ children, useStaticLayout = false }) 
         <main className="content-wrap content-wrap--livestream" id="content-outlet" style={{ padding: 0, height: '100vh', width: '100vw', maxWidth: '100vw', overflow: 'hidden' }}>
           {children}
         </main>
+        <EcclesiaGlobalUI />
       </div>
     );
   }
@@ -89,6 +91,7 @@ const EcclesiaLayout: React.FC<Props> = ({ children, useStaticLayout = false }) 
       </div>
       <EcclesiaMobileTabRail />
       <EcclesiaMobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <EcclesiaGlobalUI />
     </div>
   );
 };

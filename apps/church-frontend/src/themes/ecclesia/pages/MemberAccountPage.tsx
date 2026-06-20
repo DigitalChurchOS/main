@@ -248,15 +248,15 @@ const MemberAccountPage: React.FC<Props> = ({ tenant }) => {
           <form className="member-form" onSubmit={saveProfile}>
             <label>
               First name
-              <input value={profileForm.firstName} onChange={(event) => setProfileForm((f) => ({ ...f, firstName: event.target.value }))} required />
+              <input value={profileForm.firstName} onChange={(event) => setProfileForm((f) => ({ ...f, firstName: event.target.value }))} data-required="true" />
             </label>
             <label>
               Last name
-              <input value={profileForm.lastName} onChange={(event) => setProfileForm((f) => ({ ...f, lastName: event.target.value }))} required />
+              <input value={profileForm.lastName} onChange={(event) => setProfileForm((f) => ({ ...f, lastName: event.target.value }))} data-required="true" />
             </label>
             <label>
               Email
-              <input type="email" value={profileForm.email} onChange={(event) => setProfileForm((f) => ({ ...f, email: event.target.value }))} required />
+              <input type="email" value={profileForm.email} onChange={(event) => setProfileForm((f) => ({ ...f, email: event.target.value }))} data-required="true" />
             </label>
             <label>
               Phone

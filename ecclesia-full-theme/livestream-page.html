@@ -277,11 +277,11 @@
       <form id="salvationForm">
         <div style="margin-bottom: 16px;">
           <label style="display: block; font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;">Full Name</label>
-          <input type="text" id="salvationName" required placeholder="John Doe" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; outline: none;">
+          <input type="text" id="salvationName" data-required="true" placeholder="John Doe" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; outline: none;">
         </div>
         <div style="margin-bottom: 24px;">
           <label style="display: block; font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;">Email Address</label>
-          <input type="email" id="salvationEmail" required placeholder="john@example.com" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; outline: none;">
+          <input type="email" id="salvationEmail" data-required="true" placeholder="john@example.com" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; outline: none;">
         </div>
         <button type="submit" class="primary-btn" style="width: 100%; padding: 14px; border-radius: 12px;"><i data-lucide="heart"></i> Register My Decision</button>
       </form>
@@ -306,11 +306,11 @@
       <form id="prayerForm">
         <div style="margin-bottom: 16px;">
           <label style="display: block; font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;">Your Name</label>
-          <input type="text" id="prayerName" required placeholder="John Doe" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; outline: none;">
+          <input type="text" id="prayerName" data-required="true" placeholder="John Doe" style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; outline: none;">
         </div>
         <div style="margin-bottom: 20px;">
           <label style="display: block; font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; text-transform: uppercase;">Prayer Request</label>
-          <textarea id="prayerContent" required placeholder="Type your prayer need here..." style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; resize: vertical; outline: none; line-height: 1.6;"></textarea>
+          <textarea id="prayerContent" data-required="true" placeholder="Type your prayer need here..." style="width: 100%; min-height: 100px; padding: 12px; border: 1px solid var(--border); border-radius: 12px; background: rgba(255,255,255,0.06); color: white; resize: vertical; outline: none; line-height: 1.6;"></textarea>
         </div>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
           <button type="submit" class="primary-btn" style="padding: 12px; border-radius: 12px;"><i data-lucide="send"></i> Submit Request</button>

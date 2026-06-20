@@ -935,7 +935,7 @@ const LivestreamPage: React.FC<{ streamId?: string | null }> = ({ streamId }) =>
                       <form className="stack-form" onSubmit={submitNewVisitor}>
                         <p>We are glad you joined us. Share your details so the church can welcome you.</p>
                         <input name="name" placeholder="Full name" />
-                        <input name="email" type="email" placeholder="Email address" required />
+                        <input name="email" type="email" placeholder="Email address" data-required="true" />
                         <button type="submit">Submit</button>
                         {newVisitorNotice && <div className="live-inline-note">{newVisitorNotice}</div>}
                       </form>

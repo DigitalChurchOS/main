@@ -64,6 +64,7 @@ import dynamicBlogPublishingEngineRoutes from './routes/dynamicBlogPublishingEng
 import superAdminRoutes from './routes/superAdmin';
 import publicRoutes from './routes/public';
 import onboardingRoutes from './routes/onboarding';
+import frontendSurfacesRoutes from './routes/frontendSurfaces';
 
 // Load .env before anything else
 dotenv.config();
@@ -237,6 +238,7 @@ app.use('/api/communication', commsRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/billing-subscription-management', billingRoutes);
 app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/frontend-surfaces', frontendSurfacesRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/plugins', pluginRoutes);
 app.use('/api/plugin-engine', pluginEngineRoutes);

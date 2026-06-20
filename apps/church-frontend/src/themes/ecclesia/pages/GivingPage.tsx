@@ -23,11 +23,15 @@ const GivingPage: React.FC = () => {
   const handleCheckoutSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!amount || Number(amount) <= 0) {
-      alert('Please enter a valid amount.');
+      window.dispatchEvent(new CustomEvent('churchos:open-modal', {
+        detail: { modalKey: 'form-error', title: 'Giving amount needed', message: 'Please enter a valid contribution amount.' },
+      }));
       return;
     }
     if (!donorName || !email) {
-      alert('Please fill out your name and email.');
+      window.dispatchEvent(new CustomEvent('churchos:open-modal', {
+        detail: { modalKey: 'form-error', title: 'Donor details needed', message: 'Please fill out your name and email.' },
+      }));
       return;
     }
     setSuccess(true);
@@ -102,7 +106,7 @@ const GivingPage: React.FC = () => {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleCheckoutSubmit}>
+          <form noValidate onSubmit={handleCheckoutSubmit}>
             
             {/* Amount Selection */}
             <div style={{ marginBottom: '24px' }}>
@@ -143,7 +147,7 @@ const GivingPage: React.FC = () => {
                   placeholder="Enter custom amount"
                   value={amount}
                   onChange={(e) => setAmount(e.target.value)}
-                  required
+                  data-required="true"
                 />
               </div>
             </div>
@@ -194,7 +198,7 @@ const GivingPage: React.FC = () => {
                     placeholder="Sister Grace"
                     value={donorName}
                     onChange={(e) => setDonorName(e.target.value)}
-                    required
+                    data-required="true"
                   />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -206,7 +210,7 @@ const GivingPage: React.FC = () => {
                     placeholder="grace@domain.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
+                    data-required="true"
                   />
                 </div>
               </div>

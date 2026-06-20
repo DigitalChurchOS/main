@@ -1,5 +1,8 @@
 type SimpleResponse = Pick<Response, 'ok' | 'status' | 'statusText' | 'text' | 'json'>;
 
+const DEFAULT_REQUEST_TIMEOUT_MS = 8000;
+const MEMBER_SESSION_KEY = 'churchos.memberSession.v1';
+
 function normalizeHeaders(headers?: HeadersInit): Record<string, string> {
   if (!headers) return {};
   if (typeof Headers !== 'undefined' && headers instanceof Headers) {
@@ -20,6 +23,23 @@ function readStorageValue(key: string): string {
   } catch {
     return '';
   }
+}
+
+function readMemberToken(tenantId: string): string {
+  const raw = readStorageValue(MEMBER_SESSION_KEY);
+  if (!raw) return '';
+  try {
+    const session = JSON.parse(raw) as { token?: string; tenantId?: string };
+    if (!session?.token) return '';
+    return !session.tenantId || session.tenantId === tenantId ? session.token : '';
+  } catch {
+    return '';
+  }
+}
+
+function dispatchNetworkEvent(type: string, detail: Record<string, unknown>): void {
+  if (typeof window === 'undefined') return;
+  window.dispatchEvent(new CustomEvent(type, { detail }));
 }
 
 function readOnboardingContext(): Record<string, any> {
@@ -69,7 +89,11 @@ function tenantContextHeaders(input: string): Record<string, string> {
     String(tenant.subdomain || '');
 
   const headers: Record<string, string> = {};
-  if (tenantId) headers['x-tenant-id'] = tenantId;
+  if (tenantId) {
+    headers['X-Tenant-ID'] = tenantId;
+    const token = readMemberToken(tenantId) || readStorageValue('churchos.userJwt') || readStorageValue('churchos.authToken');
+    if (token) headers.Authorization = `Bearer ${token}`;
+  }
   if (tenantName) headers['x-tenant-name'] = encodeURIComponent(tenantName);
   if (subdomain) headers['x-tenant-subdomain'] = encodeURIComponent(subdomain);
   if (Object.keys(context).length > 0) {
@@ -90,7 +114,7 @@ function withTenantContext(input: string, init: RequestInit = {}): RequestInit {
   };
 }
 
-function xhrRequest(input: string, init: RequestInit = {}): Promise<SimpleResponse> {
+function xhrRequest(input: string, init: RequestInit = {}, timeoutMs = DEFAULT_REQUEST_TIMEOUT_MS): Promise<SimpleResponse> {
   return new Promise((resolve, reject) => {
     if (typeof XMLHttpRequest === 'undefined') {
       reject(new Error('No browser HTTP client is available'));
@@ -100,6 +124,7 @@ function xhrRequest(input: string, init: RequestInit = {}): Promise<SimpleRespon
     const xhr = new XMLHttpRequest();
     xhr.open(init.method || 'GET', input, true);
     xhr.withCredentials = init.credentials === 'include';
+    xhr.timeout = timeoutMs;
 
     const headers = normalizeHeaders(init.headers);
     Object.entries(headers).forEach(([key, value]) => {
@@ -125,8 +150,43 @@ function xhrRequest(input: string, init: RequestInit = {}): Promise<SimpleRespon
 
 export async function httpRequest(input: string, init: RequestInit = {}): Promise<SimpleResponse> {
   const requestInit = withTenantContext(input, init);
-  if (typeof fetch === 'function') {
-    return fetch(input, requestInit);
+  const timeoutMs = Number((requestInit as RequestInit & { timeoutMs?: number }).timeoutMs || DEFAULT_REQUEST_TIMEOUT_MS);
+
+  try {
+    let response: SimpleResponse;
+    if (typeof fetch === 'function') {
+      const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+      const timeoutId = controller
+        ? window.setTimeout(() => controller.abort(), timeoutMs)
+        : null;
+
+      try {
+        response = await fetch(input, {
+          ...requestInit,
+          signal: controller?.signal || requestInit.signal,
+        });
+      } finally {
+        if (timeoutId !== null) window.clearTimeout(timeoutId);
+      }
+    } else {
+      response = await xhrRequest(input, requestInit, timeoutMs);
+    }
+
+    if (!response.ok) {
+      dispatchNetworkEvent('churchos:api-error', {
+        input,
+        status: response.status,
+        statusText: response.statusText,
+      });
+    }
+    return response;
+  } catch (error: any) {
+    const isTimeout = error?.name === 'AbortError' || /timed out|aborted/i.test(error?.message || '');
+    dispatchNetworkEvent('churchos:network-interruption', {
+      input,
+      reason: isTimeout ? 'timeout' : 'network',
+      message: isTimeout ? 'Request timed out after 8 seconds.' : 'Network request failed.',
+    });
+    throw error;
   }
-  return xhrRequest(input, requestInit);
 }

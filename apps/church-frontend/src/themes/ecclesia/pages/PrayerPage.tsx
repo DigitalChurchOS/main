@@ -100,7 +100,13 @@ const PrayerPage: React.FC = () => {
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!authorName || !details || (formType === 'testimony' && !title)) {
-      alert('Please fill out all required fields.');
+      window.dispatchEvent(new CustomEvent('churchos:open-modal', {
+        detail: {
+          modalKey: 'form-error',
+          title: 'Prayer form needs attention',
+          message: 'Please complete every highlighted field before submitting.',
+        },
+      }));
       return;
     }
 
@@ -241,7 +247,7 @@ const PrayerPage: React.FC = () => {
               </button>
             </div>
           ) : (
-            <form onSubmit={handleFormSubmit}>
+            <form noValidate onSubmit={handleFormSubmit}>
               <h3>Share Your Request</h3>
               <p className="muted" style={{ fontSize: '12.5px', lineHeight: '1.4', margin: '6px 0 16px' }}>
                 Submit a prayer request for the saints to stand in agreement, or register a praise report.
@@ -282,7 +288,7 @@ const PrayerPage: React.FC = () => {
                     placeholder="e.g. Sister Grace"
                     value={authorName}
                     onChange={(e) => setAuthorName(e.target.value)}
-                    required
+                    data-required="true"
                   />
                 </div>
 
@@ -296,7 +302,7 @@ const PrayerPage: React.FC = () => {
                       placeholder="e.g. Healed of Back Pain"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
-                      required
+                      data-required="true"
                     />
                   </div>
                 )}
@@ -327,7 +333,7 @@ const PrayerPage: React.FC = () => {
                     placeholder="Please specify details..."
                     value={details}
                     onChange={(e) => setDetails(e.target.value)}
-                    required
+                    data-required="true"
                   />
                 </div>
               </div>

@@ -18,6 +18,56 @@
     setTimeout(() => toast.classList.remove('show'), 2200);
   }
 
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function requestCustomInput(options) {
+    if (window.churchosRequestInput) {
+      return window.churchosRequestInput(options);
+    }
+
+    return new Promise((resolve) => {
+      const layer = document.createElement('div');
+      layer.className = 'custom-input-layer';
+      layer.style.cssText = 'position:fixed;inset:0;z-index:999999;display:grid;place-items:center;padding:24px;background:rgba(15,23,42,.58);backdrop-filter:blur(10px);';
+      layer.innerHTML = `
+        <form novalidate style="width:min(420px,100%);display:grid;gap:16px;padding:24px;border:1px solid rgba(255,255,255,.16);border-radius:18px;background:#111827;color:#fff;box-shadow:0 24px 70px rgba(0,0,0,.35);">
+          <div>
+            <h2 style="margin:0 0 8px;font-size:24px;">${escapeHtml(options.title || 'Input needed')}</h2>
+            <p style="margin:0;color:rgba(255,255,255,.72);line-height:1.5;">${escapeHtml(options.message || '')}</p>
+          </div>
+          <label style="display:grid;gap:7px;font-size:13px;font-weight:800;color:rgba(255,255,255,.72);">
+            ${escapeHtml(options.label || 'Response')}
+            <input type="${escapeHtml(options.inputType || 'text')}" value="${escapeHtml(options.defaultValue || '')}" style="width:100%;min-height:44px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:rgba(255,255,255,.08);color:#fff;padding:10px 12px;outline:none;">
+          </label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="submit" style="border:0;border-radius:999px;background:#fff;color:#111827;padding:11px 18px;font-weight:850;">Submit</button>
+            <button type="button" data-cancel style="border:1px solid rgba(255,255,255,.2);border-radius:999px;background:transparent;color:#fff;padding:11px 18px;font-weight:850;">Cancel</button>
+          </div>
+        </form>
+      `;
+      const form = layer.querySelector('form');
+      const input = layer.querySelector('input');
+      const cleanup = (value) => {
+        layer.remove();
+        resolve(value);
+      };
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        cleanup(input.value.trim() || null);
+      });
+      layer.querySelector('[data-cancel]').addEventListener('click', () => cleanup(null));
+      document.body.appendChild(layer);
+      input.focus();
+    });
+  }
+
   // 3. Live Stream State Config
   // Toggle this to test upcoming countdown state vs live video broadcast state
   const isLive = true; 
@@ -166,13 +216,19 @@
     }
   });
 
-  emailNotesBtn?.addEventListener('click', () => {
+  emailNotesBtn?.addEventListener('click', async () => {
     const notes = notesArea ? notesArea.value.trim() : '';
     if (!notes) {
       showToast('Notes pad is empty!');
       return;
     }
-    const email = prompt('Enter your email address to send notes:', localStorage.getItem('user_email') || '');
+    const email = await requestCustomInput({
+      title: 'Send Sermon Notes',
+      message: 'Enter the email address that should receive your notes.',
+      label: 'Email address',
+      inputType: 'email',
+      defaultValue: localStorage.getItem('user_email') || '',
+    });
     if (email === null) return;
     if (!email.trim() || !email.includes('@')) {
       showToast('Invalid email address');
@@ -375,8 +431,13 @@ Thank you for joining our livestream! Keep growing in the Word.`;
   });
 
   // Reminder trigger
-  document.getElementById('reminderBtn')?.addEventListener('click', () => {
-    const contact = prompt('Enter your phone number or email address for livestream notifications:', localStorage.getItem('user_contact') || '');
+  document.getElementById('reminderBtn')?.addEventListener('click', async () => {
+    const contact = await requestCustomInput({
+      title: 'Set Livestream Reminder',
+      message: 'Enter a phone number or email for reminder notifications.',
+      label: 'Contact',
+      defaultValue: localStorage.getItem('user_contact') || '',
+    });
     if (contact === null) return;
     if (!contact.trim()) {
       showToast('Please enter contact info.');

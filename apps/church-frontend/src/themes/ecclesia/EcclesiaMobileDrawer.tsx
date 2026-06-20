@@ -1,7 +1,7 @@
 /* ── Ecclesia Mobile Drawer ─────────────────────────── */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { X, Home, Info, PlaySquare, CalendarDays, UsersRound, HeartHandshake, Mail, Radio, HandCoins, UserCircle } from 'lucide-react';
+import { X, Home, Info, PlaySquare, CalendarDays, UsersRound, HeartHandshake, Mail, Radio, HandCoins, UserCircle, Clock, MapPin, ClipboardList } from 'lucide-react';
 import { useEcclesia } from './EcclesiaContext';
 import { isUrlEntitled } from '../../entitlements';
 import { loadMemberSession, MEMBER_AUTH_CHANGE_EVENT, type MemberSession } from '../../memberAccount';
@@ -10,6 +10,9 @@ import { withLocalChurchBase } from '../../routing';
 const navIcons: Record<string, React.ComponentType<{ size?: number | string }>> = {
   '/': Home, '/home': Home,
   '/about': Info,
+  '/service-times': Clock,
+  '/campuses': MapPin,
+  '/new-visitor': ClipboardList,
   '/sermons': PlaySquare,
   '/events': CalendarDays,
   '/ministries': UsersRound,

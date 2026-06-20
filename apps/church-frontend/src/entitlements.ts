@@ -7,6 +7,7 @@ type RouteRule = {
 
 const ROUTE_RULES: RouteRule[] = [
   { patterns: [/account/, /profile/, /my-giving/, /member-login/, /login/], moduleKeys: ['members', 'member-crm'] },
+  { patterns: [/signup/, /sign-in/, /password-recovery/, /member-access/], moduleKeys: ['members', 'member-crm'] },
   { patterns: [/livestream/, /\blive\b/, /watch/], moduleKeys: ['livestream'] },
   { patterns: [/giving/, /\bgive\b/, /partnership/], moduleKeys: ['giving', 'giving-donations'] },
   { patterns: [/volunteer/], moduleKeys: ['volunteer'] },
@@ -24,12 +25,26 @@ const ROUTE_RULES: RouteRule[] = [
   { patterns: [/group/, /cell/], moduleKeys: ['cell-fellowship', 'groups', 'cell-groups'] },
   { patterns: [/children/, /kids/], moduleKeys: ['children'] },
   { patterns: [/store/, /shop/], moduleKeys: ['store'] },
+  { patterns: [/campus/, /branch/], moduleKeys: ['multi-branch', 'branches'] },
   { patterns: [/booking/], moduleKeys: ['bookings'] },
   { patterns: [/form/], moduleKeys: ['forms'] },
   { patterns: [/salvation/], moduleKeys: ['salvation-new-believer-journey', 'salvation'] },
 ];
 
-const ALWAYS_VISIBLE_PATHS = new Set(['', '/', '/home', '/about', '/contact', '/ministries', '/new-visitor']);
+const ALWAYS_VISIBLE_PATHS = new Set([
+  '',
+  '/',
+  '/home',
+  '/about',
+  '/contact',
+  '/ministries',
+  '/events',
+  '/service-times',
+  '/new-visitor',
+  '/select-campus',
+  '/password-gate',
+  '/workspace-suspended',
+]);
 
 function enabledModuleKeys(entitlements?: ModuleEntitlement[]): Set<string> | null {
   if (!entitlements || entitlements.length === 0) return null;

@@ -105,7 +105,13 @@ const EventsPage: React.FC = () => {
   const handleRegisterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!regName || !regEmail) {
-      alert('Please fill out all fields.');
+      window.dispatchEvent(new CustomEvent('churchos:open-modal', {
+        detail: {
+          modalKey: 'form-error',
+          title: 'Registration details needed',
+          message: 'Please fill out all RSVP fields before confirming.',
+        },
+      }));
       return;
     }
     setRegSuccess(true);
@@ -260,7 +266,7 @@ const EventsPage: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleRegisterSubmit}>
+              <form noValidate onSubmit={handleRegisterSubmit}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
                   <div>
                     <span className="badge accent">Event Registration</span>
@@ -290,7 +296,7 @@ const EventsPage: React.FC = () => {
                       placeholder="e.g. Sister Grace" 
                       value={regName}
                       onChange={(e) => setRegName(e.target.value)}
-                      required
+                      data-required="true"
                     />
                   </div>
                   
@@ -306,7 +312,7 @@ const EventsPage: React.FC = () => {
                       placeholder="grace@domain.com" 
                       value={regEmail}
                       onChange={(e) => setRegEmail(e.target.value)}
-                      required
+                      data-required="true"
                     />
                   </div>
                 </div>

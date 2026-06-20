@@ -9,6 +9,9 @@ import StaticHtmlPage from './themes/ecclesia/StaticHtmlPage';
 import GenericPage from './themes/ecclesia/GenericPage';
 import { routeFromHref, slugFromPathname } from './routing';
 import { httpRequest } from './http';
+import BlueprintSurfacePage from './themes/ecclesia/blueprint/BlueprintSurfacePage';
+import { getBlueprintSurfaceForSlug, shouldRenderBlueprintSurface } from './themes/ecclesia/blueprint/surfaceCatalog';
+import { buildEcclesiaHeaderNavigation } from './themes/ecclesia/blueprint/navigation';
 
 // Extract query parameters helper
 function getQueryParams() {
@@ -230,6 +233,13 @@ const PageRenderer: React.FC<{ siteContext: SiteContext; themeSettings: ThemeSet
       setError(null);
       try {
         const slug = slugFromPathname(location.pathname);
+        if (shouldRenderBlueprintSurface(slug)) {
+          if (active) {
+            setPageData(null);
+            setLoading(false);
+          }
+          return;
+        }
 
         const { previewToken } = getQueryParams();
         let response: PageRenderResponse;
@@ -324,7 +334,7 @@ const PageRenderer: React.FC<{ siteContext: SiteContext; themeSettings: ThemeSet
   const contextValue = {
     tenant: siteContext.tenant,
     themeSettings,
-    navigation: pageData?.navigation || siteContext.navigation,
+    navigation: buildEcclesiaHeaderNavigation(pageData?.navigation || siteContext.navigation),
     footer: pageData?.footer || siteContext.footer,
     globalContent: pageData?.globalContent || null,
     isPreviewMode: !!getQueryParams().previewToken,
@@ -338,6 +348,17 @@ const PageRenderer: React.FC<{ siteContext: SiteContext; themeSettings: ThemeSet
       <EcclesiaProvider value={contextValue}>
         <EcclesiaLayout useStaticLayout={false}>
           <SkeletonPage />
+        </EcclesiaLayout>
+      </EcclesiaProvider>
+    );
+  }
+
+  const activeBlueprintSurface = getBlueprintSurfaceForSlug(slugFromPathname(location.pathname));
+  if (activeBlueprintSurface?.renderMode === 'blueprint') {
+    return (
+      <EcclesiaProvider value={contextValue}>
+        <EcclesiaLayout useStaticLayout={false}>
+          <BlueprintSurfacePage surface={activeBlueprintSurface} />
         </EcclesiaLayout>
       </EcclesiaProvider>
     );
